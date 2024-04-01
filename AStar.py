@@ -105,7 +105,7 @@ def findMichelle(grid, node, searched, end):
         
         
 def main():
-   '''
+
    grid = [[0,0,0,0,0,0,0,1,0,0],
             [0,0,0,0,0,0,0,1,0,0],
             [0,0,0,0,0,0,0,1,0,0],
@@ -118,10 +118,10 @@ def main():
    grid = [[0,1,0],
            [0,0,0],
            [0,1,0]]
-   
+   '''
     
    start = point([0,0])
-   end = point([0,2])
+   end = point([0,9])
    solution(grid, start, end)
    print("3 is start, 6 is wall, 2 is path, 4 is end, things underneath are squares in the search list that were not searched")
 
