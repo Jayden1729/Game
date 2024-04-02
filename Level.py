@@ -125,6 +125,6 @@ class Level():
         for i in range(y_dim - 1):
             for j in range(x_dim - 1):
                 if grid[i][j] == 'e':
-                    enemy_list.append(Enemy.Enemy(((j + 0.5) * square_size, (i + 0.25) * square_size)))
+                    enemy_list.append(Enemy.Enemy(((j + 0.25) * square_size, (i + 0.25) * square_size)))
 
         return enemy_list
