@@ -5,48 +5,46 @@ import numpy as np
 class point():
     position = -1
     parent = -1
-    totalCost = -1
-    actualCost = 0
-    
-    
+    total_cost = -1
+    actual_cost = 0
     def __init__(self, position, parent = 0):
         self.position = position
         
         if parent != 0:
             self.parent = parent
-            self.actualCost = parent.actualCost + 1
+            self.actual_cost = parent.actual_cost + 1
     
-    def isWall(self, grid):        
+    def is_wall(self, grid):        
         if grid[self.position[0]][self.position[1]] == 1:
             return True
         else:
             return False
     
-    def cost(self, start, end):
-        estimatedCost = abs(end[0] - self.position[0]) + abs(end[1] - self.position[1])
-        self.totalCost = self.actualCost + 1.2 * estimatedCost
+    def cost(self, end):
+        estimated_cost = abs(end[0] - self.position[0]) + abs(end[1] - self.position[1])
+        self.total_cost = self.actual_cost + 1.2 * estimated_cost
 
 
 def solution(grid, start, end):
-    toSearch = [start]
+    to_search = [start]
     searched = np.zeros(np.shape(grid))
-    isEnd = False
+    is_end = False
    
-    while isEnd == False:
-        if end.isWall(grid) or start.isWall(grid):
+    while is_end == False:
+        if end.is_wall(grid) or start.is_wall(grid):
             print("ERROR: END OR START IS WALL")
             break
-        surroundingPoints, isEnd = updateSearch(grid, toSearch, searched, start, end)
-        if len(toSearch) == 0:
+        surrounding_points, is_end = update_search(grid, to_search, searched, start, end)
+        if len(to_search) == 0:
             print("NO POSSIBLE PATH")
             break
 
-    currentPoint = surroundingPoints[0]
-    parent = currentPoint.parent
+    current_point = surrounding_points[0]
+    parent = current_point.parent
     while parent != -1:
-        searched[currentPoint.position[0]][currentPoint.position[1]] = 2
-        currentPoint = parent
-        parent = currentPoint.parent
+        searched[current_point.position[0]][current_point.position[1]] = 2
+        current_point = parent
+        parent = current_point.parent
     
     searched[start.position[0]][start.position[1]] = 3
     searched[end.position[0]][end.position[1]] = 4
@@ -55,53 +53,53 @@ def solution(grid, start, end):
     grid = np.asarray(grid)
     
     print(searched + 6* grid)
-    for element in toSearch:
+    for element in to_search:
         print(element.position)
     
 
-def findBrian(toSearch, start, end):
-    lowestCost = -1
-    lowestPoint = 0
-    for point1 in toSearch:
+def find_brian(to_search, start, end):
+    lowest_cost = -1
+    lowest_point = 0
+    for point1 in to_search:
         point1.cost(start.position, end.position)
-        cost = point1.totalCost
-        if lowestCost == -1 or lowestCost > cost:
-            lowestCost = cost
-            lowestPoint = point1
-    return lowestPoint
+        cost = point1.total_cost
+        if lowest_cost == -1 or lowest_cost > cost:
+            lowest_cost = cost
+            lowest_point = point1
+    return lowest_point
 
 
-def updateSearch(grid, toSearch, searched, start, end):
-    lowestPoint = findBrian(toSearch, start, end)
-    searched[lowestPoint.position[0]][lowestPoint.position[1]] = 1
-    toSearch.remove(lowestPoint)
-    surroundingPoints, isEnd = findMichelle(grid, lowestPoint, searched, end)
-    toSearch.extend(surroundingPoints)
-    return surroundingPoints, isEnd
+def update_search(grid, to_search, searched, start, end):
+    lowest_point = find_brian(to_search, start, end)
+    searched[lowest_point.position[0]][lowest_point.position[1]] = 1
+    to_search.remove(lowest_point)
+    surrounding_points, is_end = find_michelle(grid, lowest_point, searched, end)
+    to_search.extend(surrounding_points)
+    return surrounding_points, is_end
     
 
-def findMichelle(grid, node, searched, end):
-    isEnd = False
-    nodePosition = node.position
-    gridDim = np.shape(searched)
-    surroundingPoints = [point([nodePosition[0] - 1, nodePosition[1]], node),
-                         point([nodePosition[0], nodePosition[1] - 1], node),
-                         point([nodePosition[0] + 1, nodePosition[1]], node),
-                         point([nodePosition[0], nodePosition[1] + 1], node)]
+def find_michelle(grid, node, searched, end):
+    is_end = False
+    node_position = node.position
+    grid_dim = np.shape(searched)
+    surrounding_points = [point([node_position[0] - 1, node_position[1]], node),
+                         point([node_position[0], node_position[1] - 1], node),
+                         point([node_position[0] + 1, node_position[1]], node),
+                         point([node_position[0], node_position[1] + 1], node)]
     
-    newArray = []
-    for point1 in surroundingPoints:
+    new_array = []
+    for point1 in surrounding_points:
         if point1.position == end.position:
             return [point1], True
-        elif point1.position[0] < 0 or point1.position[0] > (gridDim[0] - 1) or point1.position[1] < 0 or point1.position[1] > (gridDim[1] - 1):
+        elif point1.position[0] < 0 or point1.position[0] > (grid_dim[0] - 1) or point1.position[1] < 0 or point1.position[1] > (grid_dim[1] - 1):
             i = 1
-        elif point1.isWall(grid) == True:
+        elif point1.is_wall(grid) == True:
             i = 1
         elif searched[point1.position[0]][point1.position[1]] == 1:
             i = 1
         else:
-            newArray.append(point1)
-    return newArray, isEnd
+            new_array.append(point1)
+    return new_array, is_end
         
         
 def main():
