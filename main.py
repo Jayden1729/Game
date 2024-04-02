@@ -26,67 +26,137 @@ from pygame.locals import (
 )
 
 
-# initialise pygame
-pygame.init()
+def main():
+    # initialise pygame
+    pygame.init()
 
-# Variables
-screen_width = 800
-screen_height = 800
-fps = 90
+    # Variables
+    screen_width = 800
+    screen_height = 800
+    fps = 90
 
-# Setup initial objects
-screen = pygame.display.set_mode((screen_width, screen_height))
-clock = pygame.time.Clock()
-player = Player.Player()
-level = Level.Level([[0, 0, 0, 0, 0, 'e', 0, 1, 0, 1, 0, 0, 0, 0, 0, 0],
-                          [1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0],
-                          [0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-                          [0, 0, 0, 0, 'e', 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0],
-                          [0, 0, 0, 'e', 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
-                          [0, 0, 0, 0, 0, 0, 0, 0, 'e', 0, 0, 0, 0, 0, 0, 0],
-                          [1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                          [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                          [0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0],
-                          [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
-                          [0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
-                          [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
-                          [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0],
-                          [0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0],
-                          [0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0],
-                          [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]], 80)
+    # Setup initial objects
+    screen = pygame.display.set_mode((screen_width, screen_height))
+    clock = pygame.time.Clock()
+    player = Player.Player()
+    level = Level.Level([[0, 0, 0, 0, 0, 'e', 0, 1, 0, 1, 0, 0, 0, 0, 0, 0],
+                              [1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0],
+                              [0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+                              [0, 0, 0, 0, 'e', 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0],
+                              [0, 0, 0, 'e', 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+                              [0, 0, 0, 0, 0, 0, 0, 0, 'e', 0, 0, 0, 0, 0, 0, 0],
+                              [1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                              [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                              [0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0],
+                              [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+                              [0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+                              [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+                              [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0],
+                              [0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0],
+                              [0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0],
+                              [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]], 80)
 
-running = True
+    running = True
 
-# Game Loop
-while running:
-    screen.fill((90,90,90))
+    # Game Loop
+    while running:
+        screen.fill((90,90,90))
 
-    # for loop through event queue
-    for event in pygame.event.get():
-        if event.type == KEYDOWN:
-            if event.key == K_ESCAPE:
+        # for loop through event queue
+        for event in pygame.event.get():
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    running = False
+            elif event.type == QUIT:
                 running = False
-        elif event.type == QUIT:
-            running = False
 
+        for wall in level.wall_list:
+            pygame.draw.rect(screen, (0, 150, 0), wall)
+
+        for enemy in level.enemy_list:
+            screen.blit(enemy.surf, enemy.rect)
+
+        # get all keys currently pressed
+        pressed_keys = pygame.key.get_pressed()
+
+        # move walls based on key presses
+        update_level(level, player, pressed_keys)
+
+        screen.blit(player.surf, player.rect)
+
+        pygame.display.flip()
+
+        clock.tick(fps)
+
+
+    pygame.quit()
+
+def move_objects(x, y, level):
     for wall in level.wall_list:
-        pygame.draw.rect(screen, (0, 150, 0), wall)
+        wall.move_ip(x, y)
 
     for enemy in level.enemy_list:
-        screen.blit(enemy.surf, enemy.rect)
+        enemy.rect.move_ip(x, y)
 
-    # get all keys currently pressed
-    pressed_keys = pygame.key.get_pressed()
+def update_level(level, player, pressed_keys):
+    """Moves level around player on key press and handles wall collisions.
 
-    # move walls based on key presses
-    level.update_walls(player, pressed_keys)
+            Moves level around player to give illusion of player movement, and handles wall collisions.
+            Movement speed is equal to player.speed.
 
-    screen.blit(player.surf, player.rect)
+            Args:
+                level (Level): the level
+                player (Player): the player character
+                pressed_keys (bools): sequence of bools indicating which keys are pressed
+            """
+    wall_list = level.wall_list
+    player_x = player.rect.x
+    player_y = player.rect.y
+    player_width = player.rect.width
+    player_height = player.rect.height
 
-    pygame.display.flip()
+    # Move walls in x direction
+    if pressed_keys[pygame.K_LEFT]:
+        move_objects(player.speed, 0, level)
 
-    clock.tick(fps)
+    if pressed_keys[pygame.K_RIGHT]:
+        move_objects(-player.speed, 0, level)
 
+    # Check collisions in x direction
+    collision_index_x = player.rect.collidelistall(wall_list)
 
-pygame.quit()
+    if collision_index_x:
 
+        for i in collision_index_x:
+            wall_x = wall_list[i].x
+            wall_width = wall_list[i].width
+
+            if (player_x + player_width) > wall_x > player_x:
+                move_objects((player_x + player_width - wall_x), 0, level)
+
+            elif player_x < (wall_x + wall_width) < (player_x + player_width):
+                move_objects(-(wall_x + wall_width - player_x), 0, level)
+
+    # Move walls in y direction
+    if pressed_keys[pygame.K_UP]:
+        move_objects(0, player.speed, level)
+
+    if pressed_keys[pygame.K_DOWN]:
+        move_objects(0, -player.speed, level)
+
+        # Check collisions in y direction
+    collision_index_y = player.rect.collidelistall(wall_list)
+
+    if collision_index_y:
+
+        for i in collision_index_y:
+            wall_y = wall_list[i].y
+            wall_height = wall_list[i].height
+
+            if (player_y + player_height) > wall_y > player_y:
+                move_objects(0, (player_y + player_height - wall_y), level)
+
+            elif player_y < (wall_y + wall_height) < (player_y + player_height):
+                move_objects(0, -(wall_y + wall_height - player_y), level)
+
+main()
