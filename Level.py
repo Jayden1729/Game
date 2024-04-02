@@ -6,8 +6,10 @@ Created on Sat Mar 30 21:24:03 2024
 """
 
 import pygame
+import Enemy
 
-def isNextWall(grid, element, direction):
+
+def is_next_wall(grid, element, direction):
     """Checks if adjacent element in specified direction is a wall in given grid.
 
     Args:
@@ -20,18 +22,18 @@ def isNextWall(grid, element, direction):
         bool: True if neighbour element in specified direction is 1, False if not.
 
     """
-    if element[0]+1 >= len(grid) or element[1]+1 >= len(grid[0]):
+    if element[0] + 1 >= len(grid) or element[1] + 1 >= len(grid[0]):
         return False
     if direction == 'right':
-        if grid[element[0]][element[1]+1] == 1:
+        if grid[element[0]][element[1] + 1] == 1:
             return True
     if direction == 'down':
-        if grid[element[0]+1][element[1]] == 1:
+        if grid[element[0] + 1][element[1]] == 1:
             return True
     return False
 
 
-class Level():
+class Level:
 
     def __init__(self, grid, square_size):
         """Initialises an instance of the Level class.
@@ -62,8 +64,8 @@ class Level():
         wall_params = []
         wall_list = []
 
-        for i in range(y_dim-1):
-            for j in range(x_dim-1):
+        for i in range(y_dim - 1):
+            for j in range(x_dim - 1):
                 if grid[i][j] == 0:
                     continue
                 if grid[i][j] == 1:
@@ -74,14 +76,14 @@ class Level():
                     i_iter = i
                     j_iter = j
 
-                    while isNextWall(grid,(i,j_iter), 'right'):
-                        counter +=1
-                        j_iter+=1
+                    while is_next_wall(grid, (i, j_iter), 'right'):
+                        counter += 1
+                        j_iter += 1
                         grid[i][j_iter] = 0
                         direction = 'right'
 
                     if counter == 1:
-                        while isNextWall(grid, (i_iter, j), 'down'):
+                        while is_next_wall(grid, (i_iter, j), 'down'):
                             counter += 1
                             i_iter += 1
                             grid[i_iter][j] = 0
@@ -90,9 +92,9 @@ class Level():
                     wall_params.append([i, j, counter, direction])
 
         for element in wall_params:
-            y = element[0]*square_size
-            x = element[1]*square_size
-            length = element[2]*square_size
+            y = element[0] * square_size
+            x = element[1] * square_size
+            length = element[2] * square_size
             direction = element[3]
 
             if direction == 'right':
@@ -102,7 +104,7 @@ class Level():
             else:
                 wall_list.append(pygame.Rect(x, y, square_size, square_size))
 
-        return(wall_list)
+        return (wall_list)
 
     def update_walls(self, player, pressed_keys):
         """Moves walls around player on key press and handles wall collisions.
@@ -171,10 +173,3 @@ class Level():
             elif player_y < (wall_y + wall_height) and (player_y + player_height) > (wall_y + wall_height):
                 for wall in wall_list:
                     wall.move_ip(0, -(wall_y + wall_height - player_y))
-
-
-
-
-
-
-
