@@ -7,10 +7,19 @@ Created on Sat Mar 30 21:24:03 2024
 
 import pygame
 
-# returns if the element next to the specified element in the grid is a wall,
-# either to the right or down depending on the specified direction
-# grid is a 2D list [[,]] element is a list [x,y], direction is 'right' or 'down'
 def isNextWall(grid, element, direction):
+    """Checks if adjacent element in specified direction is a wall in given grid.
+
+    Args:
+        grid (list): a 2D list of 0's and 1's.
+        element (tuple): a tuple (x, y), specifying a position within the grid.
+        direction (str): 'right' indicates to check the right adjacent element,
+                         'down' indicates to check the below adjacent element.
+
+    Returns:
+        bool: True if neighbour element in specified direction is 1, False if not.
+
+    """
     if element[0]+1 >= len(grid) or element[1]+1 >= len(grid[0]):
         return False
     if direction == 'right':
@@ -24,25 +33,37 @@ def isNextWall(grid, element, direction):
 
 class Level():
 
-    def __init__(self, grid, squareSize):
+    def __init__(self, grid, square_size):
+        """Initialises an instance of the Level class.
+
+        Args:
+            grid (list): a 2D list of 1's and 0's, representing the game grid.
+            square_size (int): the grid square size (in pixels) to be displayed on the screen.
+        """
         self.grid = grid
-        self.squareSize = squareSize
-        self.wallList = self.generateWalls()
+        self.square_size = square_size
+        self.wall_list = self.generate_walls()
 
-# takes specified grid and converts it into a list describing rectangle objects to be created as walls,
-# list indicates the starting y and x of the wall, the length in grid square units, and the direction
-# from the starting point, either right, down, or none (only 1 square big) i.e. in format [starting y, starting x, length in grid units, direction]
-# 0's in grid indicate no wall, 1's indicate a wall
+    def generate_walls(self):
+        """Generates maze walls from grid.
 
-    def gridToRectParams(self):
+        Generates walls from grid contained in Level object.
+        0's represent empty space, and 1's represent walls.
+
+        Returns:
+            list: A list of pygame.rect objects, matching with the position of walls inputted into grid.
+
+        """
         grid = self.grid
-        xDim = len(grid[0])
-        yDim = len(grid)
+        x_dim = len(grid[0])
+        y_dim = len(grid)
+        square_size = self.square_size
 
-        wallParams = []
+        wall_params = []
+        wall_list = []
 
-        for i in range(yDim-1):
-            for j in range(xDim-1):
+        for i in range(y_dim-1):
+            for j in range(x_dim-1):
                 if grid[i][j] == 0:
                     continue
                 if grid[i][j] == 1:
@@ -50,87 +71,109 @@ class Level():
                     counter = 1
                     direction = 'none'
 
-                    iIter = i
-                    jIter = j
+                    i_iter = i
+                    j_iter = j
 
-                    while isNextWall(grid,[i,jIter], 'right'):
+                    while isNextWall(grid,(i,j_iter), 'right'):
                         counter +=1
-                        jIter+=1
-                        grid[i][jIter] = 0
+                        j_iter+=1
+                        grid[i][j_iter] = 0
                         direction = 'right'
 
                     if counter == 1:
-                        while isNextWall(grid, [iIter, j], 'down'):
+                        while isNextWall(grid, (i_iter, j), 'down'):
                             counter += 1
-                            iIter += 1
-                            grid[iIter][j] = 0
+                            i_iter += 1
+                            grid[i_iter][j] = 0
                             direction = 'down'
 
-                    wallParams.append([i, j, counter, direction])
+                    wall_params.append([i, j, counter, direction])
 
-        return(wallParams)
-
-# takes wall parameters as given by gridToRectParams, and generates list of Rects to act as walls
-    def generateWalls(self):
-        squareSize = self.squareSize
-        wallParams = self.gridToRectParams()
-
-        wallList = []
-
-        for element in wallParams:
-            y = element[0]*squareSize
-            x = element[1]*squareSize
-            length = element[2]*squareSize
+        for element in wall_params:
+            y = element[0]*square_size
+            x = element[1]*square_size
+            length = element[2]*square_size
             direction = element[3]
 
             if direction == 'right':
-                wallList.append(pygame.Rect(x, y, length, squareSize))
+                wall_list.append(pygame.Rect(x, y, length, square_size))
             elif direction == 'down':
-                wallList.append(pygame.Rect(x, y, squareSize, length))
+                wall_list.append(pygame.Rect(x, y, square_size, length))
             else:
-                wallList.append(pygame.Rect(x, y, squareSize, squareSize))
+                wall_list.append(pygame.Rect(x, y, square_size, square_size))
 
-        return(wallList)
+        return(wall_list)
+
+    def update_walls(self, player, pressed_keys):
+        """Moves walls around player on key press and handles wall collisions.
+
+        Moves walls around player to give illusion of player movement, and handles wall collisions.
+        Movement speed is equal to player.speed.
+
+        Args:
+            player (Player): the player character
+            pressed_keys (bools): sequence of bools indicating which keys are pressed
+        """
+        wall_list = self.wall_list
+        player_x = player.rect.x
+        player_y = player.rect.y
+        player_width = player.rect.width
+        player_height = player.rect.height
+
+        # Move walls in x direction
+        if pressed_keys[pygame.K_LEFT]:
+            for wall in wall_list:
+                wall.move_ip(player.speed, 0)
+
+        if pressed_keys[pygame.K_RIGHT]:
+            for wall in wall_list:
+                wall.move_ip(-player.speed, 0)
+
+        # Check collisions in x direction
+        collision_index_x = player.rect.collidelistall(wall_list)
+
+        if collision_index_x != []:
+
+            for i in collision_index_x:
+                wall_x = wall_list[i].x
+                wall_width = wall_list[i].width
+
+            if (player_x + player_width) > wall_x and player_x < wall_x:
+                for wall in wall_list:
+                    wall.move_ip((player_x + player_width - wall_x), 0)
+
+            elif player_x < (wall_x + wall_width) and (player_x + player_width) > (wall_x + wall_width):
+                for wall in wall_list:
+                    wall.move_ip(-(wall_x + wall_width - player_x), 0)
+
+        # Move walls in y direction
+        if pressed_keys[pygame.K_UP]:
+            for wall in wall_list:
+                wall.move_ip(0, player.speed)
+
+        if pressed_keys[pygame.K_DOWN]:
+            for wall in wall_list:
+                wall.move_ip(0, -player.speed)
+
+        # Check collisions in y direction
+        collision_index_y = player.rect.collidelistall(wall_list)
+
+        if collision_index_y != []:
+
+            for i in collision_index_y:
+                wall_y = wall_list[i].y
+                wall_height = wall_list[i].height
+
+            if (player_y + player_height) > wall_y and player_y < wall_y:
+                for wall in wall_list:
+                    wall.move_ip(0, (player_y + player_height - wall_y))
+
+            elif player_y < (wall_y + wall_height) and (player_y + player_height) > (wall_y + wall_height):
+                for wall in wall_list:
+                    wall.move_ip(0, -(wall_y + wall_height - player_y))
 
 
-    def wallCollision(self, player):
-        wallList = self.wallList
-        playerX = player.rect.x
-        playerY = player.rect.y
-        playerWidth = player.rect.width
-        playerHeight = player.rect.height
 
-        collisionIndex = player.rect.collidelistall(wallList)
-
-        if collisionIndex == []:
-            return
-
-        for i in collisionIndex:
-            wallX = wallList[i].x
-            wallY = wallList[i].y
-            wallWidth = wallList[i].width
-            wallHeight = wallList[i].height
-
-
-            # colliding with top edge of wall
-            if (playerY + playerHeight) > wallY and playerY < wallY:
-                player.rect.move_ip(0, -(playerY + playerHeight - wallY))
-
-            elif (playerX + playerWidth) > wallX and playerX < wallX:
-                print('left')
-                player.rect.move_ip(-(playerX + playerWidth - wallX), 0)
-
-            elif playerY < (wallY + wallHeight) and (playerY + playerHeight) > (wallY + wallHeight):
-                print('bot')
-                player.rect.move_ip(0, (wallY + wallHeight - playerY))
-
-            elif playerX < (wallX + wallWidth) and (playerX + playerWidth) > (wallX + wallWidth):
-                print('right')
-                player.rect.move_ip((wallX + wallWidth - playerX), 0)
-
-
-
-        print(collisionIndex)
 
 
 

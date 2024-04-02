@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Mar 29 12:29:44 2024
+Naming conventions:
 
-@author: Jayden
+class: CapWords
+variable: lower_case
+constants: CAPITAL_CASE
+
+
+
 """
 
 import AStar
 import pygame
-import Characters
+import Player
 import Level
 
 from pygame.locals import (
@@ -25,33 +30,33 @@ from pygame.locals import (
 pygame.init()
 
 # Variables
-screenWidth = 800
-screenHeight = 800
-fps = 60
+screen_width = 800
+screen_height = 800
+fps = 90
 
 # Setup initial objects
-screen = pygame.display.set_mode((screenWidth, screenHeight))
+screen = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()
-player = Characters.Player()
+player = Player.Player()
 level = Level.Level([[0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0],
-                          [1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+                          [1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0],
                           [0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-                          [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-                          [0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
-                          [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-                          [1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-                          [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-                          [0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0],
-                          [1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-                          [0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-                          [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-                          [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0],
-                          [0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0],
-                          [0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0],
-                          [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]], 50)
+                          [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0],
+                          [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+                          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                          [1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                          [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                          [0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0],
+                          [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+                          [0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+                          [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+                          [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0],
+                          [0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0],
+                          [0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0],
+                          [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]], 80)
 
 running = True
-    
+
 # Game Loop
 while running:
     screen.fill((90,90,90))
@@ -64,15 +69,14 @@ while running:
         elif event.type == QUIT:
             running = False
 
-    for wall in level.wallList:
-        pygame.draw.rect(screen, (0, 255, 0), wall)
+    for wall in level.wall_list:
+        pygame.draw.rect(screen, (0, 150, 0), wall)
 
     # get all keys currently pressed
-    pressedKeys = pygame.key.get_pressed()
+    pressed_keys = pygame.key.get_pressed()
 
-    # update the player sprite based on user keypresses
-    player.update(pressedKeys)
-    level.wallCollision(player)
+    # move walls based on key presses
+    level.update_walls(player, pressed_keys)
 
     screen.blit(player.surf,player.rect)
 
