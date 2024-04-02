@@ -3,6 +3,7 @@
 """
 import pygame
 
+
 class Player(pygame.sprite.Sprite):
 
     def __init__(self):
@@ -15,3 +16,4 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.surf.get_rect(center=(400, 400))
         self.speed = 7
         self.exp = 0
+        self.hp = 100

@@ -106,6 +106,7 @@ class Level:
 
         return (wall_list)
 
+
     def update_walls(self, player, pressed_keys):
         """Moves walls around player on key press and handles wall collisions.
 
@@ -136,17 +137,16 @@ class Level:
 
         if collision_index_x:
 
-            for i in collision_index_x:
-                wall_x = wall_list[i].x
-                wall_width = wall_list[i].width
+            wall_x = wall_list[0].x
+            wall_width = wall_list[0].width
 
-                if (player_x + player_width) > wall_x > player_x:
-                    for wall in wall_list:
-                        wall.move_ip((player_x + player_width - wall_x), 0)
+            if (player_x + player_width) > wall_x > player_x:
+                for wall in wall_list:
+                    wall.move_ip((player_x + player_width - wall_x), 0)
 
-                elif (wall_x + wall_width) > player_x < (player_x + player_width):
-                    for wall in wall_list:
-                        wall.move_ip(-(wall_x + wall_width - player_x), 0)
+            elif (wall_x + wall_width) > player_x < (player_x + player_width):
+                for wall in wall_list:
+                    wall.move_ip(-(wall_x + wall_width - player_x), 0)
 
         # Move walls in y direction
         if pressed_keys[pygame.K_UP]:
@@ -162,9 +162,9 @@ class Level:
 
         if collision_index_y:
 
-            for i in collision_index_y:
-                wall_y = wall_list[i].y
-                wall_height = wall_list[i].height
+
+                wall_y = wall_list[0].y
+                wall_height = wall_list[0].height
 
                 if (player_y + player_height) > wall_y > player_y:
                     for wall in wall_list:
