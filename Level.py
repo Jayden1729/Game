@@ -7,6 +7,8 @@ Created on Sat Mar 30 21:24:03 2024
 
 import pygame
 
+import Enemy
+
 
 def is_next_wall(grid, element, direction):
     """Checks if adjacent element in specified direction is a wall in given grid.
@@ -38,12 +40,13 @@ class Level():
         """Initialises an instance of the Level class.
 
         Args:
-            grid (list): a 2D list of 1's and 0's, representing the game grid.
+            grid (list): a 2D list, representing the game grid.
             square_size (int): the grid square size (in pixels) to be displayed on the screen.
         """
         self.grid = grid
         self.square_size = square_size
         self.wall_list = self.generate_walls()
+        self.enemy_list = self.generate_enemies()
 
     def generate_walls(self):
         """Generates maze walls from grid.
@@ -65,8 +68,6 @@ class Level():
 
         for i in range(y_dim - 1):
             for j in range(x_dim - 1):
-                if grid[i][j] == 0:
-                    continue
                 if grid[i][j] == 1:
                     grid[i][j] = 0
                     counter = 1
@@ -103,7 +104,31 @@ class Level():
             else:
                 wall_list.append(pygame.Rect(x, y, square_size, square_size))
 
-        return (wall_list)
+        return wall_list
+
+    def generate_enemies(self):
+        """Generates enemies at specified starting location on grid.
+
+        'e' on the grid indicates places for enemies to be generated.
+
+        Returns:
+            list: a list of Enemy objects
+
+        """
+        grid = self.grid
+        x_dim = len(grid[0])
+        y_dim = len(grid)
+        square_size = self.square_size
+
+        enemy_list = []
+
+        for i in range(y_dim - 1):
+            for j in range(x_dim - 1):
+                if grid[i][j] == 'e':
+                    enemy_list.append(Enemy.Enemy(((j + 0.5) * square_size, (i + 0.25) * square_size)))
+
+        return enemy_list
+
 
     def update_walls(self, player, pressed_keys):
         """Moves walls around player on key press and handles wall collisions.

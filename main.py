@@ -41,8 +41,8 @@ player = Player.Player()
 level = Level.Level([[0, 0, 0, 0, 0, 'e', 0, 1, 0, 1, 0, 0, 0, 0, 0, 0],
                           [1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0],
                           [0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-                          [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0],
-                          [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+                          [0, 0, 0, 0, 'e', 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0],
+                          [0, 0, 0, 'e', 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
                           [0, 0, 0, 0, 0, 0, 0, 0, 'e', 0, 0, 0, 0, 0, 0, 0],
                           [1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                           [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -72,13 +72,16 @@ while running:
     for wall in level.wall_list:
         pygame.draw.rect(screen, (0, 150, 0), wall)
 
+    for enemy in level.enemy_list:
+        screen.blit(enemy.surf, enemy.rect)
+
     # get all keys currently pressed
     pressed_keys = pygame.key.get_pressed()
 
     # move walls based on key presses
     level.update_walls(player, pressed_keys)
 
-    screen.blit(player.surf,player.rect)
+    screen.blit(player.surf, player.rect)
 
     pygame.display.flip()
 

@@ -12,6 +12,6 @@ class Enemy(pygame.sprite.Sprite):
         super(Enemy, self).__init__()
         self.surf = pygame.Surface((40, 40))
         self.surf.fill((255, 0, 0))
-        self.rect = self.surf.get_rect(center = position)
+        self.rect = self.surf.get_rect(topleft = position)
         self.hp = 100
 
