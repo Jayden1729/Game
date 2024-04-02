@@ -92,6 +92,13 @@ def main():
     pygame.quit()
 
 def move_objects(x, y, level):
+    """Moves all walls and enemies in the level by (x,y)
+
+    Args:
+        x (int): amount to move objects by in x direction
+        y (int): amount to move objects by in y direction
+        level (Level): game level
+    """
     for wall in level.wall_list:
         wall.move_ip(x, y)
 
