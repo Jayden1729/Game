@@ -7,7 +7,7 @@ class Point:
         """Initialises Point class
         
         Args:
-            position (list): (x, y), position of point on grid
+            position (List[int]): (x, y), position of point on grid
             parent (Point): Point from which this point was generated
         """
         self.position = position
@@ -18,17 +18,17 @@ class Point:
             self.actual_cost = parent.actual_cost + 1
 
 
-def pathfind(grid, start, end):
+def findpath(grid, start, end):
     """Finds a path on a grid between defined start and end points.
 
     Args:
-        grid (:obj:'list' of :obj:'list' of :obj:'int'): 2D list of 0's and 1's. Element int(1) is treated as a wall.
+        grid (List[List[int]]): 2D list of 0's and 1's. Element int(1) is treated as a wall.
         start (Point): start point.
         end (Point): end point.
 
     Returns:
-        :obj:'list' of :obj:'list of :obj:'int': A 2D list of values. 4 denotes the start point, 2 denotes points
-            along the path, 5 denotes the end point, 3 denotes points that were searched, and 1 denotes walls.
+        List[List[int]]: A 2D list of values. 4 denotes the start point, 2 denotes points along the path, 5 denotes the
+        end point, 3 denotes points that were searched, and 1 denotes walls.
 
     Raises:
         Exception "END OR START IS WALL": if the start or end points are walls in grid.
@@ -122,9 +122,9 @@ def main():
            [0,1,0]]
    '''
 
-    start = Point((0, 0))
+    start = Point([0, 0])
     end = Point([0, 9])
-    print(pathfind(grid, start, end))
+    print(findpath(grid, start, end))
     print(
         "4 is start, 1 is wall, 2 is path, 5 is end, things underneath are squares in the search list that were not searched")
 

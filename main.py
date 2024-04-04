@@ -14,6 +14,7 @@ import pygame
 import Player
 import Level
 
+
 def main():
     # initialise pygame
     pygame.init()
@@ -28,27 +29,27 @@ def main():
     clock = pygame.time.Clock()
     player = Player.Player()
     level = Level.Level([[0, 0, 0, 0, 0, 'e', 0, 1, 0, 1, 0, 0, 0, 0, 0, 0],
-                              [1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0],
-                              [0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-                              [0, 0, 0, 0, 'e', 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0],
-                              [0, 0, 0, 'e', 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
-                              [0, 0, 0, 0, 0, 0, 0, 0, 'e', 0, 0, 0, 0, 0, 0, 0],
-                              [1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                              [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                              [0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0],
-                              [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
-                              [0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
-                              [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
-                              [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0],
-                              [0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0],
-                              [0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0],
-                              [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]], 80)
+                         [1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0],
+                         [0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+                         [0, 0, 0, 0, 'e', 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0],
+                         [0, 0, 0, 'e', 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+                         [0, 0, 0, 0, 0, 0, 0, 0, 'e', 0, 0, 0, 0, 0, 0, 0],
+                         [1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                         [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                         [0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0],
+                         [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+                         [0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+                         [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+                         [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0],
+                         [0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0],
+                         [0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0],
+                         [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]], 80)
 
     running = True
 
     # Game Loop
     while running:
-        screen.fill((90,90,90))
+        screen.fill((90, 90, 90))
 
         # for loop through event queue
         for event in pygame.event.get():
@@ -62,6 +63,7 @@ def main():
             pygame.draw.rect(screen, (0, 150, 0), wall)
 
         for enemy in level.enemy_list:
+            enemy.update_movement(level, player)
             screen.blit(enemy.surf, enemy.rect)
 
         # get all keys currently pressed
@@ -76,10 +78,10 @@ def main():
 
         clock.tick(fps)
 
-
     pygame.quit()
 
-def move_objects(x, y, level):
+
+def move_objects(x, y, level: Level):
     """Moves all walls and enemies in the level by (x,y)
 
     Args:
@@ -93,7 +95,11 @@ def move_objects(x, y, level):
     for enemy in level.enemy_list:
         enemy.rect.move_ip(x, y)
 
-def update_level(level, player, pressed_keys):
+    level.origin_coordinates[0] += x
+    level.origin_coordinates[1] += y
+
+
+def update_level(level: Level, player: Player, pressed_keys):
     """Moves level around player on key press and handles wall collisions.
 
             Moves level around player to give illusion of player movement, and handles wall collisions.
@@ -139,7 +145,7 @@ def update_level(level, player, pressed_keys):
     if pressed_keys[pygame.K_DOWN]:
         move_objects(0, -player.speed, level)
 
-        # Check collisions in y direction
+    # Check collisions in y direction
     collision_index_y = player.rect.collidelistall(wall_list)
 
     if collision_index_y:
@@ -153,6 +159,7 @@ def update_level(level, player, pressed_keys):
 
             elif player_y < (wall_y + wall_height) < (player_y + player_height):
                 move_objects(0, -(wall_y + wall_height - player_y), level)
+
 
 if __name__ == '__main__':
     main()
