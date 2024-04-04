@@ -6,6 +6,7 @@ Created on Sat Mar 30 21:24:03 2024
 """
 
 import pygame
+import copy
 
 import Enemy
 
@@ -47,46 +48,47 @@ class Level:
         self.square_size = square_size
         self.wall_list = self.generate_walls()
         self.enemy_list = self.generate_enemies()
-        self.origin_coordinates = [square_size/2, square_size/2]
+        self.origin_coords = pygame.math.Vector2(square_size/2, square_size/2)
 
     def generate_walls(self):
-        """Generates maze walls from grid.
+        """Generates maze walls from new_grid.
 
-        Generates walls from grid contained in Level object. 0's represent empty space, and 1's represent walls.
+        Generates walls from new_grid contained in Level object. 0's represent empty space, and 1's represent walls.
 
         Returns:
-            List[pygame.Rect]: A list of pygame.Rect objects, matching with the position of walls inputted into grid.
+            List[pygame.Rect]: A list of pygame.Rect objects, matching with the position of walls inputted into new_grid.
 
         """
-        grid = self.grid
-        x_dim = len(grid[0])
-        y_dim = len(grid)
+
+        new_grid = copy.deepcopy(self.grid)
+        x_dim = len(new_grid[0])
+        y_dim = len(new_grid)
         square_size = self.square_size
 
         wall_params = []
         wall_list = []
 
-        for i in range(y_dim - 1):
-            for j in range(x_dim - 1):
-                if grid[i][j] == 1:
-                    grid[i][j] = 0
+        for i in range(y_dim):
+            for j in range(x_dim):
+                if new_grid[i][j] == 1:
+                    new_grid[i][j] = 0
                     counter = 1
                     direction = 'none'
 
                     i_iter = i
                     j_iter = j
 
-                    while is_adjacent_wall(grid, (i, j_iter), 'right'):
+                    while is_adjacent_wall(new_grid, (i, j_iter), 'right'):
                         counter += 1
                         j_iter += 1
-                        grid[i][j_iter] = 0
+                        new_grid[i][j_iter] = 0
                         direction = 'right'
 
                     if counter == 1:
-                        while is_adjacent_wall(grid, (i_iter, j), 'down'):
+                        while is_adjacent_wall(new_grid, (i_iter, j), 'down'):
                             counter += 1
                             i_iter += 1
-                            grid[i_iter][j] = 0
+                            new_grid[i_iter][j] = 0
                             direction = 'down'
 
                     wall_params.append([i, j, counter, direction])
