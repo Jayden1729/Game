@@ -10,21 +10,9 @@ constants: CAPITAL_CASE
 
 """
 
-import AStar
 import pygame
 import Player
 import Level
-
-from pygame.locals import (
-    K_UP,
-    K_DOWN,
-    K_LEFT,
-    K_RIGHT,
-    K_ESCAPE,
-    KEYDOWN,
-    QUIT,
-)
-
 
 def main():
     # initialise pygame
@@ -43,7 +31,7 @@ def main():
                               [1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0],
                               [0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
                               [0, 0, 0, 0, 'e', 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0],
-                              [0, 0, 0, 'e', 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+                              [0, 0, 0, 'e', 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
                               [0, 0, 0, 0, 0, 0, 0, 0, 'e', 0, 0, 0, 0, 0, 0, 0],
                               [1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                               [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -64,10 +52,10 @@ def main():
 
         # for loop through event queue
         for event in pygame.event.get():
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
                     running = False
-            elif event.type == QUIT:
+            elif event.type == pygame.QUIT:
                 running = False
 
         for wall in level.wall_list:
@@ -166,4 +154,5 @@ def update_level(level, player, pressed_keys):
             elif player_y < (wall_y + wall_height) < (player_y + player_height):
                 move_objects(0, -(wall_y + wall_height - player_y), level)
 
-main()
+if __name__ == '__main__':
+    main()

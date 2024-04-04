@@ -10,17 +10,17 @@ import pygame
 import Enemy
 
 
-def is_next_wall(grid, element, direction):
+def is_adjacent_wall(grid, element, direction):
     """Checks if adjacent element in specified direction is a wall in given grid.
 
     Args:
-        grid (list): a 2D list of 0's and 1's.
-        element (tuple): a tuple (x, y), specifying a position within the grid.
+        grid (List[List[int,str]]): a 2D list of ints and strings.
+        element (List[int]): a list [x, y], specifying a position within the grid.
         direction (str): 'right' indicates to check the right adjacent element,
                          'down' indicates to check the below adjacent element.
 
     Returns:
-        bool: True if neighbour element in specified direction is 1, False if not.
+        bool: True if neighbour element in specified direction is int(1), False if not.
 
     """
     if element[0] + 1 >= len(grid) or element[1] + 1 >= len(grid[0]):
@@ -40,7 +40,7 @@ class Level():
         """Initialises an instance of the Level class.
 
         Args:
-            grid (list): a 2D list, representing the game grid.
+            grid (List[List[int, str]]): a 2D list, representing the game grid.
             square_size (int): the grid square size (in pixels) to be displayed on the screen.
         """
         self.grid = grid
@@ -51,11 +51,10 @@ class Level():
     def generate_walls(self):
         """Generates maze walls from grid.
 
-        Generates walls from grid contained in Level object.
-        0's represent empty space, and 1's represent walls.
+        Generates walls from grid contained in Level object. 0's represent empty space, and 1's represent walls.
 
         Returns:
-            list: A list of pygame.rect objects, matching with the position of walls inputted into grid.
+            List[pygame.Rect]: A list of pygame.Rect objects, matching with the position of walls inputted into grid.
 
         """
         grid = self.grid
@@ -76,14 +75,14 @@ class Level():
                     i_iter = i
                     j_iter = j
 
-                    while is_next_wall(grid, (i, j_iter), 'right'):
+                    while is_adjacent_wall(grid, (i, j_iter), 'right'):
                         counter += 1
                         j_iter += 1
                         grid[i][j_iter] = 0
                         direction = 'right'
 
                     if counter == 1:
-                        while is_next_wall(grid, (i_iter, j), 'down'):
+                        while is_adjacent_wall(grid, (i_iter, j), 'down'):
                             counter += 1
                             i_iter += 1
                             grid[i_iter][j] = 0
@@ -112,7 +111,7 @@ class Level():
         'e' on the grid indicates places for enemies to be generated.
 
         Returns:
-            list: a list of Enemy objects
+            List[List[int, str]]: a list of Enemy objects
 
         """
         grid = self.grid
