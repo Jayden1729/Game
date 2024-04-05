@@ -7,7 +7,7 @@ class Point:
         """Initialises Point class
         
         Args:
-            position (List[int]): (x, y), position of point on grid
+            position (List[int]): (y, x), position of point on grid
             parent (Point): Point from which this point was generated
         """
         self.position = position
@@ -18,7 +18,7 @@ class Point:
             self.actual_cost = parent.actual_cost + 1
 
 
-def findpath(grid, start, end):
+def find_path(grid, start, end):
     """Finds a path on a grid between defined start and end points.
 
     Args:
@@ -124,7 +124,7 @@ def main():
 
     start = Point([0, 0])
     end = Point([0, 9])
-    print(findpath(grid, start, end))
+    print(find_path(grid, start, end))
     print(
         "4 is start, 1 is wall, 2 is path, 5 is end, things underneath are squares in the search list that were not searched")
 
