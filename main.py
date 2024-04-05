@@ -11,9 +11,9 @@ constants: CAPITAL_CASE
 """
 
 import pygame
+import csv
 import Player
 import Level
-
 
 def main():
     # initialise pygame
@@ -28,22 +28,34 @@ def main():
     screen = pygame.display.set_mode((screen_width, screen_height))
     clock = pygame.time.Clock()
     player = Player.Player()
-    level = Level.Level([[0, 0, 0, 0, 0, 'e', 0, 1, 0, 1, 0, 0, 0, 0, 0, 0],
-                         [1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0],
-                         [0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 'e', 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0],
-                         [0, 0, 0, 'e', 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0, 'e', 0, 0, 0, 0, 0, 0, 0],
-                         [1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0],
-                         [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
-                         [0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
-                         [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0],
-                         [0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0],
-                         [0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0],
-                         [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]], 80)
+
+    with open('Game_grid.csv') as csvfile:
+        reader = csv.reader(csvfile)
+        game_grid = list(reader)
+        for i in range(len(game_grid)):
+            for j in range(len(game_grid[0])):
+                if game_grid[i][j] == '1':
+                    game_grid[i][j] = 1
+
+
+    level = Level.Level(game_grid, 80)
+    print(level.grid)
+    '''level = Level.Level([[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                              [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
+                              [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 'e', 0, 0, 0, 1],
+                              [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
+                              [1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1],
+                              [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
+                              [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1],
+                              [1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
+                              [1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
+                              [1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
+                              [1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1],
+                              [1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1],
+                              [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'e', 0, 0, 1],
+                              [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                              [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                              [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]], 80)'''
 
     running = True
 
@@ -95,8 +107,8 @@ def move_objects(x, y, level: Level):
     for enemy in level.enemy_list:
         enemy.rect.move_ip(x, y)
 
-    level.origin_coordinates[0] += x
-    level.origin_coordinates[1] += y
+    level.origin_coords.x += x
+    level.origin_coords.y += y
 
 
 def update_level(level: Level, player: Player, pressed_keys):
