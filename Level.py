@@ -114,7 +114,7 @@ class Level:
         'e' on the grid indicates places for enemies to be generated.
 
         Returns:
-            List[List[int, str]]: a list of Enemy objects
+            pygame.Group[Enemy]: a pygame Group of Enemy objects
 
         """
         grid = self.grid
@@ -122,11 +122,11 @@ class Level:
         y_dim = len(grid)
         square_size = self.square_size
 
-        enemy_list = []
+        enemy_list = pygame.sprite.Group()
 
         for i in range(y_dim - 1):
             for j in range(x_dim - 1):
                 if grid[i][j] == 'e':
-                    enemy_list.append(Enemy.Enemy(((j + 0.5) * square_size, (i + 0.5) * square_size)))
+                    enemy_list.add(Enemy.Enemy(((j + 0.5) * square_size, (i + 0.5) * square_size)))
 
         return enemy_list
