@@ -114,7 +114,7 @@ class Level:
         'e' on the grid indicates places for enemies to be generated.
 
         Returns:
-            pygame.Group[Enemy]: a pygame Group of Enemy objects
+            pygame.Group[Enemy]: a pygame Group of Enemy objects.
 
         """
         grid = self.grid
