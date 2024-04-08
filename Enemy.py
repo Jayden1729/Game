@@ -1,9 +1,13 @@
 import copy
+import sys
 
 import pygame
 import numpy as np
 import random
 import copy
+
+import Level
+import Player
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -21,9 +25,24 @@ class Enemy(pygame.sprite.Sprite):
         self.hp = 100
         self.speed = random.randint(2, 4)
 
-    def update_movement(self, level, player):
-        max_range = 9
-        min_range = 2
+        self.seen_player = False
+
+    def update_movement(self, level: Level, player: Player, min_range, max_range):
+        """Moves the enemy towards the player
+
+        Handles detection of the player, enemy pathfinding and wall collisions. The player will be initially detected
+        when they get within min_range number of grid squares of the player, and the enemy will chase the player in a
+        straight line until the player is outside max_range number of grid squares away from the enemy.
+
+
+        Args:
+            level (Level): the game level.
+            player (Player): the player.
+            min_range (float): number of grid squares determining initial player detection.
+            max_range (float): number of grid squares determining how far away the enemy will chase the player
+        """
+
+        # Move enemy
 
         grid_sq_size = level.square_size
 
@@ -31,22 +50,73 @@ class Enemy(pygame.sprite.Sprite):
 
         dist_to_player = enemy_vector2.distance_to(player.vector2)
 
-        if player.rect.width / 2 < dist_to_player < min_range * grid_sq_size:
-            move_direction = (player.vector2 - enemy_vector2).normalize()
-            self.rect.move_ip(move_direction.x * self.speed, move_direction.y * self.speed)
+        move_direction = pygame.math.Vector2(0, 0)
 
+        if player.rect.width / 2 < dist_to_player < max_range * grid_sq_size and self.seen_player == True:
+            move_direction = (player.vector2 - enemy_vector2).normalize()
+
+        elif player.rect.width / 2 < dist_to_player < min_range * grid_sq_size:
+            move_direction = (player.vector2 - enemy_vector2).normalize()
+            self.seen_player = True
+
+        # Code for A* pathfinding, may return to this later, however not sure if advanced pathfinding is necessary for this game.
+        # Will decide after implementing attacks
+        '''
         elif min_range * level.square_size < dist_to_player < max_range * level.square_size:
             vec_to_origin = level.origin_coords - enemy_vector2
-            grid_location = [-round(vec_to_origin.y / grid_sq_size), -round(vec_to_origin.x / grid_sq_size)]
+            enemy_grid_y = -round(vec_to_origin.y / grid_sq_size)
+            enemy_grid_x = -round(vec_to_origin.x / grid_sq_size)
 
             player_vec_origin = level.origin_coords - player.vector2
-            player_grid_loc = [-round(player_vec_origin.y / grid_sq_size), -round(player_vec_origin.x / grid_sq_size)]
+            player_grid_y = -round(player_vec_origin.y / grid_sq_size)
+            player_grid_x = -round(player_vec_origin.x / grid_sq_size)
 
-            path_grid = find_path(remove_strings(level.grid), Point(grid_location), Point(player_grid_loc))
+            grid = remove_strings(level.grid)
 
+            path_grid = find_path(grid, Point([enemy_grid_y, enemy_grid_x]), Point([player.grid_y, player.grid_x]))
+            '''
 
+        # Check wall collisions
 
-            print(path_grid)
+        # Move in x direction
+        self.rect.move_ip(move_direction.x * self.speed, 0)
+        enemy_x = self.rect.x
+        enemy_width = self.rect.width
+
+        # Check collisions in x direction
+        collision_index_x = self.rect.collidelistall(level.wall_list)
+
+        if collision_index_x:
+
+            for i in collision_index_x:
+                wall_x = level.wall_list[i].x
+                wall_width = level.wall_list[i].width
+
+                if (enemy_x + enemy_width) > wall_x > enemy_x:
+                    self.rect.move_ip(-(enemy_x + enemy_width - wall_x), 0)
+
+                elif enemy_x < (wall_x + wall_width) < (enemy_x + enemy_width):
+                    self.rect.move_ip((wall_x + wall_width - enemy_x), 0)
+
+        # Move in y direction
+        self.rect.move_ip(0, move_direction.y * self.speed)
+        enemy_y = self.rect.y
+        enemy_height = self.rect.height
+
+        # Check collisions in x direction
+        collision_index_y = self.rect.collidelistall(level.wall_list)
+
+        if collision_index_y:
+
+            for i in collision_index_y:
+                wall_y = level.wall_list[i].y
+                wall_height = level.wall_list[i].height
+
+                if (enemy_y + enemy_height) > wall_y > enemy_y:
+                    self.rect.move_ip(0, -(enemy_y + enemy_height - wall_y))
+
+                elif enemy_y < (wall_y + wall_height) < (enemy_y + enemy_height):
+                    self.rect.move_ip(0, (wall_y + wall_height - enemy_y))
 
 
 class Point:
