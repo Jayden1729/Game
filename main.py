@@ -39,10 +39,8 @@ def main():
                     game_grid[i][j] = 1
 
     level = Level.Level(game_grid, 80)
-    print(level.grid)
 
     enemy_list = level.enemy_list
-    player_bullets = pygame.sprite.Group()
     enemy_bullets = pygame.sprite.Group()
 
     running = True
@@ -64,7 +62,7 @@ def main():
                 running = False
             # Check if player is attacking
             elif (event.type == pygame.MOUSEBUTTONDOWN or pressed_keys[pygame.K_SPACE]) and player.attack_cooldown == 0:
-                player.attack(player_bullets)
+                player.attack(level.player_bullets)
 
         # Draw walls on screen
         for wall in level.wall_list:
@@ -75,7 +73,20 @@ def main():
             enemy.update_movement(level, player, 1.5, 5)
             screen.blit(enemy.surf, enemy.rect)
 
-        # Move player around screen and draw player
+        # Draw and move bullets
+        for bullet in level.player_bullets:
+            bullet.rect.move_ip(bullet.vector.x * bullet.speed, bullet.vector.y * bullet.speed)
+            if bullet.rect.collidelistall(level.wall_list):
+                bullet.kill()
+
+            for enemy in enemy_list:
+                if pygame.Rect.colliderect(bullet.rect, enemy.rect):
+                    bullet.kill()
+                    enemy.kill()
+
+            screen.blit(bullet.surf, bullet.rect)
+
+        # Player movement and draw player
         move_player(level, player, pressed_keys)
         screen.blit(player.surf, player.rect)
 
@@ -102,6 +113,9 @@ def move_objects(x, y, level: Level):
 
     for enemy in level.enemy_list:
         enemy.rect.move_ip(x, y)
+
+    for bullet in level.player_bullets:
+        bullet.rect.move_ip(x, y)
 
     level.origin_coords.x += x
     level.origin_coords.y += y
