@@ -42,12 +42,18 @@ def main():
     print(level.grid)
 
     enemy_list = level.enemy_list
+    player_bullets = pygame.sprite.Group()
+    enemy_bullets = pygame.sprite.Group()
 
     running = True
 
     # Game Loop
     while running:
+        # Fill screen background
         screen.fill((90, 90, 90))
+
+        # Get all pressed keys
+        pressed_keys = pygame.key.get_pressed()
 
         # for loop through event queue
         for event in pygame.event.get():
@@ -56,25 +62,28 @@ def main():
                     running = False
             elif event.type == pygame.QUIT:
                 running = False
+            # Check if player is attacking
+            elif (event.type == pygame.MOUSEBUTTONDOWN or pressed_keys[pygame.K_SPACE]) and player.attack_cooldown == 0:
+                player.attack(player_bullets)
 
+        # Draw walls on screen
         for wall in level.wall_list:
             pygame.draw.rect(screen, (0, 150, 0), wall)
 
-        player.update_grid_location(level)
+        # Determine enemy movement and draw them on screen
         for enemy in enemy_list:
             enemy.update_movement(level, player, 1.5, 5)
             screen.blit(enemy.surf, enemy.rect)
 
-        # get all keys currently pressed
-        pressed_keys = pygame.key.get_pressed()
-
-        # move walls based on key presses
-        update_level(level, player, pressed_keys)
-
+        # Move player around screen and draw player
+        move_player(level, player, pressed_keys)
         screen.blit(player.surf, player.rect)
 
-        pygame.display.flip()
+        # Reduce player attack cooldown
+        if player.attack_cooldown > 0:
+            player.attack_cooldown -= 1
 
+        pygame.display.flip()
         clock.tick(fps)
 
     pygame.quit()
@@ -98,7 +107,7 @@ def move_objects(x, y, level: Level):
     level.origin_coords.y += y
 
 
-def update_level(level: Level, player: Player, pressed_keys):
+def move_player(level: Level, player: Player, pressed_keys):
     """Moves level around player on key press and handles wall collisions.
 
             Moves level around player to give illusion of player movement, and handles wall collisions.
