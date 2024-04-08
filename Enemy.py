@@ -19,13 +19,16 @@ class Enemy(pygame.sprite.Sprite):
             position (List[int]): gives initial position of enemy.
         """
         super(Enemy, self).__init__()
-        self.surf = pygame.Surface((40, 40))
+        self.rect_size = 40
+        self.surf = pygame.Surface((self.rect_size, self.rect_size))
         self.surf.fill((255, 0, 0))
         self.rect = self.surf.get_rect(center=position)
-        self.hp = 100
         self.speed = random.randint(2, 4)
 
         self.seen_player = False
+        self.projectile_direction = pygame.math.Vector2(0, 0)
+        self.projectile_speed = 6
+        self.projectile_cooldown = 0
 
     def update_movement(self, level: Level, player: Player, min_range, max_range):
         """Moves the enemy towards the player
@@ -58,6 +61,12 @@ class Enemy(pygame.sprite.Sprite):
         elif player.rect.width / 2 < dist_to_player < min_range * grid_sq_size:
             move_direction = (player.vector2 - enemy_vector2).normalize()
             self.seen_player = True
+
+        else:
+            self.seen_player = False
+
+        # Sets projectile direction in straight line to player from enemy
+        self.projectile_direction = move_direction
 
         # Code for A* pathfinding, may return to this later, however not sure if advanced pathfinding is necessary for this game.
         # Will decide after implementing attacks

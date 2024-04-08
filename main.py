@@ -14,6 +14,7 @@ import pygame
 import csv
 import Player
 import Level
+import Bullet
 
 
 def main():
@@ -41,7 +42,6 @@ def main():
     level = Level.Level(game_grid, 80)
 
     enemy_list = level.enemy_list
-    enemy_bullets = pygame.sprite.Group()
 
     running = True
 
@@ -73,7 +73,14 @@ def main():
             enemy.update_movement(level, player, 1.5, 5)
             screen.blit(enemy.surf, enemy.rect)
 
-        # Draw and move bullets
+            if enemy.seen_player and enemy.projectile_cooldown == 0:
+                level.enemy_bullets.add(Bullet.Bullet(enemy.rect.x + enemy.rect_size/2, enemy.rect.y + enemy.rect_size/2, enemy.projectile_direction, enemy.projectile_speed))
+                enemy.projectile_cooldown = 20
+
+            if enemy.projectile_cooldown > 0:
+                enemy.projectile_cooldown -= 1
+
+        # Draw and move player bullets + check collisions
         for bullet in level.player_bullets:
             bullet.rect.move_ip(bullet.vector.x * bullet.speed, bullet.vector.y * bullet.speed)
             if bullet.rect.collidelistall(level.wall_list):
@@ -83,6 +90,18 @@ def main():
                 if pygame.Rect.colliderect(bullet.rect, enemy.rect):
                     bullet.kill()
                     enemy.kill()
+
+            screen.blit(bullet.surf, bullet.rect)
+
+        # Draw and move enemy bullets + check collisions
+        for bullet in level.enemy_bullets:
+            bullet.rect.move_ip(bullet.vector.x * bullet.speed, bullet.vector.y * bullet.speed)
+            if bullet.rect.collidelistall(level.wall_list):
+                bullet.kill()
+
+            if pygame.Rect.colliderect(player.rect, bullet.rect):
+                player.hp -= 10
+                bullet.kill()
 
             screen.blit(bullet.surf, bullet.rect)
 
@@ -115,6 +134,9 @@ def move_objects(x, y, level: Level):
         enemy.rect.move_ip(x, y)
 
     for bullet in level.player_bullets:
+        bullet.rect.move_ip(x, y)
+
+    for bullet in level.enemy_bullets:
         bullet.rect.move_ip(x, y)
 
     level.origin_coords.x += x
