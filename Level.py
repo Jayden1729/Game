@@ -9,6 +9,7 @@ import pygame
 import copy
 
 import Enemy
+import Bullet
 
 
 def is_adjacent_wall(grid, element, direction):
@@ -132,3 +133,47 @@ class Level:
                     enemy_list.add(Enemy.Enemy(((j + 0.5) * square_size, (i + 0.5) * square_size)))
 
         return enemy_list
+
+    def update_player_bullets(self, screen):
+        """Moves and displays player bullets and checks collisions with walls and enemies.
+
+        Moves player bullets by bullet.speed in direction bullet.vector. If a bullet collides with a wall it is killed.
+        If a bullet collides with an enemy, both the bullet and enemy are killed. The bullets are also displayed on the
+        screen.
+
+        Args:
+            screen (pygame.display): the screen to draw bullets on.
+        """
+        for bullet in self.player_bullets:
+            bullet.rect.move_ip(bullet.vector.x * bullet.speed, bullet.vector.y * bullet.speed)
+            if bullet.rect.collidelistall(self.wall_list):
+                bullet.kill()
+
+            for enemy in self.enemy_list:
+                if pygame.Rect.colliderect(bullet.rect, enemy.rect):
+                    bullet.kill()
+                    enemy.kill()
+
+            screen.blit(bullet.surf, bullet.rect)
+
+    def update_enemy_bullets(self, screen, player):
+        """Moves and displays enemy bullets, checks collisions with walls and the player.
+
+        Moves enemy bullets by bullet.speed in direction bullet.vector. If a bullet collides with a wall it is killed.
+        If a bullet collides with the player, the bullet is killed and player.hp is reduced by 10. The bullets are also
+        displayed on the screen.
+
+        Args:
+            screen (pygame.display): the screen to display bullets on.
+            player (Player): the player character.
+        """
+        for bullet in self.enemy_bullets:
+            bullet.rect.move_ip(bullet.vector.x * bullet.speed, bullet.vector.y * bullet.speed)
+            if bullet.rect.collidelistall(self.wall_list):
+                bullet.kill()
+
+            if pygame.Rect.colliderect(player.rect, bullet.rect):
+                player.hp -= 10
+                bullet.kill()
+
+            screen.blit(bullet.surf, bullet.rect)

@@ -74,29 +74,10 @@ def main():
 
 
         # Draw and move player bullets + check collisions
-        for bullet in level.player_bullets:
-            bullet.rect.move_ip(bullet.vector.x * bullet.speed, bullet.vector.y * bullet.speed)
-            if bullet.rect.collidelistall(level.wall_list):
-                bullet.kill()
-
-            for enemy in level.enemy_list:
-                if pygame.Rect.colliderect(bullet.rect, enemy.rect):
-                    bullet.kill()
-                    enemy.kill()
-
-            screen.blit(bullet.surf, bullet.rect)
+        level.update_player_bullets(screen)
 
         # Draw and move enemy bullets + check collisions
-        for bullet in level.enemy_bullets:
-            bullet.rect.move_ip(bullet.vector.x * bullet.speed, bullet.vector.y * bullet.speed)
-            if bullet.rect.collidelistall(level.wall_list):
-                bullet.kill()
-
-            if pygame.Rect.colliderect(player.rect, bullet.rect):
-                player.hp -= 10
-                bullet.kill()
-
-            screen.blit(bullet.surf, bullet.rect)
+        level.update_enemy_bullets(screen, player)
 
         # Player movement and draw player
         move_player(level, player, pressed_keys)
