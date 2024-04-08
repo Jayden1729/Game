@@ -15,6 +15,7 @@ import csv
 import Player
 import Level
 
+
 def main():
     # initialise pygame
     pygame.init()
@@ -37,25 +38,10 @@ def main():
                 if game_grid[i][j] == '1':
                     game_grid[i][j] = 1
 
-
     level = Level.Level(game_grid, 80)
     print(level.grid)
-    '''level = Level.Level([[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                              [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
-                              [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 'e', 0, 0, 0, 1],
-                              [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
-                              [1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1],
-                              [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
-                              [1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1],
-                              [1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
-                              [1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
-                              [1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
-                              [1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1],
-                              [1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1],
-                              [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'e', 0, 0, 1],
-                              [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                              [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                              [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]], 80)'''
+
+    enemy_list = level.enemy_list
 
     running = True
 
@@ -74,8 +60,9 @@ def main():
         for wall in level.wall_list:
             pygame.draw.rect(screen, (0, 150, 0), wall)
 
-        for enemy in level.enemy_list:
-            enemy.update_movement(level, player)
+        player.update_grid_location(level)
+        for enemy in enemy_list:
+            enemy.update_movement(level, player, 1.5, 5)
             screen.blit(enemy.surf, enemy.rect)
 
         # get all keys currently pressed
@@ -129,10 +116,10 @@ def update_level(level: Level, player: Player, pressed_keys):
     player_height = player.rect.height
 
     # Move walls in x direction
-    if pressed_keys[pygame.K_LEFT]:
+    if pressed_keys[pygame.K_a]:
         move_objects(player.speed, 0, level)
 
-    if pressed_keys[pygame.K_RIGHT]:
+    if pressed_keys[pygame.K_d]:
         move_objects(-player.speed, 0, level)
 
     # Check collisions in x direction
@@ -151,10 +138,10 @@ def update_level(level: Level, player: Player, pressed_keys):
                 move_objects(-(wall_x + wall_width - player_x), 0, level)
 
     # Move walls in y direction
-    if pressed_keys[pygame.K_UP]:
+    if pressed_keys[pygame.K_w]:
         move_objects(0, player.speed, level)
 
-    if pressed_keys[pygame.K_DOWN]:
+    if pressed_keys[pygame.K_s]:
         move_objects(0, -player.speed, level)
 
     # Check collisions in y direction
