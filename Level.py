@@ -49,6 +49,8 @@ class Level:
         self.wall_list = self.generate_walls()
         self.enemy_list = self.generate_enemies()
         self.origin_coords = pygame.math.Vector2(square_size/2, square_size/2)
+        self.player_bullets = pygame.sprite.Group()
+        self.enemy_bullets = pygame.sprite.Group()
 
     def generate_walls(self):
         """Generates maze walls from new_grid.

@@ -41,8 +41,6 @@ def main():
 
     level = Level.Level(game_grid, 80)
 
-    enemy_list = level.enemy_list
-
     running = True
 
     # Game Loop
@@ -69,16 +67,11 @@ def main():
             pygame.draw.rect(screen, (0, 150, 0), wall)
 
         # Determine enemy movement and draw them on screen
-        for enemy in enemy_list:
+        for enemy in level.enemy_list:
             enemy.update_movement(level, player, 1.5, 5)
             screen.blit(enemy.surf, enemy.rect)
+            enemy.attack(level)
 
-            if enemy.seen_player and enemy.projectile_cooldown == 0:
-                level.enemy_bullets.add(Bullet.Bullet(enemy.rect.x + enemy.rect_size/2, enemy.rect.y + enemy.rect_size/2, enemy.projectile_direction, enemy.projectile_speed))
-                enemy.projectile_cooldown = 20
-
-            if enemy.projectile_cooldown > 0:
-                enemy.projectile_cooldown -= 1
 
         # Draw and move player bullets + check collisions
         for bullet in level.player_bullets:
@@ -86,7 +79,7 @@ def main():
             if bullet.rect.collidelistall(level.wall_list):
                 bullet.kill()
 
-            for enemy in enemy_list:
+            for enemy in level.enemy_list:
                 if pygame.Rect.colliderect(bullet.rect, enemy.rect):
                     bullet.kill()
                     enemy.kill()

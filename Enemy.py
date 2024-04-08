@@ -6,6 +6,7 @@ import numpy as np
 import random
 import copy
 
+import Bullet
 import Level
 import Player
 
@@ -29,6 +30,24 @@ class Enemy(pygame.sprite.Sprite):
         self.projectile_direction = pygame.math.Vector2(0, 0)
         self.projectile_speed = 6
         self.projectile_cooldown = 0
+
+    def attack(self, level):
+        """Creates an enemy bullet when the player is seen by the enemy
+
+        Creates a bullet when seen_player is True, moving in a straight line towards the player, with speed
+        self.projectile_speed, and a cooldown of 20.
+
+        Args:
+            level (Level): the game level.
+        """
+        if self.seen_player and self.projectile_cooldown == 0:
+            level.enemy_bullets.add(
+                Bullet.Bullet(self.rect.x + self.rect_size / 2, self.rect.y + self.rect_size / 2,
+                              self.projectile_direction, self.projectile_speed))
+            self.projectile_cooldown = 20
+
+        if self.projectile_cooldown > 0:
+            self.projectile_cooldown -= 1
 
     def update_movement(self, level: Level, player: Player, min_range, max_range):
         """Moves the enemy towards the player
