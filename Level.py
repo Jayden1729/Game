@@ -132,9 +132,9 @@ class Level:
         for i in range(y_dim - 1):
             for j in range(x_dim - 1):
                 if grid[i][j] == 'e':
-                    enemy_list.add(Enemy.Enemy(((j + 0.5) * square_size, (i + 0.5) * square_size)))
+                    enemy_list.add(Enemy.Enemy(((j + 0.5) * square_size, (i + 0.5) * square_size), 1))
                 elif grid[i][j] == 'r':
-                    enemy_list.add(Enemy.Enemy(((j + 0.5) * square_size, (i + 0.5) * square_size), attack_pattern='radial'))
+                    enemy_list.add(Enemy.Enemy(((j + 0.5) * square_size, (i + 0.5) * square_size), 2, attack_pattern='radial'))
 
         return enemy_list
 
@@ -156,8 +156,10 @@ class Level:
             for enemy in self.enemy_list:
                 if pygame.Rect.colliderect(bullet.rect, enemy.rect):
                     bullet.kill()
-                    enemy.kill()
-                    self.time += 70
+                    enemy.hp -= 1
+                    if enemy.hp == 0:
+                        enemy.kill()
+                        self.time += 60
 
             screen.blit(bullet.surf, bullet.rect)
 
@@ -178,7 +180,7 @@ class Level:
                 bullet.kill()
 
             if pygame.Rect.colliderect(player.rect, bullet.rect):
-                self.time -= 30
+                self.time -= 120
                 bullet.kill()
 
             screen.blit(bullet.surf, bullet.rect)

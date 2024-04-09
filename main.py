@@ -24,22 +24,28 @@ def main():
     # Variables
     screen_width = 800
     screen_height = 800
-    fps = 90
+    fps = 75
 
     # Setup initial objects
     screen = pygame.display.set_mode((screen_width, screen_height))
     clock = pygame.time.Clock()
     player = Player.Player()
 
-    with open('Game_grid.csv') as csvfile:
-        reader = csv.reader(csvfile)
-        game_grid = list(reader)
-        for i in range(len(game_grid)):
-            for j in range(len(game_grid[0])):
-                if game_grid[i][j] == '1':
-                    game_grid[i][j] = 1
+    levels = []
 
-    level = Level.Level(game_grid, 40)
+    # Import levels
+    for i in range(5):
+        with open('Level_'+ str(i + 1) +'.csv') as csvfile:
+            reader = csv.reader(csvfile)
+            game_grid = list(reader)
+            for i in range(len(game_grid)):
+                for j in range(len(game_grid[0])):
+                    if game_grid[i][j] == '1':
+                        game_grid[i][j] = 1
+            levels.append(Level.Level(game_grid, 40))
+
+    level = levels[0]
+    current_level = 1
 
     running = True
 
@@ -47,6 +53,11 @@ def main():
     while running:
         # Fill screen background
         screen.fill((90, 90, 90))
+
+        # Change Level if all enemies killed
+        if not level.enemy_list:
+            current_level += 1
+            level = levels[current_level - 1]
 
         # Get all pressed keys
         pressed_keys = pygame.key.get_pressed()
@@ -70,7 +81,7 @@ def main():
         for enemy in level.enemy_list:
             enemy.update_movement(level, player, 12, 16)
             screen.blit(enemy.surf, enemy.rect)
-            enemy.attack(level)
+            enemy.attack(level, 60)
 
 
         # Draw and move player bullets + check collisions
