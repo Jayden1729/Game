@@ -35,7 +35,7 @@ class Enemy(pygame.sprite.Sprite):
         """Creates an enemy bullet when the player is seen by the enemy.
 
         Creates a bullet when seen_player is True, moving in a straight line towards the player, with speed
-        self.projectile_speed, and a specified cooldown between bullets.
+        self.projectile_speed, and a specified cooldown between shots.
 
         Args:
             level (Level): the game level.
@@ -54,7 +54,7 @@ class Enemy(pygame.sprite.Sprite):
         """Radial attack pattern for enemy.
 
         Creates num_bullets number of bullets in a radial pattern around the enemy, at evenly spaced angles, with a
-        specified cooldown.
+        specified cooldown between shots.
 
         Args:
             level (Level): the game level.
@@ -68,7 +68,7 @@ class Enemy(pygame.sprite.Sprite):
             for i in range(num_bullets):
                 level.enemy_bullets.add(
                     Bullet.Bullet(self.rect.x + self.rect_size / 2, self.rect.y + self.rect_size / 2,
-                                  self.projectile_direction.rotate(degrees * i), self.projectile_speed))
+                                  pygame.math.Vector2(0, 1).rotate(degrees * i), self.projectile_speed))
             self.projectile_cooldown = cooldown
 
         if self.projectile_cooldown > 0:
