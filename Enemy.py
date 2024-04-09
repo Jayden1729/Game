@@ -31,20 +31,45 @@ class Enemy(pygame.sprite.Sprite):
         self.projectile_speed = random.randint(2, 3)
         self.projectile_cooldown = 0
 
-    def attack(self, level):
-        """Creates an enemy bullet when the player is seen by the enemy
+    def attack(self, level, cooldown):
+        """Creates an enemy bullet when the player is seen by the enemy.
 
         Creates a bullet when seen_player is True, moving in a straight line towards the player, with speed
-        self.projectile_speed, and a cooldown of 20.
+        self.projectile_speed, and a specified cooldown between bullets.
 
         Args:
             level (Level): the game level.
+            cooldown (int): the cooldown between bullets fired by enemies.
         """
         if self.seen_player and self.projectile_cooldown == 0:
             level.enemy_bullets.add(
                 Bullet.Bullet(self.rect.x + self.rect_size / 2, self.rect.y + self.rect_size / 2,
                               self.projectile_direction, self.projectile_speed))
-            self.projectile_cooldown = 40
+            self.projectile_cooldown = cooldown
+
+        if self.projectile_cooldown > 0:
+            self.projectile_cooldown -= 1
+
+    def radial_attack(self, level, num_bullets, cooldown):
+        """Radial attack pattern for enemy.
+
+        Creates num_bullets number of bullets in a radial pattern around the enemy, at evenly spaced angles, with a
+        specified cooldown.
+
+        Args:
+            level (Level): the game level.
+            num_bullets (int): the number of bullets to fire at a time.
+            cooldown (int):
+
+        """
+        degrees = 360/num_bullets
+
+        if self.seen_player and self.projectile_cooldown ==0:
+            for i in range(num_bullets):
+                level.enemy_bullets.add(
+                    Bullet.Bullet(self.rect.x + self.rect_size / 2, self.rect.y + self.rect_size / 2,
+                                  self.projectile_direction.rotate(degrees * i), self.projectile_speed))
+            self.projectile_cooldown = cooldown
 
         if self.projectile_cooldown > 0:
             self.projectile_cooldown -= 1
@@ -86,23 +111,6 @@ class Enemy(pygame.sprite.Sprite):
 
         # Sets projectile direction in straight line to player from enemy
         self.projectile_direction = move_direction
-
-        # Code for A* pathfinding, may return to this later, however not sure if advanced pathfinding is necessary for this game.
-        # Will decide after implementing attacks
-        '''
-        elif min_range * level.square_size < dist_to_player < max_range * level.square_size:
-            vec_to_origin = level.origin_coords - enemy_vector2
-            enemy_grid_y = -round(vec_to_origin.y / grid_sq_size)
-            enemy_grid_x = -round(vec_to_origin.x / grid_sq_size)
-
-            player_vec_origin = level.origin_coords - player.vector2
-            player_grid_y = -round(player_vec_origin.y / grid_sq_size)
-            player_grid_x = -round(player_vec_origin.x / grid_sq_size)
-
-            grid = remove_strings(level.grid)
-
-            path_grid = find_path(grid, Point([enemy_grid_y, enemy_grid_x]), Point([player.grid_y, player.grid_x]))
-            '''
 
         # Check wall collisions
 
