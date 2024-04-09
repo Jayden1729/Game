@@ -13,7 +13,7 @@ import Player
 
 class Enemy(pygame.sprite.Sprite):
 
-    def __init__(self, position):
+    def __init__(self, position, attack_pattern = 'normal'):
         """Initialises an instance of the Enemy class.
 
         Args:
@@ -24,14 +24,15 @@ class Enemy(pygame.sprite.Sprite):
         self.surf = pygame.Surface((self.rect_size, self.rect_size))
         self.surf.fill((255, 0, 0))
         self.rect = self.surf.get_rect(center=position)
-        self.speed = 1.2
+        self.speed = 1.5
 
         self.seen_player = False
         self.projectile_direction = pygame.math.Vector2(0, 0)
-        self.projectile_speed = random.randint(2, 3)
+        self.projectile_speed = 2.5
         self.projectile_cooldown = 0
+        self.attack_pattern = attack_pattern
 
-    def attack(self, level, cooldown):
+    def normal_attack(self, level, cooldown):
         """Creates an enemy bullet when the player is seen by the enemy.
 
         Creates a bullet when seen_player is True, moving in a straight line towards the player, with speed
@@ -64,7 +65,7 @@ class Enemy(pygame.sprite.Sprite):
         """
         degrees = 360/num_bullets
 
-        if self.seen_player and self.projectile_cooldown ==0:
+        if self.seen_player and self.projectile_cooldown == 0:
             for i in range(num_bullets):
                 level.enemy_bullets.add(
                     Bullet.Bullet(self.rect.x + self.rect_size / 2, self.rect.y + self.rect_size / 2,
@@ -73,6 +74,23 @@ class Enemy(pygame.sprite.Sprite):
 
         if self.projectile_cooldown > 0:
             self.projectile_cooldown -= 1
+
+    def attack(self, level, cooldown):
+        """Causes enemy attack based on attack pattern.
+
+        Args:
+            level (Level): the game level.
+            cooldown (int): cooldown between shots.
+        """
+
+        if self.attack_pattern == 'normal':
+            self.normal_attack(level, cooldown)
+
+        elif self.attack_pattern == 'radial':
+            self.radial_attack(level, 6, cooldown)
+
+
+
 
     def update_movement(self, level: Level, player: Player, min_range, max_range):
         """Moves the enemy towards the player
