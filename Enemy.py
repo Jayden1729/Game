@@ -13,7 +13,7 @@ import Player
 
 class Enemy(pygame.sprite.Sprite):
 
-    def __init__(self, position, attack_pattern = 'normal'):
+    def __init__(self, position, hp, attack_pattern = 'normal'):
         """Initialises an instance of the Enemy class.
 
         Args:
@@ -23,8 +23,12 @@ class Enemy(pygame.sprite.Sprite):
         self.rect_size = 40
         self.surf = pygame.Surface((self.rect_size, self.rect_size))
         self.surf.fill((255, 0, 0))
+        if attack_pattern == 'radial':
+            self.surf.fill((255, 255, 0))
+
         self.rect = self.surf.get_rect(center=position)
         self.speed = 1.5
+        self.hp = hp
 
         self.seen_player = False
         self.projectile_direction = pygame.math.Vector2(0, 0)
