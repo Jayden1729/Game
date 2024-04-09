@@ -18,9 +18,9 @@ class Player(pygame.sprite.Sprite):
         self.surf.fill((0, 0, 255))
         self.rect = self.surf.get_rect(center=(400, 400))
         self.vector2 = pygame.math.Vector2(400, 400)
-        self.speed = 5
+        self.speed = 7
         self.hp = 100
-        self.projectile_speed = 8
+        self.projectile_speed = 10
         self.attack_cooldown = 0
 
         self.grid_x = None

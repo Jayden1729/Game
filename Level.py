@@ -52,6 +52,7 @@ class Level:
         self.origin_coords = pygame.math.Vector2(square_size/2, square_size/2)
         self.player_bullets = pygame.sprite.Group()
         self.enemy_bullets = pygame.sprite.Group()
+        self.time = 1000
 
     def generate_walls(self):
         """Generates maze walls from new_grid.
@@ -153,6 +154,7 @@ class Level:
                 if pygame.Rect.colliderect(bullet.rect, enemy.rect):
                     bullet.kill()
                     enemy.kill()
+                    self.time += 70
 
             screen.blit(bullet.surf, bullet.rect)
 
@@ -173,7 +175,7 @@ class Level:
                 bullet.kill()
 
             if pygame.Rect.colliderect(player.rect, bullet.rect):
-                player.hp -= 10
+                self.time -= 30
                 bullet.kill()
 
             screen.blit(bullet.surf, bullet.rect)

@@ -39,7 +39,7 @@ def main():
                 if game_grid[i][j] == '1':
                     game_grid[i][j] = 1
 
-    level = Level.Level(game_grid, 80)
+    level = Level.Level(game_grid, 40)
 
     running = True
 
@@ -68,7 +68,7 @@ def main():
 
         # Determine enemy movement and draw them on screen
         for enemy in level.enemy_list:
-            enemy.update_movement(level, player, 1.5, 5)
+            enemy.update_movement(level, player, 12, 16)
             screen.blit(enemy.surf, enemy.rect)
             enemy.attack(level)
 
@@ -86,6 +86,17 @@ def main():
         # Reduce player attack cooldown
         if player.attack_cooldown > 0:
             player.attack_cooldown -= 1
+
+        # Draw timer
+
+        time_surf = pygame.Surface((level.time/2, 20))
+        timer = time_surf.get_rect(center=(400, 30))
+        pygame.draw.rect(screen, (0, 0, 100), timer)
+
+        if level.time == 0:
+            running = False
+
+        level.time -= 1
 
         pygame.display.flip()
         clock.tick(fps)

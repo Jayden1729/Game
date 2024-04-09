@@ -24,11 +24,11 @@ class Enemy(pygame.sprite.Sprite):
         self.surf = pygame.Surface((self.rect_size, self.rect_size))
         self.surf.fill((255, 0, 0))
         self.rect = self.surf.get_rect(center=position)
-        self.speed = random.randint(2, 4)
+        self.speed = 1.2
 
         self.seen_player = False
         self.projectile_direction = pygame.math.Vector2(0, 0)
-        self.projectile_speed = 6
+        self.projectile_speed = random.randint(2, 3)
         self.projectile_cooldown = 0
 
     def attack(self, level):
@@ -44,7 +44,7 @@ class Enemy(pygame.sprite.Sprite):
             level.enemy_bullets.add(
                 Bullet.Bullet(self.rect.x + self.rect_size / 2, self.rect.y + self.rect_size / 2,
                               self.projectile_direction, self.projectile_speed))
-            self.projectile_cooldown = 20
+            self.projectile_cooldown = 40
 
         if self.projectile_cooldown > 0:
             self.projectile_cooldown -= 1
