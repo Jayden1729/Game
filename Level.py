@@ -115,7 +115,8 @@ class Level:
     def generate_enemies(self):
         """Generates enemies at specified starting location on grid.
 
-        'e' on the grid indicates places for enemies to be generated.
+        'e' on the grid indicates places for normal enemies to be generated.
+        'r' on the grid indicates ploaces for radial attack enemies to be generated.
 
         Returns:
             pygame.Group[Enemy]: a pygame Group of Enemy objects.
@@ -132,6 +133,8 @@ class Level:
             for j in range(x_dim - 1):
                 if grid[i][j] == 'e':
                     enemy_list.add(Enemy.Enemy(((j + 0.5) * square_size, (i + 0.5) * square_size)))
+                elif grid[i][j] == 'r':
+                    enemy_list.add(Enemy.Enemy(((j + 0.5) * square_size, (i + 0.5) * square_size), attack_pattern='radial'))
 
         return enemy_list
 
