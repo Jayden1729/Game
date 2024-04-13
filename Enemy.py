@@ -19,6 +19,7 @@ class Enemy(pygame.sprite.Sprite):
         Args:
             position (List[int]): gives initial position of enemy.
         """
+
         super(Enemy, self).__init__()
         self.rect_size = 40
         self.surf = pygame.Surface((self.rect_size, self.rect_size))
@@ -53,6 +54,7 @@ class Enemy(pygame.sprite.Sprite):
             level (Level): the game level.
             cooldown (int): the cooldown between bullets fired by enemies.
         """
+
         if self.seen_player and self.attack_cooldown == 0:
             level.enemy_bullets.add(
                 Bullet.Bullet(self.rect.x + self.rect_size / 2, self.rect.y + self.rect_size / 2,
@@ -71,9 +73,9 @@ class Enemy(pygame.sprite.Sprite):
         Args:
             level (Level): the game level.
             num_bullets (int): the number of bullets to fire at a time.
-            cooldown (int):
-
+            cooldown (int): number of frames between attacks.
         """
+
         degrees = 360/num_bullets
 
         if self.seen_player and self.attack_cooldown == 0:
@@ -87,6 +89,14 @@ class Enemy(pygame.sprite.Sprite):
             self.attack_cooldown -= 1
 
     def melee_attack(self, level, cooldown):
+        """Melee attack for enemy.
+
+        Attacks the player if it is withing a specified radius of the enemy.
+
+        Args:
+            level (Level): the game level.
+            cooldown (int): number of frames between attacks.
+        """
 
         if self.seen_player and self.attack_cooldown == 0 and self.dist_to_player <= 100:
             attack_direction = self.attack_direction.normalize()*self.rect_size
@@ -206,6 +216,7 @@ class Point:
             position (List[int]), optional: (y, x), position of point on grid
             parent (Point): Point from which this point was generated
         """
+
         self.position = position
         self.actual_cost = 0
         self.parent = parent
@@ -237,8 +248,8 @@ def find_path(grid, start, end):
 
     Raises:
         Exception "NO POSSIBLE PATH": if there is no possible path between the start and end points.
-
     """
+
     to_search = [start]
     searched = np.zeros(np.shape(grid))
 
