@@ -23,8 +23,14 @@ class Enemy(pygame.sprite.Sprite):
         self.rect_size = 40
         self.surf = pygame.Surface((self.rect_size, self.rect_size))
         self.surf.fill((255, 0, 0))
+
+        self.sprite = pygame.image.load("sprites/Bat.gif")
+        self.sprite = pygame.transform.scale(self.sprite, (100, 100))
+
         if attack_pattern == 'radial':
             self.surf.fill((255, 255, 0))
+            self.sprite = pygame.image.load("sprites/Ghost.gif")
+            self.sprite = pygame.transform.scale(self.sprite, (80, 80))
 
         self.rect = self.surf.get_rect(center=position)
         self.speed = 1.5
@@ -78,6 +84,8 @@ class Enemy(pygame.sprite.Sprite):
 
         if self.projectile_cooldown > 0:
             self.projectile_cooldown -= 1
+
+
 
     def attack(self, level, cooldown):
         """Causes enemy attack based on attack pattern.
