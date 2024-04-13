@@ -28,6 +28,7 @@ class Player(pygame.sprite.Sprite):
         self.sprite = pygame.image.load("sprites/Player_sprite.png")
         self.sprite = pygame.transform.scale(self.sprite, (64, 64))
 
+
     def attack(self, player_bullets):
         """Creates a bullet and adds to player_bullets group
 

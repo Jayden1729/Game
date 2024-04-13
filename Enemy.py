@@ -33,14 +33,15 @@ class Enemy(pygame.sprite.Sprite):
             self.sprite = pygame.transform.scale(self.sprite, (80, 80))
 
         self.rect = self.surf.get_rect(center=position)
-        self.speed = 1.5
+        self.speed = 1
         self.hp = hp
 
         self.seen_player = False
-        self.projectile_direction = pygame.math.Vector2(0, 0)
+        self.attack_direction = pygame.math.Vector2(0, 0)
         self.projectile_speed = 2.5
-        self.projectile_cooldown = 0
+        self.attack_cooldown = 0
         self.attack_pattern = attack_pattern
+        self.dist_to_player = 1000
 
     def normal_attack(self, level, cooldown):
         """Creates an enemy bullet when the player is seen by the enemy.
@@ -52,14 +53,14 @@ class Enemy(pygame.sprite.Sprite):
             level (Level): the game level.
             cooldown (int): the cooldown between bullets fired by enemies.
         """
-        if self.seen_player and self.projectile_cooldown == 0:
+        if self.seen_player and self.attack_cooldown == 0:
             level.enemy_bullets.add(
                 Bullet.Bullet(self.rect.x + self.rect_size / 2, self.rect.y + self.rect_size / 2,
-                              self.projectile_direction, self.projectile_speed))
-            self.projectile_cooldown = cooldown
+                              self.attack_direction, self.projectile_speed))
+            self.attack_cooldown = cooldown
 
-        if self.projectile_cooldown > 0:
-            self.projectile_cooldown -= 1
+        if self.attack_cooldown > 0:
+            self.attack_cooldown -= 1
 
     def radial_attack(self, level, num_bullets, cooldown):
         """Radial attack pattern for enemy.
@@ -75,17 +76,28 @@ class Enemy(pygame.sprite.Sprite):
         """
         degrees = 360/num_bullets
 
-        if self.seen_player and self.projectile_cooldown == 0:
+        if self.seen_player and self.attack_cooldown == 0:
             for i in range(num_bullets):
                 level.enemy_bullets.add(
                     Bullet.Bullet(self.rect.x + self.rect_size / 2, self.rect.y + self.rect_size / 2,
                                   pygame.math.Vector2(0, 1).rotate(degrees * i), self.projectile_speed))
-            self.projectile_cooldown = cooldown
+            self.attack_cooldown = cooldown
 
-        if self.projectile_cooldown > 0:
-            self.projectile_cooldown -= 1
+        if self.attack_cooldown > 0:
+            self.attack_cooldown -= 1
 
+    def melee_attack(self, level, cooldown):
 
+        if self.seen_player and self.attack_cooldown == 0 and self.dist_to_player <= 100:
+            attack_direction = self.attack_direction.normalize()*self.rect_size
+            centre_vector = pygame.math.Vector2(self.rect.x + self.rect_size / 2, self.rect.y + self.rect_size / 2)
+            attack_centre = centre_vector + attack_direction
+            level.enemy_melee.add(
+                Bullet.Melee(attack_centre.x, attack_centre.y, 40, 40, 10))
+            self.attack_cooldown = cooldown
+
+        if self.attack_cooldown > 0:
+            self.attack_cooldown -= 1
 
     def attack(self, level, cooldown):
         """Causes enemy attack based on attack pattern.
@@ -101,8 +113,8 @@ class Enemy(pygame.sprite.Sprite):
         elif self.attack_pattern == 'radial':
             self.radial_attack(level, 6, cooldown)
 
-
-
+        elif self.attack_pattern == 'melee':
+            self.melee_attack(level, cooldown)
 
     def update_movement(self, level: Level, player: Player, min_range, max_range):
         """Moves the enemy towards the player
@@ -126,6 +138,7 @@ class Enemy(pygame.sprite.Sprite):
         enemy_vector2 = pygame.math.Vector2(self.rect.x, self.rect.y)
 
         dist_to_player = enemy_vector2.distance_to(player.vector2)
+        self.dist_to_player = dist_to_player
 
         move_direction = pygame.math.Vector2(0, 0)
 
@@ -140,7 +153,7 @@ class Enemy(pygame.sprite.Sprite):
             self.seen_player = False
 
         # Sets projectile direction in straight line to player from enemy
-        self.projectile_direction = move_direction
+        self.attack_direction = move_direction
 
         # Check wall collisions
 

@@ -83,10 +83,21 @@ def main():
 
             if enemy.attack_pattern == 'radial':
                 screen.blit(enemy.sprite, (enemy.rect.x - 16, enemy.rect.y - 16))
+            elif enemy.attack_pattern == 'melee':
+                screen.blit(enemy.surf, enemy.rect)
             else:
                 screen.blit(enemy.sprite, (enemy.rect.x - 32, enemy.rect.y - 20))
 
             enemy.attack(level, 40)
+
+        # Show melee attack hitbox
+        for attack in level.enemy_melee:
+            screen.blit(attack.surf, attack.rect)
+            if pygame.Rect.colliderect(attack.rect, player.rect):
+                level.time -= 100
+            attack.display_time -= 1
+            if attack.display_time <= 0:
+                attack.kill()
 
 
         # Draw and move player bullets + check collisions

@@ -52,6 +52,7 @@ class Level:
         self.origin_coords = pygame.math.Vector2(square_size/2, square_size/2)
         self.player_bullets = pygame.sprite.Group()
         self.enemy_bullets = pygame.sprite.Group()
+        self.enemy_melee = pygame.sprite.Group()
         self.time = 1000
 
     def generate_walls(self):
@@ -116,7 +117,8 @@ class Level:
         """Generates enemies at specified starting location on grid.
 
         'e' on the grid indicates places for normal enemies to be generated.
-        'r' on the grid indicates ploaces for radial attack enemies to be generated.
+        'r' on the grid indicates places for radial attack enemies to be generated.
+        'm' on the grid indicates places for melee attack enemies to be generated.
 
         Returns:
             pygame.Group[Enemy]: a pygame Group of Enemy objects.
@@ -135,6 +137,8 @@ class Level:
                     enemy_list.add(Enemy.Enemy(((j + 0.5) * square_size, (i + 0.5) * square_size), 1))
                 elif grid[i][j] == 'r':
                     enemy_list.add(Enemy.Enemy(((j + 0.5) * square_size, (i + 0.5) * square_size), 2, attack_pattern='radial'))
+                elif grid[i][j] == 'm':
+                    enemy_list.add(Enemy.Enemy(((j + 0.5) * square_size, (i + 0.5) * square_size), 2, attack_pattern='melee'))
 
         return enemy_list
 
