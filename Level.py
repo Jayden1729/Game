@@ -134,11 +134,17 @@ class Level:
         for i in range(y_dim - 1):
             for j in range(x_dim - 1):
                 if grid[i][j] == 'e':
-                    enemy_list.add(Enemy.Enemy(((j + 0.5) * square_size, (i + 0.5) * square_size), 1))
+                    enemy_list.add(
+                        Enemy.Enemy(((j + 0.5) * square_size, (i + 0.5) * square_size), 1))
                 elif grid[i][j] == 'r':
-                    enemy_list.add(Enemy.Enemy(((j + 0.5) * square_size, (i + 0.5) * square_size), 2, attack_pattern='radial'))
+                    enemy_list.add(
+                        Enemy.Enemy(((j + 0.5) * square_size, (i + 0.5) * square_size), 2, attack_pattern='radial'))
                 elif grid[i][j] == 'm':
-                    enemy_list.add(Enemy.Enemy(((j + 0.5) * square_size, (i + 0.5) * square_size), 2, attack_pattern='melee'))
+                    enemy_list.add(
+                        Enemy.Enemy(((j + 0.5) * square_size, (i + 0.5) * square_size), 2, attack_pattern='melee'))
+                elif grid[i][j] == 'x':
+                    enemy_list.add(
+                        Enemy.Enemy(((j + 0.5) * square_size, (i + 0.5) * square_size), 2, attack_pattern='explosion'))
 
         return enemy_list
 

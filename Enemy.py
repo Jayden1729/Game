@@ -34,7 +34,7 @@ class Enemy(pygame.sprite.Sprite):
             self.sprite = pygame.transform.scale(self.sprite, (80, 80))
 
         self.rect = self.surf.get_rect(center=position)
-        self.speed = 1
+        self.speed = 1.5
         self.hp = hp
 
         self.seen_player = False
@@ -109,6 +109,23 @@ class Enemy(pygame.sprite.Sprite):
         if self.attack_cooldown > 0:
             self.attack_cooldown -= 1
 
+    def explosion_attack(self, level):
+        """Explosion attack for enemy.
+
+        When player is within range, the enemy explodes and kills itself.
+
+        Args:
+            level (Level): The game level.
+        """
+
+        if self.seen_player and self.attack_cooldown == 0 and self.dist_to_player <= 50:
+
+            level.enemy_melee.add(
+                Bullet.Melee(self.rect.x, self.rect.y, 150, 150, 200))
+
+            self.kill()
+
+
     def attack(self, level, cooldown):
         """Causes enemy attack based on attack pattern.
 
@@ -125,6 +142,9 @@ class Enemy(pygame.sprite.Sprite):
 
         elif self.attack_pattern == 'melee':
             self.melee_attack(level, cooldown)
+
+        elif self.attack_pattern == 'explosion':
+            self.explosion_attack(level)
 
     def update_movement(self, level: Level, player: Player, min_range, max_range):
         """Moves the enemy towards the player

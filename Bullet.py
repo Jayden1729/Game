@@ -39,5 +39,5 @@ class Melee(pygame.sprite.Sprite):
         self.surf = pygame.Surface((length, width))
         self.rect = self.surf.get_rect(center=(x,y))
         self.damage = damage
-        self.display_time = 10
+        self.display_time = 1
 
