@@ -14,6 +14,7 @@ import pygame
 import csv
 import Player
 import Level
+import Images
 import Bullet
 
 
@@ -30,6 +31,8 @@ def main():
     screen = pygame.display.set_mode((screen_width, screen_height))
     clock = pygame.time.Clock()
     player = Player.Player()
+    images = Images.Images(screen)
+
 
     levels = []
 
@@ -53,6 +56,7 @@ def main():
     while running:
         # Fill screen background
         screen.fill((90, 90, 90))
+        images.display_level_images(level, screen)
 
         # Change Level if all enemies killed
         if not level.enemy_list:
@@ -153,8 +157,8 @@ def move_objects(x, y, level: Level):
     for bullet in level.enemy_bullets:
         bullet.rect.move_ip(x, y)
 
-    level.origin_coords.x += x
-    level.origin_coords.y += y
+    level.origin_coords[0] += x
+    level.origin_coords[1] += y
 
 
 def move_player(level: Level, player: Player, pressed_keys):

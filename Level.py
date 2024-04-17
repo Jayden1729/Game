@@ -9,31 +9,6 @@ import pygame
 import copy
 
 import Enemy
-import Bullet
-
-
-def is_adjacent_wall(grid, element, direction):
-    """Checks if adjacent element in specified direction is a wall in given grid.
-
-    Args:
-        grid (List[List[int,str]]): a 2D list of ints and strings.
-        element (List[int]): a list [x, y], specifying a position within the grid.
-        direction (str): 'right' indicates to check the right adjacent element,
-                         'down' indicates to check the below adjacent element.
-
-    Returns:
-        bool: True if neighbour element in specified direction is int(1), False if not.
-
-    """
-    if element[0] + 1 >= len(grid) or element[1] + 1 >= len(grid[0]):
-        return False
-    if direction == 'right':
-        if grid[element[0]][element[1] + 1] == 1:
-            return True
-    if direction == 'down':
-        if grid[element[0] + 1][element[1]] == 1:
-            return True
-    return False
 
 
 class Level:
@@ -49,7 +24,7 @@ class Level:
         self.square_size = square_size
         self.wall_list = self.generate_walls()
         self.enemy_list = self.generate_enemies()
-        self.origin_coords = pygame.math.Vector2(square_size/2, square_size/2)
+        self.origin_coords = [0, 0]
         self.player_bullets = pygame.sprite.Group()
         self.enemy_bullets = pygame.sprite.Group()
         self.enemy_melee = pygame.sprite.Group()
@@ -64,7 +39,6 @@ class Level:
             List[pygame.Rect]: A list of pygame.Rect objects, matching with the position of walls inputted into new_grid.
 
         """
-
         new_grid = copy.deepcopy(self.grid)
         x_dim = len(new_grid[0])
         y_dim = len(new_grid)
@@ -157,6 +131,7 @@ class Level:
 
         Args:
             screen (pygame.display): the screen to draw bullets on.
+
         """
         for bullet in self.player_bullets:
             bullet.rect.move_ip(bullet.vector.x * bullet.speed, bullet.vector.y * bullet.speed)
@@ -183,6 +158,7 @@ class Level:
         Args:
             screen (pygame.display): the screen to display bullets on.
             player (Player): the player character.
+
         """
         for bullet in self.enemy_bullets:
             bullet.rect.move_ip(bullet.vector.x * bullet.speed, bullet.vector.y * bullet.speed)
@@ -194,3 +170,27 @@ class Level:
                 bullet.kill()
 
             screen.blit(bullet.surf, bullet.rect)
+
+
+def is_adjacent_wall(grid, element, direction):
+    """Checks if adjacent element in specified direction is a wall in given grid.
+
+    Args:
+        grid (List[List[int,str]]): a 2D list of ints and strings.
+        element (List[int]): a list [y, x], specifying a position within the grid.
+        direction (str): 'right' indicates to check the right adjacent element,
+                         'down' indicates to check the below adjacent element.
+
+    Returns:
+        bool: True if neighbour element in specified direction is int(1), False if not.
+
+    """
+    if element[0] + 1 >= len(grid) or element[1] + 1 >= len(grid[0]):
+        return False
+    if direction == 'right':
+        if grid[element[0]][element[1] + 1] == 1:
+            return True
+    if direction == 'down':
+        if grid[element[0] + 1][element[1]] == 1:
+            return True
+    return False

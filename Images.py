@@ -6,7 +6,7 @@ class Images():
 
     def __init__(self, screen):
         self.tileset = pygame.image.load("sprites/TileSet.png")
-        self.tile_dict = self.generate_tile_dict(screen)
+        self.tile_dict = self.generate_tile_dict()
 
     def generate_tile_dict(self):
         """Generates a dictionary with the locations of each type of tile.
@@ -50,24 +50,26 @@ class Images():
 
         single = pygame.Rect((16 * tile_height, 6 * tile_height), (tile_width, tile_height))
 
-        self.tile_dict = {'centre': centre, 'right_centre': right_centre, 'left_centre': left_centre,
-                          'top_centre': top_centre, 'bot_centre': bot_centre, 'top_right_corner': top_right_corner,
-                          'top_left_corner': top_left_corner, 'bot_right_corner': bot_right_corner,
-                          'bot_left_corner': bot_left_corner, 'vertical_centre': vertical_centre,
-                          'horizontal_centre': horizontal_centre, 'bot_end': bot_end, 'top_end': top_end,
-                          'right_end': right_end, 'left_end': left_end, 'single': single}
+        return {'centre': centre, 'right_centre': right_centre, 'left_centre': left_centre,
+                'top_centre': top_centre, 'bot_centre': bot_centre, 'top_right_corner': top_right_corner,
+                'top_left_corner': top_left_corner, 'bot_right_corner': bot_right_corner,
+                'bot_left_corner': bot_left_corner, 'vertical_centre': vertical_centre,
+                'horizontal_centre': horizontal_centre, 'bot_end': bot_end, 'top_end': top_end,
+                'right_end': right_end, 'left_end': left_end, 'single': single}
 
-    def level_images(self, level):
+    def display_level_images(self, level, screen):
 
         new_grid = copy.deepcopy(level.grid)
+        square_size = level.square_size
 
         for i in range(len(new_grid[0])):
             for j in range(len(new_grid)):
                 if new_grid[j][i] == 1:
                     wall_type = get_wall_type([i, j], level.grid)
+                    wall_rect = self.tile_dict[str(wall_type)]
+                    screen.blit(self.tileset, (i * square_size + level.origin_coords[0],
+                                               j * square_size + level.origin_coords[1]), wall_rect)
                     new_grid[j][i] = wall_type
-
-        print(new_grid)
 
 
 def get_wall_type(wall, grid):
