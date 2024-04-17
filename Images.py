@@ -66,17 +66,16 @@ class Images():
             screen (pygame.display): The display window.
         """
 
-        new_grid = copy.deepcopy(level.grid)
         square_size = level.square_size
 
-        for i in range(len(new_grid[0])):
-            for j in range(len(new_grid)):
-                if new_grid[j][i] == 1:
+        for i in range(len(level.grid[0])):
+            for j in range(len(level.grid)):
+                if level.grid[j][i] == 1:
                     wall_type = get_wall_type([i, j], level.grid)
                     wall_rect = self.tile_dict[str(wall_type)]
                     screen.blit(self.tileset, (i * square_size + level.origin_coords[0],
                                                j * square_size + level.origin_coords[1]), wall_rect)
-                    new_grid[j][i] = wall_type
+
 
 
 def get_wall_type(wall, grid):
