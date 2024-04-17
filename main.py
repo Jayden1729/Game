@@ -25,13 +25,14 @@ def main():
     # Variables
     screen_width = 800
     screen_height = 800
+    square_size = 40
     fps = 75
 
     # Setup initial objects
     screen = pygame.display.set_mode((screen_width, screen_height))
     clock = pygame.time.Clock()
     player = Player.Player()
-    images = Images.Images(screen)
+    images = Images.Images(square_size)
 
 
     levels = []
@@ -45,7 +46,7 @@ def main():
                 for j in range(len(game_grid[0])):
                     if game_grid[i][j] == '1':
                         game_grid[i][j] = 1
-            levels.append(Level.Level(game_grid, 40))
+            levels.append(Level.Level(game_grid, square_size))
 
     level = levels[0]
     current_level = 1
@@ -56,7 +57,7 @@ def main():
     while running:
         # Fill screen background
         screen.fill((90, 90, 90))
-        images.display_level_images(level, screen)
+        images.display_wall_images(level, screen)
 
         # Change Level if all enemies killed
         if not level.enemy_list:
@@ -76,10 +77,6 @@ def main():
             # Check if player is attacking
             elif (event.type == pygame.MOUSEBUTTONDOWN or pressed_keys[pygame.K_SPACE]) and player.attack_cooldown == 0:
                 player.attack(level.player_bullets)
-
-        # Draw walls on screen
-        for wall in level.wall_list:
-            pygame.draw.rect(screen, (0, 150, 0), wall)
 
         # Determine enemy movement and draw them on screen
         for enemy in level.enemy_list:

@@ -1,22 +1,23 @@
 import pygame
 import copy
+import Level
 
 
 class Images():
 
-    def __init__(self, screen):
-        self.tileset = pygame.image.load("sprites/TileSet.png")
-        self.tile_dict = self.generate_tile_dict()
+    def __init__(self, square_size):
+        tile_images = pygame.image.load("sprites/TileSet.png")
+        self.tileset = pygame.transform.scale(tile_images, (square_size * 30, square_size * 17))
+        self.tile_dict = self.generate_tile_dict(square_size)
 
-    def generate_tile_dict(self):
+    def generate_tile_dict(self, square_size):
         """Generates a dictionary with the locations of each type of tile.
 
         Takes the tileset and sets self.tile_dict to a dictionary containing rects with the location of each type of
         tile in the tileset.
         """
-        tile_width = self.tileset.get_width() / 30
-        tile_height = self.tileset.get_height() / 17
-        print(tile_height, tile_width)
+        tile_width = square_size
+        tile_height = square_size
 
         centre = pygame.Rect((11 * tile_height, 7 * tile_height), (tile_width, tile_height))
 
@@ -57,7 +58,13 @@ class Images():
                 'horizontal_centre': horizontal_centre, 'bot_end': bot_end, 'top_end': top_end,
                 'right_end': right_end, 'left_end': left_end, 'single': single}
 
-    def display_level_images(self, level, screen):
+    def display_wall_images(self, level: Level, screen):
+        """Displays walls on the screen.
+
+        Args:
+            level (Level): The game level.
+            screen (pygame.display): The display window.
+        """
 
         new_grid = copy.deepcopy(level.grid)
         square_size = level.square_size
