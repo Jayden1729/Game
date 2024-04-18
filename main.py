@@ -10,12 +10,13 @@ constants: CAPITAL_CASE
 
 """
 
-import pygame
 import csv
-import Player
-import Level
+
+import pygame
+
 import Images
-import Bullet
+import Level
+import Player
 
 
 def main():
@@ -25,8 +26,8 @@ def main():
     # Variables
     screen_width = 800
     screen_height = 800
-    square_size = 40
-    fps = 75
+    square_size = 55
+    fps = 90
 
     # Setup initial objects
     screen = pygame.display.set_mode((screen_width, screen_height))
@@ -56,8 +57,9 @@ def main():
     # Game Loop
     while running:
         # Fill screen background
-        screen.fill((90, 90, 90))
+        screen.fill((0, 0, 0))
         images.display_wall_images(level, screen)
+        images.display_floor_images(level, screen)
 
         # Change Level if all enemies killed
         if not level.enemy_list:
@@ -131,6 +133,7 @@ def main():
 
         pygame.display.flip()
         clock.tick(fps)
+        print(clock.get_fps())
 
     pygame.quit()
 

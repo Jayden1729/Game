@@ -1,6 +1,7 @@
 import pygame
 import copy
 import Level
+import random
 
 
 class Images():
@@ -16,47 +17,42 @@ class Images():
         Takes the tileset and sets self.tile_dict to a dictionary containing rects with the location of each type of
         tile in the tileset.
         """
-        tile_width = square_size
-        tile_height = square_size
 
-        centre = pygame.Rect((11 * tile_height, 7 * tile_height), (tile_width, tile_height))
+        centre = pygame.Rect((11 * square_size, 7 * square_size), (square_size, square_size))
 
-        right_centre = pygame.Rect((12 * tile_height, 7 * tile_height), (tile_width, tile_height))
+        right_centre = pygame.Rect((12 * square_size, 7 * square_size), (square_size, square_size))
+        left_centre = pygame.Rect((10 * square_size, 7 * square_size), (square_size, square_size))
+        top_centre = pygame.Rect((11 * square_size, 6 * square_size), (square_size, square_size))
+        bot_centre = pygame.Rect((11 * square_size, 8 * square_size), (square_size, square_size))
 
-        left_centre = pygame.Rect((10 * tile_height, 7 * tile_height), (tile_width, tile_height))
+        top_right_corner = pygame.Rect((12 * square_size, 6 * square_size), (square_size, square_size))
+        top_left_corner = pygame.Rect((10 * square_size, 6 * square_size), (square_size, square_size))
+        bot_right_corner = pygame.Rect((12 * square_size, 8 * square_size), (square_size, square_size))
+        bot_left_corner = pygame.Rect((10 * square_size, 8 * square_size), (square_size, square_size))
 
-        top_centre = pygame.Rect((11 * tile_height, 6 * tile_height), (tile_width, tile_height))
+        vertical_centre = pygame.Rect((14 * square_size, 7 * square_size), (square_size, square_size))
+        horizontal_centre = pygame.Rect((17 * square_size, 8 * square_size), (square_size, square_size))
 
-        bot_centre = pygame.Rect((11 * tile_height, 8 * tile_height), (tile_width, tile_height))
+        bot_end = pygame.Rect((14 * square_size, 8 * square_size), (square_size, square_size))
+        top_end = pygame.Rect((14 * square_size, 6 * square_size), (square_size, square_size))
+        right_end = pygame.Rect((18 * square_size, 8 * square_size), (square_size, square_size))
+        left_end = pygame.Rect((16 * square_size, 8 * square_size), (square_size, square_size))
 
-        top_right_corner = pygame.Rect((12 * tile_height, 6 * tile_height), (tile_width, tile_height))
+        single = pygame.Rect((16 * square_size, 6 * square_size), (square_size, square_size))
 
-        top_left_corner = pygame.Rect((10 * tile_height, 6 * tile_height), (tile_width, tile_height))
-
-        bot_right_corner = pygame.Rect((12 * tile_height, 8 * tile_height), (tile_width, tile_height))
-
-        bot_left_corner = pygame.Rect((10 * tile_height, 8 * tile_height), (tile_width, tile_height))
-
-        vertical_centre = pygame.Rect((14 * tile_height, 7 * tile_height), (tile_width, tile_height))
-
-        horizontal_centre = pygame.Rect((17 * tile_height, 8 * tile_height), (tile_width, tile_height))
-
-        bot_end = pygame.Rect((14 * tile_height, 8 * tile_height), (tile_width, tile_height))
-
-        top_end = pygame.Rect((14 * tile_height, 6 * tile_height), (tile_width, tile_height))
-
-        right_end = pygame.Rect((18 * tile_height, 8 * tile_height), (tile_width, tile_height))
-
-        left_end = pygame.Rect((16 * tile_height, 8 * tile_height), (tile_width, tile_height))
-
-        single = pygame.Rect((16 * tile_height, 6 * tile_height), (tile_width, tile_height))
+        floor_0 = pygame.Rect((3 * square_size, 12 * square_size), (square_size, square_size))
+        floor_1 = pygame.Rect((3 * square_size, 10 * square_size), (square_size, square_size))
+        floor_2 = pygame.Rect((4 * square_size, 10 * square_size), (square_size, square_size))
+        floor_3 = pygame.Rect((3 * square_size, 11 * square_size), (square_size, square_size))
+        floor_4 = pygame.Rect((4 * square_size, 11 * square_size), (square_size, square_size))
 
         return {'centre': centre, 'right_centre': right_centre, 'left_centre': left_centre,
                 'top_centre': top_centre, 'bot_centre': bot_centre, 'top_right_corner': top_right_corner,
                 'top_left_corner': top_left_corner, 'bot_right_corner': bot_right_corner,
                 'bot_left_corner': bot_left_corner, 'vertical_centre': vertical_centre,
                 'horizontal_centre': horizontal_centre, 'bot_end': bot_end, 'top_end': top_end,
-                'right_end': right_end, 'left_end': left_end, 'single': single}
+                'right_end': right_end, 'left_end': left_end, 'single': single, 'floor_0': floor_0, 'floor_1': floor_1,
+                'floor_2': floor_2, 'floor_3': floor_3, 'floor_4': floor_4}
 
     def display_wall_images(self, level: Level, screen):
         """Displays walls on the screen.
@@ -76,6 +72,25 @@ class Images():
                     screen.blit(self.tileset, (i * square_size + level.origin_coords[0],
                                                j * square_size + level.origin_coords[1]), wall_rect)
 
+
+
+    def display_floor_images(self, level: Level, screen):
+        """Displays floor images on the screen.
+
+        Args:
+            level (Level): The game level.
+            screen (pygame.display): The display window.
+        """
+
+        square_size = level.square_size
+
+        for i in range(len(level.floor_image_grid[0])):
+            for j in range(len(level.floor_image_grid)):
+                value = level.floor_image_grid[j][i]
+                if value != ('n'):
+                    floor_rect = self.tile_dict[str('floor_' + str(value))]
+                    screen.blit(self.tileset, (i * square_size + level.origin_coords[0],
+                                               j * square_size + level.origin_coords[1]), floor_rect)
 
 
 def get_wall_type(wall, grid):

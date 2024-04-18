@@ -7,6 +7,7 @@ Created on Sat Mar 30 21:24:03 2024
 
 import pygame
 import copy
+import random
 
 import Enemy
 
@@ -21,6 +22,7 @@ class Level:
             square_size (int): the grid square size (in pixels) to be displayed on the screen.
         """
         self.grid = grid
+        self.floor_image_grid = randomise_floor_grid(copy.deepcopy(grid))
         self.square_size = square_size
         self.wall_list = self.generate_walls()
         self.enemy_list = self.generate_enemies()
@@ -194,3 +196,28 @@ def is_adjacent_wall(grid, element, direction):
         if grid[element[0] + 1][element[1]] == 1:
             return True
     return False
+
+
+def randomise_floor_grid(grid):
+    """Randomises the floor tiles in the grid.
+
+    For each floor tile, a number between 0 and 4 is chosen, corresponding to the type of floor tile to be displayed.
+
+    Args:
+        grid (List[List[int and str]]): The level grid.
+
+    Returns:
+        List[List[int and str]]: a 2d list containing ints and strings. A value of 'n' indicates a square with no floor
+            tile, while a value between 0 and 4 corresponds to the type of floor tile to be displayed on the screen.
+
+    """
+    for i in range(len(grid)):
+        for j in range(len(grid[0])):
+            if grid[i][j] == '0':
+                grid[i][j] = 'n'
+            elif grid[i][j] != 1:
+                grid[i][j] = random.choices([0, 1, 2, 3, 4], [72, 7, 7, 7, 7])[0]
+            else:
+                grid[i][j] = 'n'
+
+    return grid
