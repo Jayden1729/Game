@@ -13,7 +13,7 @@ import Player
 
 class Enemy(pygame.sprite.Sprite):
 
-    def __init__(self, position, hp, attack_pattern='normal'):
+    def __init__(self, position, hp, speed, attack_pattern):
         """Initialises an instance of the Enemy class.
 
         Args:
@@ -34,15 +34,15 @@ class Enemy(pygame.sprite.Sprite):
             self.sprite = pygame.transform.scale(self.sprite, (80, 80))
 
         self.rect = self.surf.get_rect(center=position)
-        self.speed = 1.5
+        self.speed = speed
         self.hp = hp
 
         self.seen_player = False
         self.attack_direction = pygame.math.Vector2(0, 0)
         self.projectile_speed = 2.5
         self.attack_cooldown = 0
-        self.attack_pattern = attack_pattern
         self.dist_to_player = 1000
+        self.attack_pattern = attack_pattern
 
     def normal_attack(self, level, cooldown):
         """Creates an enemy bullet when the player is seen by the enemy.
@@ -224,3 +224,55 @@ class Enemy(pygame.sprite.Sprite):
 
                 elif enemy_y < (wall_y + wall_height) < (enemy_y + enemy_height):
                     self.rect.move_ip(0, (wall_y + wall_height - enemy_y))
+
+
+class NormalEnemy(Enemy):
+
+    def __init__(self, position):
+        """Creates a normal enemy.
+
+        Args:
+            position (List[int]): the position [x, y] to spawn the enemy.
+        """
+        self.speed = 1.5
+        self.hp = 1
+        super(NormalEnemy, self).__init__(position, self.hp, self.speed, 'normal')
+
+
+class RadialEnemy(Enemy):
+
+    def __init__(self, position):
+        """Creates a radial enemy.
+
+        Args:
+            position (List[int]): the position [x, y] to spawn the enemy.
+        """
+        self.speed = 1.5
+        self.hp = 2
+        super(RadialEnemy, self).__init__(position, self.hp, self.speed, 'radial')
+
+
+class MeleeEnemy(Enemy):
+
+    def __init__(self, position, ):
+        """Creates a melee enemy.
+
+        Args:
+            position (List[int]): the position [x, y] to spawn the enemy.
+        """
+        self.speed = 2.5
+        self.hp = 2
+        super(MeleeEnemy, self).__init__(position, self.hp, self.speed, 'melee')
+
+
+class ExplosionEnemy(Enemy):
+
+    def __init__(self, position):
+        """Creates an explosion enemy.
+
+        Args:
+            position (List[int]): the position [x, y] to spawn the enemy.
+        """
+        self.speed = 3
+        self.hp = 3
+        super(ExplosionEnemy, self).__init__(position, self.hp, self.speed, 'explosion')
