@@ -26,7 +26,7 @@ def main():
     # Variables
     screen_width = 800
     screen_height = 800
-    square_size = 55
+    square_size = 50
     fps = 90
 
     # Setup initial objects
@@ -35,12 +35,11 @@ def main():
     player = Player.Player()
     images = Images.Images(square_size)
 
-
     levels = []
 
     # Import levels
     for i in range(5):
-        with open('Level_'+ str(i + 1) +'.csv') as csvfile:
+        with open('Level_' + str(i + 1) + '.csv') as csvfile:
             reader = csv.reader(csvfile)
             game_grid = list(reader)
             for i in range(len(game_grid)):
@@ -88,6 +87,9 @@ def main():
                 screen.blit(enemy.sprite, (enemy.rect.x - 16, enemy.rect.y - 16))
             elif enemy.attack_pattern == 'melee':
                 screen.blit(enemy.surf, enemy.rect)
+            elif enemy.attack_pattern == 'explosion':
+                screen.blit(enemy.surf, enemy.rect)
+                enemy.animate(images, screen)
             else:
                 screen.blit(enemy.sprite, (enemy.rect.x - 32, enemy.rect.y - 20))
 
@@ -101,7 +103,6 @@ def main():
             attack.display_time -= 1
             if attack.display_time <= 0:
                 attack.kill()
-
 
         # Draw and move player bullets + check collisions
         level.update_player_bullets(screen)
@@ -125,7 +126,7 @@ def main():
         if level.time > 1000:
             level.time = 1000
 
-        time_surf = pygame.Surface((level.time/2, 20))
+        time_surf = pygame.Surface((level.time / 2, 20))
         timer = time_surf.get_rect(center=(400, 30))
         pygame.draw.rect(screen, (0, 0, 100), timer)
 
@@ -136,6 +137,7 @@ def main():
         print(clock.get_fps())
 
     pygame.quit()
+
 
 def move_objects(x, y, level: Level):
     """Moves all walls and enemies in the level by (x,y)

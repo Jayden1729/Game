@@ -4,12 +4,21 @@ import Level
 import random
 
 
-class Images():
+class Images:
 
     def __init__(self, square_size):
+
+        # Tileset for background
         tile_images = pygame.image.load("sprites/TileSet.png")
         self.tileset = pygame.transform.scale(tile_images, (square_size * 30, square_size * 17))
         self.tile_dict = self.generate_tile_dict(square_size)
+
+        # Explosion enemy images
+        self.explosion_enemy_run = pygame.transform.scale2x(pygame.image.load("sprites/Droid Zapper/run.png"))
+        self.ex_enemy_run_list = extract_sprite_animations(self.explosion_enemy_run, 6)
+        self.explosion_enemy_death = pygame.image.load("sprites/Droid Zapper/damaged and death.png")
+        self.ex_enemy_death_list = extract_sprite_animations(self.explosion_enemy_death, 8)
+
 
     def generate_tile_dict(self, square_size):
         """Generates a dictionary with the locations of each type of tile.
@@ -72,8 +81,6 @@ class Images():
                     screen.blit(self.tileset, (i * square_size + level.origin_coords[0],
                                                j * square_size + level.origin_coords[1]), wall_rect)
 
-
-
     def display_floor_images(self, level: Level, screen):
         """Displays floor images on the screen.
 
@@ -132,7 +139,7 @@ def get_wall_type(wall, grid):
     if grid[y + 1][x] == 1:
         bot = True
 
-    # Determine correct wall image
+    # Determine wall type
 
     if top and bot and left and right:
         return 'centre'
@@ -166,3 +173,27 @@ def get_wall_type(wall, grid):
         return 'left_end'
 
     return 'single'
+
+
+def extract_sprite_animations(image_set, num_frames):
+    """Extracts individual animation frames from png containing animation frames.
+
+    Args:
+        image_set (.png): a png file containing the frames of animation in a vertical arrangement.
+        num_frames (int): the number of frames in the full animation.
+
+    Returns:
+        List[pygame.Rect]: a list of pygame.Rect objects that specify the location of each frame of the animation in the
+            image_set.
+
+    """
+    image_width = image_set.get_width()
+    image_height = image_set.get_height()
+    frame_height = image_height / num_frames
+
+    frame_list = []
+
+    for i in range(num_frames):
+        frame_list.append(pygame.Rect((0, frame_height * (i - 1)), (image_width, frame_height)))
+
+    return frame_list
