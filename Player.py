@@ -42,19 +42,3 @@ class Player(pygame.sprite.Sprite):
 
         player_bullets.add(Bullet.Bullet(400, 400, bullet_vector, self.projectile_speed))
         self.attack_cooldown = 20
-
-    def update_grid_location(self, level: Level):
-        """Finds the coordinates of the player on the level grid.
-
-        Sets the self.grid_x and self.grid_y parameters to the grid coordinates of the player
-
-        Args:
-            level (Level): the game level
-        """
-        vec_origin = level.origin_coords - self.vector2
-
-        grid_y = -round(vec_origin.y / level.square_size)
-        grid_x = -round(vec_origin.x / level.square_size)
-
-        self.grid_x = grid_x
-        self.grid_y = grid_y
