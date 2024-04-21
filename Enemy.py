@@ -269,10 +269,10 @@ class NormalEnemy(Enemy):
             left_offset = [0, 10]
             right_offset = [20, 10]
 
+            self.run_animation(death_images, death_frames, screen, left_offset, right_offset)
+
             if self.animation_frame >= len(death_frames):
                 self.kill()
-
-            self.run_animation(death_images, death_frames, screen, left_offset, right_offset)
 
         elif self.seen_player:
             run_images = images.normal_enemy_run
@@ -315,10 +315,10 @@ class RadialEnemy(Enemy):
             left_offset = [5, 205]
             right_offset = [10, 205]
 
+            self.run_animation(death_images, death_frames, screen, left_offset, right_offset)
+
             if self.animation_frame >= len(death_frames):
                 self.kill()
-
-            self.run_animation(death_images, death_frames, screen, left_offset, right_offset)
 
         elif self.seen_player:
             run_images = images.radial_enemy_run
@@ -361,10 +361,10 @@ class MeleeEnemy(Enemy):
             left_offset = [28, 23]
             right_offset = [10, 23]
 
+            self.run_animation(death_images, death_frames, screen, left_offset, right_offset)
+
             if self.animation_frame >= len(death_frames):
                 self.kill()
-
-            self.run_animation(death_images, death_frames, screen, left_offset, right_offset)
 
         elif self.seen_player:
             run_images = images.melee_enemy_run
@@ -419,10 +419,10 @@ class ExplosionEnemy(Enemy):
             left_offset = [60, 30]
             right_offset = [5, 40]
 
+            self.run_animation(death_images, death_frames, screen, left_offset, right_offset)
+
             if self.animation_frame >= len(death_frames):
                 self.kill()
-
-            self.run_animation(death_images, death_frames, screen, left_offset, right_offset)
 
         # Running animation
         elif self.seen_player:
