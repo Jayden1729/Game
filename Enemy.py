@@ -234,10 +234,39 @@ class NormalEnemy(Enemy):
         Args:
             position (List[int]): the position [x, y] to spawn the enemy.
         """
+        self.run_frame = 0
+        self.frame_break = 0
         self.speed = 1.5
         self.hp = 1
         super(NormalEnemy, self).__init__(position, self.hp, self.speed, 'normal')
 
+    def animate(self, images, screen):
+        """Animates the radial enemy.
+
+        Args:
+            images (Images): Images class, contains the images to display.
+            screen (pygame.display): the game screen.
+        """
+        if self.seen_player:
+            run_images = images.normal_enemy_run
+            run_frames = images.nor_enemy_run_list
+
+            if self.run_frame >= len(run_frames):
+                self.run_frame = 1
+
+            if self.attack_direction.x <= 0:
+                run_images = pygame.transform.flip(run_images, True, False)
+                screen.blit(run_images, (self.rect.x, self.rect.y),
+                            run_frames[self.run_frame])
+            else:
+                screen.blit(run_images, (self.rect.x, self.rect.y),
+                            run_frames[self.run_frame])
+
+            if self.frame_break == 0:
+                self.run_frame += 1
+                self.frame_break = 15
+            else:
+                self.frame_break -= 1
 
 class RadialEnemy(Enemy):
 
@@ -290,10 +319,39 @@ class MeleeEnemy(Enemy):
         Args:
             position (List[int]): the position [x, y] to spawn the enemy.
         """
+        self.run_frame = 0
+        self.frame_break = 0
         self.speed = 2.5
         self.hp = 2
         super(MeleeEnemy, self).__init__(position, self.hp, self.speed, 'melee')
 
+    def animate(self, images, screen):
+        """Animates the radial enemy.
+
+        Args:
+            images (Images): Images class, contains the images to display.
+            screen (pygame.display): the game screen.
+        """
+        if self.seen_player:
+            run_images = images.melee_enemy_run
+            run_frames = images.mel_enemy_run_list
+
+            if self.run_frame >= len(run_frames):
+                self.run_frame = 1
+
+            if self.attack_direction.x <= 0:
+                run_images = pygame.transform.flip(run_images, True, False)
+                screen.blit(run_images, (self.rect.x, self.rect.y),
+                            run_frames[self.run_frame])
+            else:
+                screen.blit(run_images, (self.rect.x, self.rect.y),
+                            run_frames[self.run_frame])
+
+            if self.frame_break == 0:
+                self.run_frame += 1
+                self.frame_break = 15
+            else:
+                self.frame_break -= 1
 
 class ExplosionEnemy(Enemy):
 

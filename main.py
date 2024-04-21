@@ -88,11 +88,13 @@ def main():
                 enemy.animate(images, screen)
             elif enemy.attack_pattern == 'melee':
                 screen.blit(enemy.surf, enemy.rect)
+                enemy.animate(images, screen)
             elif enemy.attack_pattern == 'explosion':
                 screen.blit(enemy.surf, enemy.rect)
                 enemy.animate(images, screen)
             else:
-                screen.blit(enemy.sprite, (enemy.rect.x - 32, enemy.rect.y - 20))
+                screen.blit(enemy.surf, enemy.rect)
+                enemy.animate(images, screen)
 
             enemy.attack(level, 40)
 
