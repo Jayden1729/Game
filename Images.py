@@ -15,27 +15,31 @@ class Images:
 
         # Normal enemy images
         self.normal_enemy_run = pygame.transform.scale2x(pygame.image.load("sprites/Bot Wheel/move with FX.png"))
-        self.nor_enemy_run_list = extract_sprite_animations(self.normal_enemy_run, 8)
+        self.nor_enemy_run_list = extract_sprite_animations_vertical(self.normal_enemy_run, 8)
         self.normal_enemy_death = pygame.image.load("sprites/Bot Wheel/death.png")
-        self.nor_enemy_death_list = extract_sprite_animations(self.normal_enemy_death, 6)
+        self.nor_enemy_death_list = extract_sprite_animations_vertical(self.normal_enemy_death, 6)
 
         # Radial enemy images
         self.radial_enemy_run = pygame.transform.scale2x(pygame.image.load("sprites/stormhead/run.png"))
-        self.rad_enemy_run_list = extract_sprite_animations(self.radial_enemy_run, 10)
+        self.rad_enemy_run_list = extract_sprite_animations_vertical(self.radial_enemy_run, 10)
         self.radial_enemy_death = pygame.image.load("sprites/stormhead/death.png")
-        self.rad_enemy_death_list = extract_sprite_animations(self.radial_enemy_death, 7)
+        self.rad_enemy_death_list = extract_sprite_animations_vertical(self.radial_enemy_death, 7)
 
         # Melee enemy images
         self.melee_enemy_run = pygame.transform.scale(pygame.image.load("sprites/Mud Guard/Run.png"), (78, 414))
-        self.mel_enemy_run_list = extract_sprite_animations(self.melee_enemy_run, 6)
+        self.mel_enemy_run_list = extract_sprite_animations_vertical(self.melee_enemy_run, 6)
         self.melee_enemy_death = pygame.image.load("sprites/Mud Guard/damaged and death.png")
-        self.mel_enemy_death_list = extract_sprite_animations(self.melee_enemy_death, 8)
+        self.mel_enemy_death_list = extract_sprite_animations_vertical(self.melee_enemy_death, 8)
 
         # Explosion enemy images
         self.explosion_enemy_run = pygame.transform.scale2x(pygame.image.load("sprites/Droid Zapper/run.png"))
-        self.ex_enemy_run_list = extract_sprite_animations(self.explosion_enemy_run, 6)
+        self.ex_enemy_run_list = extract_sprite_animations_vertical(self.explosion_enemy_run, 6)
         self.explosion_enemy_death = pygame.image.load("sprites/Droid Zapper/damaged and death.png")
-        self.ex_enemy_death_list = extract_sprite_animations(self.explosion_enemy_death, 8)
+        self.ex_enemy_death_list = extract_sprite_animations_vertical(self.explosion_enemy_death, 8)
+
+        # Explosion images
+        self.explosion_images = pygame.image.load("sprites/explosion-4.png")
+        self.explosion_list = extract_sprite_animations_horizontal(self.explosion_images, 12)
 
 
     def generate_tile_dict(self, square_size):
@@ -193,8 +197,8 @@ def get_wall_type(wall, grid):
     return 'single'
 
 
-def extract_sprite_animations(image_set, num_frames):
-    """Extracts individual animation frames from png containing animation frames.
+def extract_sprite_animations_vertical(image_set, num_frames):
+    """Extracts individual animation frames from png containing animation frames arranged vertically.
 
     Args:
         image_set (.png): a png file containing the frames of animation in a vertical arrangement.
@@ -213,5 +217,28 @@ def extract_sprite_animations(image_set, num_frames):
 
     for i in range(num_frames):
         frame_list.append(pygame.Rect((0, frame_height * (i - 1)), (image_width, frame_height)))
+
+    return frame_list
+
+def extract_sprite_animations_horizontal(image_set, num_frames):
+    """Extracts individual animation frames from png containing animation frames arranged horizontally.
+
+    Args:
+        image_set (.png): a png file containing the frames of animation in a horizontal arrangement.
+        num_frames (int): the number of frames in the full animation.
+
+    Returns:
+        List[pygame.Rect]: a list of pygame.Rect objects that specify the location of each frame of the animation in the
+            image_set.
+
+    """
+    image_width = image_set.get_width()
+    image_height = image_set.get_height()
+    frame_width = image_width / num_frames
+
+    frame_list = []
+
+    for i in range(num_frames):
+        frame_list.append(pygame.Rect((frame_width * (i - 1), 0), (frame_width, image_height)))
 
     return frame_list
