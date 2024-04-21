@@ -16,25 +16,27 @@ class Images:
         # Normal enemy images
         self.normal_enemy_run = pygame.transform.scale2x(pygame.image.load("sprites/Bot Wheel/move with FX.png"))
         self.nor_enemy_run_list = extract_sprite_animations_vertical(self.normal_enemy_run, 8)
-        self.normal_enemy_death = pygame.image.load("sprites/Bot Wheel/death.png")
+        self.normal_enemy_death = pygame.transform.scale2x(pygame.image.load("sprites/Bot Wheel/death.png"))
         self.nor_enemy_death_list = extract_sprite_animations_vertical(self.normal_enemy_death, 6)
 
         # Radial enemy images
         self.radial_enemy_run = pygame.transform.scale2x(pygame.image.load("sprites/stormhead/run.png"))
         self.rad_enemy_run_list = extract_sprite_animations_vertical(self.radial_enemy_run, 10)
-        self.radial_enemy_death = pygame.image.load("sprites/stormhead/death.png")
-        self.rad_enemy_death_list = extract_sprite_animations_vertical(self.radial_enemy_death, 7)
+        self.radial_enemy_death = pygame.transform.scale2x(pygame.image.load("sprites/stormhead/death.png"))
+        self.rad_enemy_death_list = extract_sprite_animations_vertical(self.radial_enemy_death, 9)
 
         # Melee enemy images
         self.melee_enemy_run = pygame.transform.scale(pygame.image.load("sprites/Mud Guard/Run.png"), (78, 414))
         self.mel_enemy_run_list = extract_sprite_animations_vertical(self.melee_enemy_run, 6)
-        self.melee_enemy_death = pygame.image.load("sprites/Mud Guard/damaged and death.png")
+        self.melee_enemy_death = pygame.transform.scale(
+            pygame.image.load("sprites/Mud Guard/damaged and death.png"), (45 * 3, 183 * 3))
         self.mel_enemy_death_list = extract_sprite_animations_vertical(self.melee_enemy_death, 8)
 
         # Explosion enemy images
         self.explosion_enemy_run = pygame.transform.scale2x(pygame.image.load("sprites/Droid Zapper/run.png"))
         self.ex_enemy_run_list = extract_sprite_animations_vertical(self.explosion_enemy_run, 6)
-        self.explosion_enemy_death = pygame.image.load("sprites/Droid Zapper/damaged and death.png")
+        self.explosion_enemy_death = pygame.transform.scale2x(
+            pygame.image.load("sprites/Droid Zapper/damaged and death.png"))
         self.ex_enemy_death_list = extract_sprite_animations_vertical(self.explosion_enemy_death, 8)
 
         # Explosion images
@@ -120,7 +122,6 @@ class Images:
                     floor_rect = self.tile_dict[str('floor_' + str(value))]
                     screen.blit(self.tileset, (i * square_size + level.origin_coords[0],
                                                j * square_size + level.origin_coords[1]), floor_rect)
-
 
 def get_wall_type(wall, grid):
     """Determines the type of wall connector to display.

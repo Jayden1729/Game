@@ -33,7 +33,7 @@ class Enemy(pygame.sprite.Sprite):
         self.hp = hp
 
         self.seen_player = False
-        self.is_dead = False
+        self.has_exploded = False
 
         self.attack_direction = pygame.math.Vector2(0, 0)
         self.projectile_speed = 2.5
@@ -115,13 +115,12 @@ class Enemy(pygame.sprite.Sprite):
             level (Level): The game level.
         """
 
-        if self.seen_player and self.attack_cooldown == 0 and self.dist_to_player <= 50 and not self.is_dead:
+        if self.seen_player and self.attack_cooldown == 0 and self.dist_to_player <= 50 and not self.has_exploded:
             level.enemy_melee.add(
                 Bullet.Melee(self.rect.x, self.rect.y, 150, 150, 200))
 
-            self.animation_frame = 0
-            self.frame_break = 0
-            self.is_dead = True
+            self.set_death_conditions()
+            self.has_exploded = True
 
     def update_movement(self, level: Level, player: Player, min_range, max_range):
         """Moves the enemy towards the player
@@ -234,6 +233,14 @@ class Enemy(pygame.sprite.Sprite):
         else:
             self.frame_break -= 1
 
+    def set_death_conditions(self):
+        """Changes the conditions of the enemy when it dies, so that player attacks don't collide, and it cannot move.
+        """
+        self.animation_frame = 0
+        self.frame_break = 0
+        self.speed = 0
+        self.rect = pygame.Rect(self.rect.x, self.rect.y, 0, 0)
+
 
 class NormalEnemy(Enemy):
 
@@ -255,7 +262,19 @@ class NormalEnemy(Enemy):
             images (Images): Images class, contains the images to display.
             screen (pygame.display): the game screen.
         """
-        if self.seen_player:
+        if self.hp == 0:
+            death_images = images.normal_enemy_death
+            death_frames = images.nor_enemy_death_list
+
+            left_offset = [0, 10]
+            right_offset = [20, 10]
+
+            if self.animation_frame >= len(death_frames):
+                self.kill()
+
+            self.run_animation(death_images, death_frames, screen, left_offset, right_offset)
+
+        elif self.seen_player:
             run_images = images.normal_enemy_run
             run_frames = images.nor_enemy_run_list
 
@@ -265,7 +284,8 @@ class NormalEnemy(Enemy):
             self.run_animation(run_images, run_frames, screen, left_offset, right_offset)
 
     def attack(self, level):
-        self.normal_attack(level, self.cooldown)
+        if self.hp > 0:
+            self.normal_attack(level, self.cooldown)
 
 
 class RadialEnemy(Enemy):
@@ -288,7 +308,19 @@ class RadialEnemy(Enemy):
             images (Images): Images class, contains the images to display.
             screen (pygame.display): the game screen.
         """
-        if self.seen_player:
+        if self.hp == 0:
+            death_images = images.radial_enemy_death
+            death_frames = images.rad_enemy_death_list
+
+            left_offset = [5, 205]
+            right_offset = [10, 205]
+
+            if self.animation_frame >= len(death_frames):
+                self.kill()
+
+            self.run_animation(death_images, death_frames, screen, left_offset, right_offset)
+
+        elif self.seen_player:
             run_images = images.radial_enemy_run
             run_frames = images.rad_enemy_run_list
 
@@ -298,7 +330,8 @@ class RadialEnemy(Enemy):
             self.run_animation(run_images, run_frames, screen, left_offset, right_offset)
 
     def attack(self, level):
-        self.radial_attack(level, 6, self.cooldown)
+        if self.hp > 0:
+            self.radial_attack(level, 6, self.cooldown)
 
 
 class MeleeEnemy(Enemy):
@@ -321,17 +354,30 @@ class MeleeEnemy(Enemy):
             images (Images): Images class, contains the images to display.
             screen (pygame.display): the game screen.
         """
-        if self.seen_player:
+        if self.hp == 0:
+            death_images = images.melee_enemy_death
+            death_frames = images.mel_enemy_death_list
+
+            left_offset = [28, 23]
+            right_offset = [10, 23]
+
+            if self.animation_frame >= len(death_frames):
+                self.kill()
+
+            self.run_animation(death_images, death_frames, screen, left_offset, right_offset)
+
+        elif self.seen_player:
             run_images = images.melee_enemy_run
             run_frames = images.mel_enemy_run_list
 
-            left_offset = [28, 23]
+            left_offset = [0, 23]
             right_offset = [10, 23]
 
             self.run_animation(run_images, run_frames, screen, left_offset, right_offset)
 
     def attack(self, level):
-        self.melee_attack(level, self.cooldown)
+        if self.hp > 0:
+            self.melee_attack(level, self.cooldown)
 
 
 class ExplosionEnemy(Enemy):
@@ -342,7 +388,7 @@ class ExplosionEnemy(Enemy):
         Args:
             position (List[int]): the position [x, y] to spawn the enemy.
         """
-        self.speed = 3
+        self.speed = 3.5
         self.hp = 3
         super(ExplosionEnemy, self).__init__(position, self.hp, self.speed, 'explosion')
 
@@ -353,11 +399,8 @@ class ExplosionEnemy(Enemy):
             images (Images): Images class, contains the images to display.
             screen (pygame.display): the game screen.
         """
-        if self.is_dead:
-            self.seen_player = False
-            self.speed = 0
-            self.rect = pygame.Rect(self.rect.x, self.rect.y, 0, 0)
-
+        # Explosion animation
+        if self.has_exploded:
             explosion_images = images.explosion_images
             explosion_frames = images.explosion_list
 
@@ -368,8 +411,21 @@ class ExplosionEnemy(Enemy):
 
             self.run_animation(explosion_images, explosion_frames, screen, offset, offset, 7, xbool=False)
 
-        # Running animations
-        if self.seen_player:
+        # Death animation
+        elif self.hp == 0:
+            death_images = images.explosion_enemy_death
+            death_frames = images.ex_enemy_death_list
+
+            left_offset = [60, 30]
+            right_offset = [5, 40]
+
+            if self.animation_frame >= len(death_frames):
+                self.kill()
+
+            self.run_animation(death_images, death_frames, screen, left_offset, right_offset)
+
+        # Running animation
+        elif self.seen_player:
             run_images = images.explosion_enemy_run
             run_frames = images.ex_enemy_run_list
 
@@ -379,4 +435,5 @@ class ExplosionEnemy(Enemy):
             self.run_animation(run_images, run_frames, screen, left_offset, right_offset)
 
     def attack(self, level):
-        self.explosion_attack(level)
+        if self.hp > 0:
+            self.explosion_attack(level)

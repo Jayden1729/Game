@@ -145,7 +145,7 @@ class Level:
                     bullet.kill()
                     enemy.hp -= 1
                     if enemy.hp == 0:
-                        enemy.kill()
+                        enemy.set_death_conditions()
                         self.time += 60
 
             screen.blit(bullet.surf, bullet.rect)
