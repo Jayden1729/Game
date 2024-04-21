@@ -84,7 +84,8 @@ def main():
             enemy.update_movement(level, player, 12, 16)
 
             if enemy.attack_pattern == 'radial':
-                screen.blit(enemy.sprite, (enemy.rect.x - 16, enemy.rect.y - 16))
+                screen.blit(enemy.surf, enemy.rect)
+                enemy.animate(images, screen)
             elif enemy.attack_pattern == 'melee':
                 screen.blit(enemy.surf, enemy.rect)
             elif enemy.attack_pattern == 'explosion':

@@ -247,9 +247,39 @@ class RadialEnemy(Enemy):
         Args:
             position (List[int]): the position [x, y] to spawn the enemy.
         """
+        self.run_frame = 0
+        self.frame_break = 0
         self.speed = 1.5
         self.hp = 2
         super(RadialEnemy, self).__init__(position, self.hp, self.speed, 'radial')
+
+    def animate(self, images, screen):
+        """Animates the radial enemy.
+
+        Args:
+            images (Images): Images class, contains the images to display.
+            screen (pygame.display): the game screen.
+        """
+        if self.seen_player:
+            run_images = images.radial_enemy_run
+            run_frames = images.rad_enemy_run_list
+
+            if self.run_frame >= len(run_frames):
+                self.run_frame = 1
+
+            if self.attack_direction.x <= 0:
+                run_images = pygame.transform.flip(run_images, True, False)
+                screen.blit(run_images, (self.rect.x - 110, self.rect.y - 200),
+                            run_frames[self.run_frame])
+            else:
+                screen.blit(run_images, (self.rect.x - 90, self.rect.y - 200),
+                            run_frames[self.run_frame])
+
+            if self.frame_break == 0:
+                self.run_frame += 1
+                self.frame_break = 15
+            else:
+                self.frame_break -= 1
 
 
 class MeleeEnemy(Enemy):

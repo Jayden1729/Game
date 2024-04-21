@@ -13,6 +13,12 @@ class Images:
         self.tileset = pygame.transform.scale(tile_images, (square_size * 30, square_size * 17))
         self.tile_dict = self.generate_tile_dict(square_size)
 
+        # Radial enemy images
+        self.radial_enemy_run = pygame.transform.scale2x(pygame.image.load("sprites/stormhead/run.png"))
+        self.rad_enemy_run_list = extract_sprite_animations(self.radial_enemy_run, 10)
+        self.radial_enemy_death = pygame.image.load("sprites/stormhead/death.png")
+        self.rad_enemy_death_list = extract_sprite_animations(self.radial_enemy_death, 7)
+
         # Explosion enemy images
         self.explosion_enemy_run = pygame.transform.scale2x(pygame.image.load("sprites/Droid Zapper/run.png"))
         self.ex_enemy_run_list = extract_sprite_animations(self.explosion_enemy_run, 6)
