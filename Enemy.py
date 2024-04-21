@@ -25,13 +25,8 @@ class Enemy(pygame.sprite.Sprite):
         self.surf = pygame.Surface((self.rect_size, self.rect_size))
         self.surf.fill((255, 0, 0))
 
-        self.sprite = pygame.image.load("sprites/Bat.gif")
-        self.sprite = pygame.transform.scale(self.sprite, (100, 100))
-
-        if attack_pattern == 'radial':
-            self.surf.fill((255, 255, 0))
-            self.sprite = pygame.image.load("sprites/Ghost.gif")
-            self.sprite = pygame.transform.scale(self.sprite, (80, 80))
+        self.run_frame = 0
+        self.frame_break = 0
 
         self.rect = self.surf.get_rect(center=position)
         self.speed = speed
@@ -225,6 +220,38 @@ class Enemy(pygame.sprite.Sprite):
                 elif enemy_y < (wall_y + wall_height) < (enemy_y + enemy_height):
                     self.rect.move_ip(0, (wall_y + wall_height - enemy_y))
 
+    def run_animation(self, run_images, run_frames, screen, left_offset, right_offset):
+        """Displays the running animation of the enemy.
+
+        Args:
+            run_images (png): png file containing all running animation poses.
+            run_frames (List[pygame.Rect]): list of pygame.Rect objects containing the location of each frame in
+                                            run_images.
+            screen (pygame.display): The game screen.
+            left_offset (List[int]): a list [x, y] containing the offset for the image to be displayed when the player
+                                     is to the left of the enemy.
+            right_offset (List[int]): a list [x, y] containing the offset for the image to be displayed when the player
+                                      is to the right of the enemy.
+        """
+        if self.seen_player:
+
+            if self.run_frame >= len(run_frames):
+                self.run_frame = 1
+
+            if self.attack_direction.x <= 0:
+                run_images = pygame.transform.flip(run_images, True, False)
+                screen.blit(run_images, (self.rect.x - left_offset[0], self.rect.y - left_offset[1]),
+                            run_frames[self.run_frame])
+            else:
+                screen.blit(run_images, (self.rect.x - right_offset[0], self.rect.y - right_offset[1]),
+                            run_frames[self.run_frame])
+
+            if self.frame_break == 0:
+                self.run_frame += 1
+                self.frame_break = 15
+            else:
+                self.frame_break -= 1
+
 
 class NormalEnemy(Enemy):
 
@@ -234,8 +261,6 @@ class NormalEnemy(Enemy):
         Args:
             position (List[int]): the position [x, y] to spawn the enemy.
         """
-        self.run_frame = 0
-        self.frame_break = 0
         self.speed = 1.5
         self.hp = 1
         super(NormalEnemy, self).__init__(position, self.hp, self.speed, 'normal')
@@ -247,26 +272,14 @@ class NormalEnemy(Enemy):
             images (Images): Images class, contains the images to display.
             screen (pygame.display): the game screen.
         """
-        if self.seen_player:
-            run_images = images.normal_enemy_run
-            run_frames = images.nor_enemy_run_list
+        run_images = images.normal_enemy_run
+        run_frames = images.nor_enemy_run_list
 
-            if self.run_frame >= len(run_frames):
-                self.run_frame = 1
+        left_offset = [10, 10]
+        right_offset = [10, 10]
 
-            if self.attack_direction.x <= 0:
-                run_images = pygame.transform.flip(run_images, True, False)
-                screen.blit(run_images, (self.rect.x, self.rect.y),
-                            run_frames[self.run_frame])
-            else:
-                screen.blit(run_images, (self.rect.x, self.rect.y),
-                            run_frames[self.run_frame])
+        self.run_animation(run_images, run_frames, screen, left_offset, right_offset)
 
-            if self.frame_break == 0:
-                self.run_frame += 1
-                self.frame_break = 15
-            else:
-                self.frame_break -= 1
 
 class RadialEnemy(Enemy):
 
@@ -276,8 +289,6 @@ class RadialEnemy(Enemy):
         Args:
             position (List[int]): the position [x, y] to spawn the enemy.
         """
-        self.run_frame = 0
-        self.frame_break = 0
         self.speed = 1.5
         self.hp = 2
         super(RadialEnemy, self).__init__(position, self.hp, self.speed, 'radial')
@@ -289,26 +300,13 @@ class RadialEnemy(Enemy):
             images (Images): Images class, contains the images to display.
             screen (pygame.display): the game screen.
         """
-        if self.seen_player:
-            run_images = images.radial_enemy_run
-            run_frames = images.rad_enemy_run_list
+        run_images = images.radial_enemy_run
+        run_frames = images.rad_enemy_run_list
 
-            if self.run_frame >= len(run_frames):
-                self.run_frame = 1
+        left_offset = [5, 205]
+        right_offset = [0, 205]
 
-            if self.attack_direction.x <= 0:
-                run_images = pygame.transform.flip(run_images, True, False)
-                screen.blit(run_images, (self.rect.x - 110, self.rect.y - 200),
-                            run_frames[self.run_frame])
-            else:
-                screen.blit(run_images, (self.rect.x - 90, self.rect.y - 200),
-                            run_frames[self.run_frame])
-
-            if self.frame_break == 0:
-                self.run_frame += 1
-                self.frame_break = 15
-            else:
-                self.frame_break -= 1
+        self.run_animation(run_images, run_frames, screen, left_offset, right_offset)
 
 
 class MeleeEnemy(Enemy):
@@ -319,8 +317,6 @@ class MeleeEnemy(Enemy):
         Args:
             position (List[int]): the position [x, y] to spawn the enemy.
         """
-        self.run_frame = 0
-        self.frame_break = 0
         self.speed = 2.5
         self.hp = 2
         super(MeleeEnemy, self).__init__(position, self.hp, self.speed, 'melee')
@@ -332,26 +328,14 @@ class MeleeEnemy(Enemy):
             images (Images): Images class, contains the images to display.
             screen (pygame.display): the game screen.
         """
-        if self.seen_player:
-            run_images = images.melee_enemy_run
-            run_frames = images.mel_enemy_run_list
+        run_images = images.melee_enemy_run
+        run_frames = images.mel_enemy_run_list
 
-            if self.run_frame >= len(run_frames):
-                self.run_frame = 1
+        left_offset = [28, 23]
+        right_offset = [10, 23]
 
-            if self.attack_direction.x <= 0:
-                run_images = pygame.transform.flip(run_images, True, False)
-                screen.blit(run_images, (self.rect.x, self.rect.y),
-                            run_frames[self.run_frame])
-            else:
-                screen.blit(run_images, (self.rect.x, self.rect.y),
-                            run_frames[self.run_frame])
+        self.run_animation(run_images, run_frames, screen, left_offset, right_offset)
 
-            if self.frame_break == 0:
-                self.run_frame += 1
-                self.frame_break = 15
-            else:
-                self.frame_break -= 1
 
 class ExplosionEnemy(Enemy):
 
@@ -361,8 +345,6 @@ class ExplosionEnemy(Enemy):
         Args:
             position (List[int]): the position [x, y] to spawn the enemy.
         """
-        self.run_frame = 0
-        self.frame_break = 0
         self.speed = 3
         self.hp = 3
         super(ExplosionEnemy, self).__init__(position, self.hp, self.speed, 'explosion')
@@ -374,24 +356,10 @@ class ExplosionEnemy(Enemy):
             images (Images): Images class, contains the images to display.
             screen (pygame.display): the game screen.
         """
-        if self.seen_player:
-            run_images = images.explosion_enemy_run
-            run_frames = images.ex_enemy_run_list
+        run_images = images.explosion_enemy_run
+        run_frames = images.ex_enemy_run_list
 
-            if self.run_frame >= len(run_frames):
-                self.run_frame = 1
+        left_offset = [-5, 40]
+        right_offset = [0, 40]
 
-            if self.attack_direction.x <= 0:
-                run_images = pygame.transform.flip(run_images, True, False)
-                screen.blit(run_images, (self.rect.x - 65, self.rect.y - 40),
-                            run_frames[self.run_frame])
-            else:
-                screen.blit(run_images, (self.rect.x - 10, self.rect.y - 40),
-                            run_frames[self.run_frame])
-
-            if self.frame_break == 0:
-                self.run_frame += 1
-                self.frame_break = 15
-            else:
-                self.frame_break -= 1
-
+        self.run_animation(run_images, run_frames, screen, left_offset, right_offset)

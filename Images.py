@@ -26,8 +26,7 @@ class Images:
         self.rad_enemy_death_list = extract_sprite_animations(self.radial_enemy_death, 7)
 
         # Melee enemy images
-        self.melee_enemy_run = pygame.transform.scale2x(
-            pygame.transform.scale2x(pygame.image.load("sprites/Mud Guard/Run.png")))
+        self.melee_enemy_run = pygame.transform.scale(pygame.image.load("sprites/Mud Guard/Run.png"), (78, 414))
         self.mel_enemy_run_list = extract_sprite_animations(self.melee_enemy_run, 6)
         self.melee_enemy_death = pygame.image.load("sprites/Mud Guard/damaged and death.png")
         self.mel_enemy_death_list = extract_sprite_animations(self.melee_enemy_death, 8)
