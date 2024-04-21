@@ -28,6 +28,7 @@ def main():
     screen_height = 800
     square_size = 50
     fps = 90
+    show_hitboxes = False
 
     # Setup initial objects
     screen = pygame.display.set_mode((screen_width, screen_height))
@@ -83,10 +84,12 @@ def main():
         for enemy in level.enemy_list:
             enemy.update_movement(level, player, 12, 16)
 
-            screen.blit(enemy.surf, enemy.rect)
+            if show_hitboxes:
+                screen.blit(enemy.surf, enemy.rect)
+
             enemy.animate(images, screen)
 
-            enemy.attack(level, 40)
+            enemy.attack(level)
 
         # Show melee attack hitbox
         for attack in level.enemy_melee:

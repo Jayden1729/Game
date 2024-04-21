@@ -119,26 +119,6 @@ class Enemy(pygame.sprite.Sprite):
 
             self.kill()
 
-    def attack(self, level, cooldown):
-        """Causes enemy attack based on attack pattern.
-
-        Args:
-            level (Level): the game level.
-            cooldown (int): cooldown between shots.
-        """
-
-        if self.attack_pattern == 'normal':
-            self.normal_attack(level, cooldown)
-
-        elif self.attack_pattern == 'radial':
-            self.radial_attack(level, 6, cooldown)
-
-        elif self.attack_pattern == 'melee':
-            self.melee_attack(level, cooldown)
-
-        elif self.attack_pattern == 'explosion':
-            self.explosion_attack(level)
-
     def update_movement(self, level: Level, player: Player, min_range, max_range):
         """Moves the enemy towards the player
 
@@ -248,7 +228,7 @@ class Enemy(pygame.sprite.Sprite):
 
             if self.frame_break == 0:
                 self.run_frame += 1
-                self.frame_break = 15
+                self.frame_break = 10
             else:
                 self.frame_break -= 1
 
@@ -261,6 +241,7 @@ class NormalEnemy(Enemy):
         Args:
             position (List[int]): the position [x, y] to spawn the enemy.
         """
+        self.cooldown = 40
         self.speed = 1.5
         self.hp = 1
         super(NormalEnemy, self).__init__(position, self.hp, self.speed, 'normal')
@@ -280,6 +261,9 @@ class NormalEnemy(Enemy):
 
         self.run_animation(run_images, run_frames, screen, left_offset, right_offset)
 
+    def attack(self, level):
+        self.normal_attack(level, self.cooldown)
+
 
 class RadialEnemy(Enemy):
 
@@ -289,6 +273,7 @@ class RadialEnemy(Enemy):
         Args:
             position (List[int]): the position [x, y] to spawn the enemy.
         """
+        self.cooldown = 40
         self.speed = 1.5
         self.hp = 2
         super(RadialEnemy, self).__init__(position, self.hp, self.speed, 'radial')
@@ -308,6 +293,9 @@ class RadialEnemy(Enemy):
 
         self.run_animation(run_images, run_frames, screen, left_offset, right_offset)
 
+    def attack(self, level):
+        self.radial_attack(level, 6, self.cooldown)
+
 
 class MeleeEnemy(Enemy):
 
@@ -317,6 +305,7 @@ class MeleeEnemy(Enemy):
         Args:
             position (List[int]): the position [x, y] to spawn the enemy.
         """
+        self.cooldown = 40
         self.speed = 2.5
         self.hp = 2
         super(MeleeEnemy, self).__init__(position, self.hp, self.speed, 'melee')
@@ -335,6 +324,9 @@ class MeleeEnemy(Enemy):
         right_offset = [10, 23]
 
         self.run_animation(run_images, run_frames, screen, left_offset, right_offset)
+
+    def attack(self, level):
+        self.melee_attack(level, self.cooldown)
 
 
 class ExplosionEnemy(Enemy):
@@ -363,3 +355,6 @@ class ExplosionEnemy(Enemy):
         right_offset = [0, 40]
 
         self.run_animation(run_images, run_frames, screen, left_offset, right_offset)
+
+    def attack(self, level):
+        self.explosion_attack(level)
