@@ -356,6 +356,7 @@ class ExplosionEnemy(Enemy):
         if self.is_dead:
             self.seen_player = False
             self.speed = 0
+            self.rect = pygame.Rect(self.rect.x, self.rect.y, 0, 0)
 
             explosion_images = images.explosion_images
             explosion_frames = images.explosion_list
