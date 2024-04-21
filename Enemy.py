@@ -266,7 +266,7 @@ class NormalEnemy(Enemy):
         super(NormalEnemy, self).__init__(position, self.hp, self.speed, 'normal')
 
     def animate(self, images, screen):
-        """Animates the radial enemy.
+        """Animates the normal enemy.
 
         Args:
             images (Images): Images class, contains the images to display.
@@ -322,7 +322,7 @@ class MeleeEnemy(Enemy):
         super(MeleeEnemy, self).__init__(position, self.hp, self.speed, 'melee')
 
     def animate(self, images, screen):
-        """Animates the radial enemy.
+        """Animates the melee enemy.
 
         Args:
             images (Images): Images class, contains the images to display.
