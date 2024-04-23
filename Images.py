@@ -18,12 +18,16 @@ class Images:
         self.nor_enemy_run_list = extract_sprite_animations_vertical(self.normal_enemy_run, 8)
         self.normal_enemy_death = pygame.transform.scale2x(pygame.image.load("sprites/Bot Wheel/death.png"))
         self.nor_enemy_death_list = extract_sprite_animations_vertical(self.normal_enemy_death, 6)
+        self.normal_enemy_hit = pygame.transform.scale2x(pygame.image.load("sprites/Bot Wheel/damaged.png"))
+        self.nor_enemy_hit_list = extract_sprite_animations_vertical(self.normal_enemy_hit, 2)
 
         # Radial enemy images
         self.radial_enemy_run = pygame.transform.scale2x(pygame.image.load("sprites/stormhead/run.png"))
         self.rad_enemy_run_list = extract_sprite_animations_vertical(self.radial_enemy_run, 10)
         self.radial_enemy_death = pygame.transform.scale2x(pygame.image.load("sprites/stormhead/death.png"))
         self.rad_enemy_death_list = extract_sprite_animations_vertical(self.radial_enemy_death, 9)
+        self.radial_enemy_hit = pygame.transform.scale2x(pygame.image.load("sprites/stormhead/damaged.png"))
+        self.rad_enemy_hit_list = extract_sprite_animations_vertical(self.radial_enemy_hit, 2)
 
         # Melee enemy images
         self.melee_enemy_run = pygame.transform.scale(pygame.image.load("sprites/Mud Guard/Run.png"), (78, 414))
@@ -217,7 +221,7 @@ def extract_sprite_animations_vertical(image_set, num_frames):
     frame_list = []
 
     for i in range(num_frames):
-        frame_list.append(pygame.Rect((0, frame_height * (i - 1)), (image_width, frame_height)))
+        frame_list.append(pygame.Rect((0, frame_height * (i)), (image_width, frame_height)))
 
     return frame_list
 
@@ -240,6 +244,6 @@ def extract_sprite_animations_horizontal(image_set, num_frames):
     frame_list = []
 
     for i in range(num_frames):
-        frame_list.append(pygame.Rect((frame_width * (i - 1), 0), (frame_width, image_height)))
+        frame_list.append(pygame.Rect((frame_width * (i), 0), (frame_width, image_height)))
 
     return frame_list
