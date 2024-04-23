@@ -143,6 +143,9 @@ class Level:
             for enemy in self.enemy_list:
                 if pygame.Rect.colliderect(bullet.rect, enemy.rect):
                     bullet.kill()
+                    enemy.is_hit = True
+                    enemy.animation_frame = 0
+                    enemy.frame_break = 0
                     enemy.hp -= 1
                     if enemy.hp == 0:
                         enemy.set_death_conditions()

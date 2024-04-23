@@ -93,9 +93,10 @@ def main():
 
         # Show melee attack hitbox
         for attack in level.enemy_melee:
-            screen.blit(attack.surf, attack.rect)
+            if show_hitboxes:
+                screen.blit(attack.surf, attack.rect)
             if pygame.Rect.colliderect(attack.rect, player.rect):
-                level.time -= 100
+                level.time -= attack.damage
             attack.display_time -= 1
             if attack.display_time <= 0:
                 attack.kill()
