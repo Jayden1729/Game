@@ -9,46 +9,54 @@ class Images:
     def __init__(self, square_size):
 
         # Background planet image
-        planet_image = pygame.image.load("sprites/planet03 100.png")
-        self.planet = pygame.transform.scale(planet_image, (400, 400))
+        planet_image = pygame.image.load("sprites/black hole.png").convert_alpha()
+        self.planet = pygame.transform.scale(planet_image, (128*4, 96*4))
 
         # Tileset for background
-        tile_images = pygame.image.load("sprites/TileSet.png")
+        tile_images = pygame.image.load("sprites/TileSet.png").convert_alpha()
         self.tileset = pygame.transform.scale(tile_images, (square_size * 30, square_size * 17))
         self.tile_dict = self.generate_tile_dict(square_size)
 
         # Normal enemy images
-        self.normal_enemy_run = pygame.transform.scale2x(pygame.image.load("sprites/Bot Wheel/move with FX.png"))
+        self.normal_enemy_run = pygame.transform.scale2x(
+            pygame.image.load("sprites/Bot Wheel/move with FX.png").convert_alpha())
         self.nor_enemy_run_list = extract_sprite_animations_vertical(self.normal_enemy_run, 8)
-        self.normal_enemy_death = pygame.transform.scale2x(pygame.image.load("sprites/Bot Wheel/death.png"))
+        self.normal_enemy_death = pygame.transform.scale2x(
+            pygame.image.load("sprites/Bot Wheel/death.png").convert_alpha())
         self.nor_enemy_death_list = extract_sprite_animations_vertical(self.normal_enemy_death, 6)
-        self.normal_enemy_hit = pygame.transform.scale2x(pygame.image.load("sprites/Bot Wheel/damaged.png"))
+        self.normal_enemy_hit = pygame.transform.scale2x(
+            pygame.image.load("sprites/Bot Wheel/damaged.png").convert_alpha())
         self.nor_enemy_hit_list = extract_sprite_animations_vertical(self.normal_enemy_hit, 2)
 
         # Radial enemy images
-        self.radial_enemy_run = pygame.transform.scale2x(pygame.image.load("sprites/stormhead/run.png"))
+        self.radial_enemy_run = pygame.transform.scale2x(
+            pygame.image.load("sprites/stormhead/run.png").convert_alpha())
         self.rad_enemy_run_list = extract_sprite_animations_vertical(self.radial_enemy_run, 10)
-        self.radial_enemy_death = pygame.transform.scale2x(pygame.image.load("sprites/stormhead/death.png"))
+        self.radial_enemy_death = pygame.transform.scale2x(
+            pygame.image.load("sprites/stormhead/death.png").convert_alpha())
         self.rad_enemy_death_list = extract_sprite_animations_vertical(self.radial_enemy_death, 9)
-        self.radial_enemy_hit = pygame.transform.scale2x(pygame.image.load("sprites/stormhead/damaged.png"))
+        self.radial_enemy_hit = pygame.transform.scale2x(
+            pygame.image.load("sprites/stormhead/damaged.png").convert_alpha())
         self.rad_enemy_hit_list = extract_sprite_animations_vertical(self.radial_enemy_hit, 2)
 
         # Melee enemy images
-        self.melee_enemy_run = pygame.transform.scale(pygame.image.load("sprites/Mud Guard/Run.png"), (78, 414))
+        self.melee_enemy_run = pygame.transform.scale(
+            pygame.image.load("sprites/Mud Guard/Run.png").convert_alpha(), (78, 414))
         self.mel_enemy_run_list = extract_sprite_animations_vertical(self.melee_enemy_run, 6)
         self.melee_enemy_death = pygame.transform.scale(
-            pygame.image.load("sprites/Mud Guard/damaged and death.png"), (45 * 3, 183 * 3))
+            pygame.image.load("sprites/Mud Guard/damaged and death.png").convert_alpha(), (45 * 3, 183 * 3))
         self.mel_enemy_death_list = extract_sprite_animations_vertical(self.melee_enemy_death, 8)
 
         # Explosion enemy images
-        self.explosion_enemy_run = pygame.transform.scale2x(pygame.image.load("sprites/Droid Zapper/run.png"))
+        self.explosion_enemy_run = pygame.transform.scale2x(
+            pygame.image.load("sprites/Droid Zapper/run.png").convert_alpha())
         self.ex_enemy_run_list = extract_sprite_animations_vertical(self.explosion_enemy_run, 6)
         self.explosion_enemy_death = pygame.transform.scale2x(
-            pygame.image.load("sprites/Droid Zapper/damaged and death.png"))
+            pygame.image.load("sprites/Droid Zapper/damaged and death.png").convert_alpha())
         self.ex_enemy_death_list = extract_sprite_animations_vertical(self.explosion_enemy_death, 8)
 
         # Explosion images
-        self.explosion_images = pygame.image.load("sprites/explosion-4.png")
+        self.explosion_images = pygame.image.load("sprites/explosion-4.png").convert_alpha()
         self.explosion_list = extract_sprite_animations_horizontal(self.explosion_images, 12)
 
 
