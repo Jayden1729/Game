@@ -156,7 +156,7 @@ class Enemy(pygame.sprite.Sprite):
             move_direction = (player.vector2 - enemy_vector2).normalize()
             self.seen_player = True
 
-        else:
+        elif dist_to_player > max_range * grid_sq_size:
             self.seen_player = False
 
         # Sets projectile direction in straight line to player from enemy
