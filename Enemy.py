@@ -156,7 +156,7 @@ class Enemy(pygame.sprite.Sprite):
             move_direction = (player.vector2 - enemy_vector2).normalize()
             self.seen_player = True
 
-        elif dist_to_player > max_range * grid_sq_size:
+        else:
             self.seen_player = False
 
         # Sets projectile direction in straight line to player from enemy
@@ -355,7 +355,7 @@ class RadialEnemy(Enemy):
             self.run_animation(run_images, run_frames, screen, left_offset, right_offset)
 
     def attack(self, level):
-        if self.hp > 30:
+        if self.hp > 0:
             self.radial_attack(level, 6, self.cooldown)
 
 
