@@ -34,6 +34,9 @@ def main():
     show_hitboxes = False
     player_location = [400, 400]
 
+    fps_total = 0
+    frame_counter = 0
+
     # Setup initial objects
     screen = pygame.display.set_mode((screen_width, screen_height))
     clock = pygame.time.Clock()
@@ -62,10 +65,12 @@ def main():
     # Game Loop
     while running:
         current_fps = clock.get_fps()
+        fps_total += current_fps
+        frame_counter += 1
 
         # Fill screen background
         screen.fill((0, 0, 0))
-        #screen.blit(images.planet, (screen_width / 2 - 72, screen_height / 2 - 72))
+        screen.blit(images.planet, (screen_width / 2 - 72, screen_height / 2 - 72))
 
         # Change Level if all enemies killed
         if not level.enemy_list:
@@ -137,15 +142,15 @@ def main():
                 player.attack_cooldown -= 1
 
             # Draw timer
-            if level.time <= 0:
+            if level.time >= 10:
+                time_surf = pygame.Surface((level.time / 2, 20))
+                timer = time_surf.get_rect(center=(400, 30))
+                pygame.draw.rect(screen, (0, 0, 100), timer)
+            else:
                 running = False
 
             if level.time > 3000:
                 level.time = 3000
-
-            time_surf = pygame.Surface((level.time / 2, 20))
-            timer = time_surf.get_rect(center=(400, 30))
-            pygame.draw.rect(screen, (0, 0, 100), timer)
 
             level.time -= 1
 
@@ -158,6 +163,8 @@ def main():
         print(current_fps)
 
     pygame.quit()
+
+    print('average fps = ' + str(fps_total/frame_counter))
 
 
 def move_objects(x, y, level: Level):
