@@ -32,7 +32,6 @@ def main():
     square_size = 50
     fps = 90
     show_hitboxes = False
-    player_location = [400, 400]
 
     fps_total = 0
     frame_counter = 0
@@ -96,10 +95,14 @@ def main():
             elif (event.type == pygame.MOUSEBUTTONDOWN or pressed_keys[pygame.K_SPACE]) and player.attack_cooldown == 0:
                 player.attack(level.player_bullets)
 
-            gui.button_logic(event)
+            if event.type == pygame_gui.UI_BUTTON_PRESSED:
+                if event.ui_element == gui.start_button:
+                    gui.paused = False
+                    gui.hide_main_menu()
+                    print('start')
 
             # GUI
-            gui.process_events(event)
+            gui.manager.process_events(event)
 
         if not gui.paused:
             images.display_wall_images(level, screen, screen_width, screen_height)
@@ -155,8 +158,8 @@ def main():
             level.time -= 1
 
         # Update GUI
-        gui.main_menu_manager.update(fps)
-        gui.main_menu_manager.draw_ui(screen)
+        gui.manager.update(fps)
+        gui.manager.draw_ui(screen)
 
         pygame.display.flip()
         clock.tick(fps)
