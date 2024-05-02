@@ -22,18 +22,18 @@ class Level:
             square_size (int): the grid square size (in pixels) to be displayed on the screen.
         """
         self.grid = grid
+        self.origin_coords = [0, 70]
         self.floor_image_grid = randomise_floor_grid(copy.deepcopy(grid))
         self.square_size = square_size
         self.wall_list = self.generate_walls()
         self.enemy_list = self.generate_enemies()
-        self.origin_coords = [0, 0]
         self.player_bullets = pygame.sprite.Group()
         self.enemy_bullets = pygame.sprite.Group()
         self.enemy_melee = pygame.sprite.Group()
-        self.time = 1000
+        self.time = 3000
 
     def generate_walls(self):
-        """Generates maze walls from new_grid.
+        """Generates walls from new_grid.
 
         Generates walls from new_grid contained in Level object. 0's represent empty space, and 1's represent walls.
 
@@ -75,8 +75,8 @@ class Level:
                     wall_params.append([i, j, counter, direction])
 
         for element in wall_params:
-            y = element[0] * square_size
-            x = element[1] * square_size
+            y = element[0] * square_size + self.origin_coords[1]
+            x = element[1] * square_size + self.origin_coords[0]
             length = element[2] * square_size
             direction = element[3]
 
@@ -109,18 +109,16 @@ class Level:
 
         for i in range(y_dim - 1):
             for j in range(x_dim - 1):
+                enemy_x = (j + 0.5) * square_size + self.origin_coords[0]
+                enemy_y = (i + 0.5) * square_size + self.origin_coords[1]
                 if grid[i][j] == 'e':
-                    enemy_list.add(
-                        Enemy.NormalEnemy(((j + 0.5) * square_size, (i + 0.5) * square_size)))
+                    enemy_list.add(Enemy.NormalEnemy((enemy_x, enemy_y)))
                 elif grid[i][j] == 'r':
-                    enemy_list.add(
-                        Enemy.RadialEnemy(((j + 0.5) * square_size, (i + 0.5) * square_size)))
+                    enemy_list.add(Enemy.RadialEnemy((enemy_x, enemy_y)))
                 elif grid[i][j] == 'm':
-                    enemy_list.add(
-                        Enemy.MeleeEnemy(((j + 0.5) * square_size, (i + 0.5) * square_size)))
+                    enemy_list.add(Enemy.MeleeEnemy((enemy_x, enemy_y)))
                 elif grid[i][j] == 'x':
-                    enemy_list.add(
-                        Enemy.ExplosionEnemy(((j + 0.5) * square_size, (i + 0.5) * square_size)))
+                    enemy_list.add(Enemy.ExplosionEnemy((enemy_x, enemy_y)))
 
         return enemy_list
 
