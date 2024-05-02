@@ -11,6 +11,7 @@ constants: CAPITAL_CASE
 """
 
 import csv
+import copy
 
 import pygame
 import pygame_gui
@@ -56,7 +57,7 @@ def main():
                         game_grid[i][j] = 1
             levels.append(Level.Level(game_grid, square_size))
 
-    level = levels[0]
+    level = copy.deepcopy(levels[0])
     current_level = 1
 
     running = True
@@ -69,12 +70,12 @@ def main():
 
         # Fill screen background
         screen.fill((0, 0, 0))
-        screen.blit(images.planet, (screen_width / 2 - 72, screen_height / 2 - 72))
+        screen.blit(images.planet, (screen_width / 2 - 150, screen_height / 2 - 150))
 
         # Change Level if all enemies killed
         if not level.enemy_list:
             current_level += 1
-            level = levels[current_level - 1]
+            level = copy.deepcopy(levels[current_level - 1])
 
         # Get all pressed keys
         pressed_keys = pygame.key.get_pressed()
@@ -89,7 +90,8 @@ def main():
                     elif not gui.paused:
                         gui.paused = True
                         gui.show_main_menu()
-            elif event.type == pygame.QUIT:
+
+            if event.type == pygame.QUIT:
                 running = False
             # Check if player is attacking
             elif (event.type == pygame.MOUSEBUTTONDOWN or pressed_keys[pygame.K_SPACE]) and player.attack_cooldown == 0:
@@ -99,7 +101,15 @@ def main():
                 if event.ui_element == gui.start_button:
                     gui.paused = False
                     gui.hide_main_menu()
-                    print('start')
+
+                if event.ui_element == gui.exit_button:
+                    running = False
+
+                if event.ui_element == gui.retry_button:
+                    gui.paused = False
+                    gui.hide_retry_menu()
+                    level = copy.deepcopy(levels[0])
+                    current_level = 1
 
             # GUI
             gui.manager.process_events(event)
@@ -146,11 +156,12 @@ def main():
 
             # Draw timer
             if level.time >= 10:
-                time_surf = pygame.Surface((level.time / 2, 20))
+                time_surf = pygame.Surface((level.time / 6, 20))
                 timer = time_surf.get_rect(center=(400, 30))
                 pygame.draw.rect(screen, (0, 0, 100), timer)
             else:
-                running = False
+                gui.paused = True
+                gui.show_retry_menu()
 
             if level.time > 3000:
                 level.time = 3000
