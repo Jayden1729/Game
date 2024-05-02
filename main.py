@@ -13,10 +13,13 @@ constants: CAPITAL_CASE
 import csv
 
 import pygame
+import pygame_gui
 
 import Images
 import Level
 import Player
+import GUI
+
 
 
 def main():
@@ -35,6 +38,7 @@ def main():
     clock = pygame.time.Clock()
     player = Player.Player()
     images = Images.Images(square_size)
+    gui = GUI.GUI()
 
     levels = []
 
@@ -56,10 +60,9 @@ def main():
 
     # Game Loop
     while running:
+
         # Fill screen background
         screen.fill((0, 0, 0))
-        images.display_wall_images(level, screen)
-        images.display_floor_images(level, screen)
 
         # Change Level if all enemies killed
         if not level.enemy_list:
@@ -73,61 +76,79 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    running = False
+                    if gui.paused:
+                        gui.paused = False
+                        gui.hide_main_menu()
+                    elif not gui.paused:
+                        gui.paused = True
+                        gui.show_main_menu()
             elif event.type == pygame.QUIT:
                 running = False
             # Check if player is attacking
             elif (event.type == pygame.MOUSEBUTTONDOWN or pressed_keys[pygame.K_SPACE]) and player.attack_cooldown == 0:
                 player.attack(level.player_bullets)
 
-        # Determine enemy movement and draw them on screen
-        for enemy in level.enemy_list:
-            enemy.update_movement(level, player, 12, 16)
+            gui.button_logic(event)
 
-            if show_hitboxes:
-                screen.blit(enemy.surf, enemy.rect)
+            # GUI
+            gui.process_events(event)
 
-            enemy.animate(images, screen)
+        if not gui.paused:
+            images.display_wall_images(level, screen)
+            images.display_floor_images(level, screen)
 
-            enemy.attack(level)
+            # Determine enemy movement and draw them on screen
+            for enemy in level.enemy_list:
+                enemy.update_movement(level, player, 12, 16)
 
-        # Show melee attack hitbox
-        for attack in level.enemy_melee:
-            if show_hitboxes:
-                screen.blit(attack.surf, attack.rect)
-            if pygame.Rect.colliderect(attack.rect, player.rect):
-                level.time -= attack.damage
-            attack.display_time -= 1
-            if attack.display_time <= 0:
-                attack.kill()
+                if show_hitboxes:
+                    screen.blit(enemy.surf, enemy.rect)
 
-        # Draw and move player bullets + check collisions
-        level.update_player_bullets(screen)
+                enemy.animate(images, screen)
 
-        # Draw and move enemy bullets + check collisions
-        level.update_enemy_bullets(screen, player)
+                enemy.attack(level)
 
-        # Player movement and draw player
-        move_player(level, player, pressed_keys)
-        screen.blit(player.surf, player.rect)
-        screen.blit(player.sprite, (367, 358))
+            # Show melee attack hitbox
+            for attack in level.enemy_melee:
+                if show_hitboxes:
+                    screen.blit(attack.surf, attack.rect)
+                if pygame.Rect.colliderect(attack.rect, player.rect):
+                    level.time -= attack.damage
+                attack.display_time -= 1
+                if attack.display_time <= 0:
+                    attack.kill()
 
-        # Reduce player attack cooldown
-        if player.attack_cooldown > 0:
-            player.attack_cooldown -= 1
+            # Draw and move player bullets + check collisions
+            level.update_player_bullets(screen)
 
-        # Draw timer
-        if level.time <= 0:
-            running = False
+            # Draw and move enemy bullets + check collisions
+            level.update_enemy_bullets(screen, player)
 
-        if level.time > 1000:
-            level.time = 1000
+            # Player movement and draw player
+            move_player(level, player, pressed_keys)
+            screen.blit(player.surf, player.rect)
+            screen.blit(player.sprite, (367, 358))
 
-        time_surf = pygame.Surface((level.time / 2, 20))
-        timer = time_surf.get_rect(center=(400, 30))
-        pygame.draw.rect(screen, (0, 0, 100), timer)
+            # Reduce player attack cooldown
+            if player.attack_cooldown > 0:
+                player.attack_cooldown -= 1
 
-        level.time -= 1
+            # Draw timer
+            if level.time <= 0:
+                running = False
+
+            if level.time > 1000:
+                level.time = 1000
+
+            time_surf = pygame.Surface((level.time / 2, 20))
+            timer = time_surf.get_rect(center=(400, 30))
+            pygame.draw.rect(screen, (0, 0, 100), timer)
+
+            level.time -= 1
+
+        # Update GUI
+        gui.main_menu_manager.update(fps)
+        gui.main_menu_manager.draw_ui(screen)
 
         pygame.display.flip()
         clock.tick(fps)
