@@ -8,6 +8,10 @@ class Images:
 
     def __init__(self, square_size):
 
+        # Background planet image
+        planet_image = pygame.image.load("sprites/planet03 100.png")
+        self.planet = pygame.transform.scale(planet_image, (400, 400))
+
         # Tileset for background
         tile_images = pygame.image.load("sprites/TileSet.png")
         self.tileset = pygame.transform.scale(tile_images, (square_size * 30, square_size * 17))
@@ -91,12 +95,16 @@ class Images:
                 'right_end': right_end, 'left_end': left_end, 'single': single, 'floor_0': floor_0, 'floor_1': floor_1,
                 'floor_2': floor_2, 'floor_3': floor_3, 'floor_4': floor_4}
 
-    def display_wall_images(self, level: Level, screen):
+    def display_wall_images(self, level: Level, screen, screen_width, screen_height):
         """Displays walls on the screen.
+
+        Does not show walls if they are outside the display window.
 
         Args:
             level (Level): The game level.
             screen (pygame.display): The display window.
+            screen_width(int): the screen width.
+            screen_height(int): the screen height.
         """
 
         square_size = level.square_size
@@ -104,10 +112,13 @@ class Images:
         for i in range(len(level.grid[0])):
             for j in range(len(level.grid)):
                 if level.grid[j][i] == 1:
-                    wall_type = get_wall_type([i, j], level.grid)
-                    wall_rect = self.tile_dict[str(wall_type)]
-                    screen.blit(self.tileset, (i * square_size + level.origin_coords[0],
-                                               j * square_size + level.origin_coords[1]), wall_rect)
+                    wall_x = i * square_size + level.origin_coords[0]
+                    wall_y = j * square_size + level.origin_coords[1]
+
+                    if wall_x < screen_width and wall_y < screen_height:
+                        wall_type = get_wall_type([i, j], level.grid)
+                        wall_rect = self.tile_dict[str(wall_type)]
+                        screen.blit(self.tileset, (wall_x, wall_y), wall_rect)
 
     def display_floor_images(self, level: Level, screen):
         """Displays floor images on the screen.

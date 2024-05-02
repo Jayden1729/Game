@@ -32,6 +32,7 @@ def main():
     square_size = 50
     fps = 90
     show_hitboxes = False
+    player_location = [400, 400]
 
     # Setup initial objects
     screen = pygame.display.set_mode((screen_width, screen_height))
@@ -60,9 +61,11 @@ def main():
 
     # Game Loop
     while running:
+        current_fps = clock.get_fps()
 
         # Fill screen background
         screen.fill((0, 0, 0))
+        #screen.blit(images.planet, (screen_width / 2 - 72, screen_height / 2 - 72))
 
         # Change Level if all enemies killed
         if not level.enemy_list:
@@ -94,7 +97,7 @@ def main():
             gui.process_events(event)
 
         if not gui.paused:
-            images.display_wall_images(level, screen)
+            images.display_wall_images(level, screen, screen_width, screen_height)
             images.display_floor_images(level, screen)
 
             # Determine enemy movement and draw them on screen
@@ -137,8 +140,8 @@ def main():
             if level.time <= 0:
                 running = False
 
-            if level.time > 1000:
-                level.time = 1000
+            if level.time > 3000:
+                level.time = 3000
 
             time_surf = pygame.Surface((level.time / 2, 20))
             timer = time_surf.get_rect(center=(400, 30))
@@ -152,7 +155,7 @@ def main():
 
         pygame.display.flip()
         clock.tick(fps)
-        print(clock.get_fps())
+        print(current_fps)
 
     pygame.quit()
 
