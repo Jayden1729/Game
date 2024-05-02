@@ -120,23 +120,30 @@ class Images:
                         wall_rect = self.tile_dict[str(wall_type)]
                         screen.blit(self.tileset, (wall_x, wall_y), wall_rect)
 
-    def display_floor_images(self, level: Level, screen):
+    def display_floor_images(self, level: Level, screen, screen_width, screen_height):
         """Displays floor images on the screen.
+
+        Does not display the floor outside the visible display area.
 
         Args:
             level (Level): The game level.
             screen (pygame.display): The display window.
+            screen_width(int): the screen width.
+            screen_height(int): the screen height.
         """
 
         square_size = level.square_size
 
         for i in range(len(level.floor_image_grid[0])):
             for j in range(len(level.floor_image_grid)):
-                value = level.floor_image_grid[j][i]
-                if value != ('n'):
-                    floor_rect = self.tile_dict[str('floor_' + str(value))]
-                    screen.blit(self.tileset, (i * square_size + level.origin_coords[0],
-                                               j * square_size + level.origin_coords[1]), floor_rect)
+                floor_x = i * square_size + level.origin_coords[0]
+                floor_y = j * square_size + level.origin_coords[1]
+
+                if floor_x < screen_width and floor_y < screen_height:
+                    value = level.floor_image_grid[j][i]
+                    if value != ('n'):
+                        floor_rect = self.tile_dict[str('floor_' + str(value))]
+                        screen.blit(self.tileset, (floor_x, floor_y), floor_rect)
 
 def get_wall_type(wall, grid):
     """Determines the type of wall connector to display.

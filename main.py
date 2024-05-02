@@ -98,7 +98,7 @@ def main():
 
         if not gui.paused:
             images.display_wall_images(level, screen, screen_width, screen_height)
-            images.display_floor_images(level, screen)
+            images.display_floor_images(level, screen, screen_width, screen_height)
 
             # Determine enemy movement and draw them on screen
             for enemy in level.enemy_list:
