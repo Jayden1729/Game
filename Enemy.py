@@ -123,19 +123,18 @@ class Enemy(pygame.sprite.Sprite):
             self.set_death_conditions()
             self.has_exploded = True
 
-    def update_movement(self, level: Level, player: Player, min_range, max_range):
+    def update_movement(self, level: Level, player: Player, range):
         """Moves the enemy towards the player
 
         Handles detection of the player, enemy pathfinding and wall collisions. The player will be initially detected
-        when they get within min_range number of grid squares of the player, and the enemy will chase the player in a
-        straight line until the player is outside max_range number of grid squares away from the enemy.
+        when they get within range number of grid squares of the player, then the enemy will chase the player in a
+        straight line until the player.
 
 
         Args:
             level (Level): the game level.
             player (Player): the player.
-            min_range (float): number of grid squares determining initial player detection.
-            max_range (float): number of grid squares determining how far away the enemy will chase the player
+            max_range (float): number of grid squares determining how far away the enemy will see the player
         """
 
         # Move enemy
@@ -149,18 +148,18 @@ class Enemy(pygame.sprite.Sprite):
 
         move_direction = pygame.math.Vector2(0, 0)
 
-        if player.rect.width / 2 < dist_to_player < max_range * grid_sq_size and self.seen_player == True:
-            move_direction = (player.vector2 - enemy_vector2).normalize()
-
-        elif player.rect.width / 2 < dist_to_player < min_range * grid_sq_size:
+        if player.rect.width / 2 < dist_to_player < range * grid_sq_size:
             move_direction = (player.vector2 - enemy_vector2).normalize()
             self.seen_player = True
 
+            # Sets projectile direction in straight line to player from enemy
+            self.attack_direction = move_direction
+
+        elif player.rect.width / 2 > dist_to_player:
+            move_direction = pygame.math.Vector2(0, 0)
+
         else:
             self.seen_player = False
-
-        # Sets projectile direction in straight line to player from enemy
-        self.attack_direction = move_direction
 
         # Check wall collisions
 

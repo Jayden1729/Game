@@ -120,7 +120,7 @@ def main():
 
             # Determine enemy movement and draw them on screen
             for enemy in level.enemy_list:
-                enemy.update_movement(level, player, 12, 16)
+                enemy.update_movement(level, player, 11)
 
                 if show_hitboxes:
                     screen.blit(enemy.surf, enemy.rect)
