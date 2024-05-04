@@ -146,7 +146,7 @@ def main():
             level.update_enemy_bullets(screen, player)
 
             # Player movement and draw player
-            move_player(level, player, pressed_keys)
+            player.move(level, pressed_keys)
             screen.blit(player.surf, player.rect)
             screen.blit(player.sprite, (367, 358))
 
@@ -179,93 +179,6 @@ def main():
     pygame.quit()
 
     print('average fps = ' + str(fps_total/frame_counter))
-
-
-def move_objects(x, y, level: Level):
-    """Moves all walls and enemies in the level by (x,y)
-
-    Args:
-        x (int): amount to move objects by in x direction
-        y (int): amount to move objects by in y direction
-        level (Level): game level
-    """
-    for wall in level.wall_list:
-        wall.move_ip(x, y)
-
-    for enemy in level.enemy_list:
-        enemy.rect.move_ip(x, y)
-
-    for bullet in level.player_bullets:
-        bullet.rect.move_ip(x, y)
-
-    for bullet in level.enemy_bullets:
-        bullet.rect.move_ip(x, y)
-
-    level.origin_coords[0] += x
-    level.origin_coords[1] += y
-
-
-def move_player(level: Level, player: Player, pressed_keys):
-    """Moves level around player on key press and handles wall collisions.
-
-            Moves level around player to give illusion of player movement, and handles wall collisions.
-            Movement speed is equal to player.speed.
-
-            Args:
-                level (Level): the level
-                player (Player): the player character
-                pressed_keys (bools): sequence of bools indicating which keys are pressed
-            """
-    wall_list = level.wall_list
-    player_x = player.rect.x
-    player_y = player.rect.y
-    player_width = player.rect.width
-    player_height = player.rect.height
-
-    # Move walls in x direction
-    if pressed_keys[pygame.K_a]:
-        move_objects(player.speed, 0, level)
-
-    if pressed_keys[pygame.K_d]:
-        move_objects(-player.speed, 0, level)
-
-    # Check collisions in x direction
-    collision_index_x = player.rect.collidelistall(wall_list)
-
-    if collision_index_x:
-
-        for i in collision_index_x:
-            wall_x = wall_list[i].x
-            wall_width = wall_list[i].width
-
-            if (player_x + player_width) > wall_x > player_x:
-                move_objects((player_x + player_width - wall_x), 0, level)
-
-            elif player_x < (wall_x + wall_width) < (player_x + player_width):
-                move_objects(-(wall_x + wall_width - player_x), 0, level)
-
-    # Move walls in y direction
-    if pressed_keys[pygame.K_w]:
-        move_objects(0, player.speed, level)
-
-    if pressed_keys[pygame.K_s]:
-        move_objects(0, -player.speed, level)
-
-    # Check collisions in y direction
-    collision_index_y = player.rect.collidelistall(wall_list)
-
-    if collision_index_y:
-
-        for i in collision_index_y:
-            wall_y = wall_list[i].y
-            wall_height = wall_list[i].height
-
-            if (player_y + player_height) > wall_y > player_y:
-                move_objects(0, (player_y + player_height - wall_y), level)
-
-            elif player_y < (wall_y + wall_height) < (player_y + player_height):
-                move_objects(0, -(wall_y + wall_height - player_y), level)
-
 
 if __name__ == '__main__':
     main()
