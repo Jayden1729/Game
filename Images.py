@@ -17,16 +17,6 @@ class Images:
         self.tileset = pygame.transform.scale(tile_images, (square_size * 30, square_size * 17))
         self.tile_dict = self.generate_tile_dict(square_size)
 
-        # Player images
-        self.player_torso_idle = pygame.image.load("sprites/Player/Torso/torso idle.png").convert_alpha()
-        self.player_torso_idle_list = extract_sprite_animations_horizontal(self.player_torso_idle, 4)
-        self.player_torso_shoot = pygame.image.load("sprites/Player/Torso/Shoot.png").convert_alpha()
-        self.player_torso_shoot_list = extract_sprite_animations_horizontal(self.player_torso_shoot, 4)
-        self.player_legs_idle = pygame.image.load("sprites/Player/Legs/leg_idle.png").convert_alpha()
-        self.player_legs_idle_list = extract_sprite_animations_horizontal(self.player_legs_idle, 1)
-        self.player_legs_run = pygame.image.load("sprites/Player/Legs/Leg run.png").convert_alpha()
-        self.player_legs_run_list = extract_sprite_animations_horizontal(self.player_legs_run, 8)
-
         # Normal enemy images
         self.normal_enemy_run = pygame.transform.scale2x(
             pygame.image.load("sprites/Bot Wheel/move with FX.png").convert_alpha())

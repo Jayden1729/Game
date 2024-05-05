@@ -4,6 +4,7 @@
 import pygame
 import Level
 import Bullet
+import Images
 
 
 class Player(pygame.sprite.Sprite):
@@ -22,8 +23,28 @@ class Player(pygame.sprite.Sprite):
         self.projectile_speed = 10
         self.attack_cooldown = 0
 
-        self.grid_x = None
-        self.grid_y = None
+        self.is_moving = False
+        self.is_shooting = False
+        self.torso_frame = 0
+        self.legs_frame = 0
+        self.legs_frame_break = 0
+        self.torso_frame_break = 0
+        self.shooting_frame = 0
+        self.shooting_frame_break = 0
+
+        scale_factor = 1.3
+        self.player_torso_idle = pygame.transform.scale(
+            pygame.image.load("sprites/Player/Torso/torso idle.png").convert_alpha(), (200 * scale_factor, 50 * scale_factor))
+        self.player_torso_idle_list = Images.extract_sprite_animations_horizontal(self.player_torso_idle, 4)
+        self.player_torso_shoot = pygame.transform.scale(
+            pygame.image.load("sprites/Player/Torso/Shoot.png").convert_alpha(), (320 * scale_factor, 50 * scale_factor))
+        self.player_torso_shoot_list = Images.extract_sprite_animations_horizontal(self.player_torso_shoot, 4)
+        self.player_legs_idle = pygame.transform.scale(
+            pygame.image.load("sprites/Player/Legs/leg_idle.png").convert_alpha(), (50 * scale_factor, 50 * scale_factor))
+        self.player_legs_idle_list = Images.extract_sprite_animations_horizontal(self.player_legs_idle, 1)
+        self.player_legs_run = pygame.transform.scale(
+            pygame.image.load("sprites/Player/Legs/Leg run.png").convert_alpha(), (400 * scale_factor, 50 * scale_factor))
+        self.player_legs_run_list = Images.extract_sprite_animations_horizontal(self.player_legs_run, 8)
 
         self.sprite = pygame.image.load("sprites/Player_sprite.png")
         self.sprite = pygame.transform.scale(self.sprite, (64, 64))
@@ -40,8 +61,11 @@ class Player(pygame.sprite.Sprite):
 
         bullet_vector = mouse_vector - self.vector2
 
-        player_bullets.add(Bullet.Bullet(400, 400, bullet_vector, self.projectile_speed))
-        self.attack_cooldown = 20
+        player_bullets.add(Bullet.Bullet(400 + 10, 400 - 10, bullet_vector, self.projectile_speed))
+        self.attack_cooldown = 30
+        self.is_shooting = True
+        self.shooting_frame_break = 0
+        self.shooting_frame = 0
 
     def move(self, level: Level, pressed_keys):
         """Moves level around player on key press and handles wall collisions.
@@ -53,6 +77,7 @@ class Player(pygame.sprite.Sprite):
                     level (Level): the level
                     pressed_keys (bools): sequence of bools indicating which keys are pressed
                 """
+        moving = False
         wall_list = level.wall_list
         player_x = self.rect.x
         player_y = self.rect.y
@@ -62,9 +87,11 @@ class Player(pygame.sprite.Sprite):
         # Move walls in x direction
         if pressed_keys[pygame.K_a]:
             move_objects(self.speed, 0, level)
+            moving = True
 
         if pressed_keys[pygame.K_d]:
             move_objects(-self.speed, 0, level)
+            moving = True
 
         # Check collisions in x direction
         collision_index_x = self.rect.collidelistall(wall_list)
@@ -84,9 +111,11 @@ class Player(pygame.sprite.Sprite):
         # Move walls in y direction
         if pressed_keys[pygame.K_w]:
             move_objects(0, self.speed, level)
+            moving = True
 
         if pressed_keys[pygame.K_s]:
             move_objects(0, -self.speed, level)
+            moving = True
 
         # Check collisions in y direction
         collision_index_y = self.rect.collidelistall(wall_list)
@@ -102,6 +131,84 @@ class Player(pygame.sprite.Sprite):
 
                 elif player_y < (wall_y + wall_height) < (player_y + player_height):
                     move_objects(0, -(wall_y + wall_height - player_y), level)
+
+        # Update if player is moving
+        self.is_moving = moving
+
+    def run_animation(self, screen, screen_width):
+        offset = [25, 25]
+        shooting_offset = [44, 25]
+        frame_break = 7
+        shooting_frame_break = 3
+
+        shooting_images = self.player_torso_shoot
+        shooting_list = self.player_torso_shoot_list
+        torso_images = self.player_torso_idle
+        torso_list = self.player_torso_idle_list
+
+        if self.is_moving:
+            legs_images = self.player_legs_run
+            legs_list = self.player_legs_run_list
+        else:
+            legs_images = self.player_legs_idle
+            legs_list = self.player_legs_idle_list
+
+        if self.legs_frame >= len(legs_list):
+            self.legs_frame = 0
+
+        if self.torso_frame >= len(torso_list):
+            self.torso_frame = 0
+
+        if self.shooting_frame >= len(shooting_list):
+            self.shooting_frame = 0
+            self.is_shooting = False
+
+        # Get mouse position
+        mouse_pos = pygame.mouse.get_pos()
+        if mouse_pos[0] < screen_width/2:
+            legs_images = pygame.transform.flip(legs_images, True, False)
+            screen.blit(legs_images, (self.rect.x - offset[0], self.rect.y - offset[1]),
+                        legs_list[-self.legs_frame])
+
+            if self.is_shooting:
+                shooting_images = pygame.transform.flip(shooting_images, True, False)
+                screen.blit(shooting_images, (self.rect.x - shooting_offset[0], self.rect.y - shooting_offset[1]),
+                            shooting_list[-self.shooting_frame])
+            else:
+                torso_images = pygame.transform.flip(torso_images, True, False)
+                screen.blit(torso_images, (self.rect.x - offset[0], self.rect.y - offset[1]),
+                            torso_list[-self.torso_frame])
+        else:
+            screen.blit(legs_images, (self.rect.x - offset[0], self.rect.y - offset[1]),
+                        legs_list[self.legs_frame])
+
+            if self.is_shooting:
+                screen.blit(shooting_images, (self.rect.x - shooting_offset[0], self.rect.y - shooting_offset[1]),
+                            shooting_list[self.shooting_frame])
+            else:
+                screen.blit(torso_images, (self.rect.x - offset[0], self.rect.y - offset[1]),
+                            torso_list[self.torso_frame])
+
+        if self.legs_frame_break == 0:
+            self.legs_frame += 1
+            self.legs_frame_break = frame_break
+        else:
+            self.legs_frame_break -= 1
+
+        if self.torso_frame_break == 0:
+            self.torso_frame += 1
+            self.torso_frame_break = frame_break
+        else:
+            self.torso_frame_break -= 1
+
+        if self.shooting_frame_break == 0:
+            self.shooting_frame += 1
+            self.shooting_frame_break = frame_break
+        else:
+            self.shooting_frame_break -= 1
+
+
+
 
 def move_objects(x, y, level: Level):
     """Moves all walls and enemies in the level by (x,y)

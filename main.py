@@ -147,8 +147,10 @@ def main():
 
             # Player movement and draw player
             player.move(level, pressed_keys)
-            screen.blit(player.surf, player.rect)
-            screen.blit(player.sprite, (367, 358))
+            if show_hitboxes:
+                screen.blit(player.surf, player.rect)
+            #screen.blit(player.sprite, (367, 358))
+            player.run_animation(screen, screen_width)
 
             # Reduce player attack cooldown
             if player.attack_cooldown > 0:
