@@ -13,7 +13,7 @@ import Player
 
 class Enemy(pygame.sprite.Sprite):
 
-    def __init__(self, position, hp, speed, attack_pattern):
+    def __init__(self, position, hp, speed, damage, attack_pattern):
         """Initialises an instance of the Enemy class.
 
         Args:
@@ -31,6 +31,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.surf.get_rect(center=position)
         self.speed = speed
         self.hp = hp
+        self.damage = damage
 
         self.seen_player = False
         self.has_exploded = False
@@ -56,7 +57,7 @@ class Enemy(pygame.sprite.Sprite):
         if self.seen_player and self.attack_cooldown == 0:
             level.enemy_bullets.add(
                 Bullet.Bullet(self.rect.x + self.rect_size / 2, self.rect.y + self.rect_size / 2,
-                              self.attack_direction, self.projectile_speed, colour))
+                              self.attack_direction, self.projectile_speed, colour, self.damage))
             self.attack_cooldown = cooldown
 
         if self.attack_cooldown > 0:
@@ -80,7 +81,7 @@ class Enemy(pygame.sprite.Sprite):
             for i in range(num_bullets):
                 level.enemy_bullets.add(
                     Bullet.Bullet(self.rect.x + self.rect_size / 2, self.rect.y + self.rect_size / 2,
-                                  pygame.math.Vector2(0, 1).rotate(degrees * i), self.projectile_speed, colour))
+                                  pygame.math.Vector2(0, 1).rotate(degrees * i), self.projectile_speed, colour, self.damage))
             self.attack_cooldown = cooldown
 
         if self.attack_cooldown > 0:
@@ -101,7 +102,7 @@ class Enemy(pygame.sprite.Sprite):
             centre_vector = pygame.math.Vector2(self.rect.x + self.rect_size / 2, self.rect.y + self.rect_size / 2)
             attack_centre = centre_vector + attack_direction
             level.enemy_melee.add(
-                Bullet.Melee(attack_centre.x, attack_centre.y, 40, 40, 10))
+                Bullet.Melee(attack_centre.x, attack_centre.y, 40, 40, self.damage))
             self.attack_cooldown = cooldown
 
         if self.attack_cooldown > 0:
@@ -118,7 +119,7 @@ class Enemy(pygame.sprite.Sprite):
 
         if self.seen_player and self.attack_cooldown == 0 and self.dist_to_player <= 30 and not self.has_exploded:
             level.enemy_melee.add(
-                Bullet.Melee(self.rect.x, self.rect.y, 150, 150, 200))
+                Bullet.Melee(self.rect.x, self.rect.y, 150, 150, self.damage))
 
             self.set_death_conditions()
             self.has_exploded = True
@@ -254,7 +255,9 @@ class NormalEnemy(Enemy):
         self.speed = 1.5
         self.hp = 2
         self.bullet_colour = 'purple'
-        super(NormalEnemy, self).__init__(position, self.hp, self.speed, 'normal')
+        self.time_reward = 75
+        self.damage = 200
+        super(NormalEnemy, self).__init__(position, self.hp, self.speed, self.damage, 'normal')
 
     def animate(self, images, screen):
         """Animates the normal enemy.
@@ -313,7 +316,9 @@ class RadialEnemy(Enemy):
         self.speed = 1.5
         self.hp = 2
         self.bullet_colour = 'green'
-        super(RadialEnemy, self).__init__(position, self.hp, self.speed, 'radial')
+        self.time_reward = 100
+        self.damage = 200
+        super(RadialEnemy, self).__init__(position, self.hp, self.speed, self.damage, 'radial')
 
     def animate(self, images, screen):
         """Animates the radial enemy.
@@ -371,7 +376,9 @@ class MeleeEnemy(Enemy):
         self.cooldown = 40
         self.speed = 2.5
         self.hp = 2
-        super(MeleeEnemy, self).__init__(position, self.hp, self.speed, 'melee')
+        self.time_reward = 75
+        self.damage = 500
+        super(MeleeEnemy, self).__init__(position, self.hp, self.speed, self.damage, 'melee')
 
     def animate(self, images, screen):
         """Animates the melee enemy.
@@ -428,7 +435,9 @@ class ExplosionEnemy(Enemy):
         """
         self.speed = 3.5
         self.hp = 3
-        super(ExplosionEnemy, self).__init__(position, self.hp, self.speed, 'explosion')
+        self.time_reward = 200
+        self.damage = 700
+        super(ExplosionEnemy, self).__init__(position, self.hp, self.speed, self.damage, 'explosion')
 
     def animate(self, images, screen):
         """Animates the explosion enemy.

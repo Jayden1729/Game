@@ -30,7 +30,7 @@ class Level:
         self.player_bullets = pygame.sprite.Group()
         self.enemy_bullets = pygame.sprite.Group()
         self.enemy_melee = pygame.sprite.Group()
-        self.time = 3000
+        self.time = 1500
 
     def generate_walls(self):
         """Generates walls from new_grid.
@@ -148,7 +148,7 @@ class Level:
                     enemy.hp -= 1
                     if enemy.hp == 0:
                         enemy.set_death_conditions()
-                        self.time += 60
+                        self.time += enemy.time_reward
 
             bullet.animate(screen, images)
 
@@ -174,7 +174,7 @@ class Level:
                 bullet.kill()
 
             if pygame.Rect.colliderect(player.rect, bullet.rect):
-                self.time -= 120
+                self.time -= bullet.damage
                 bullet.kill()
 
             bullet.animate(screen, images)

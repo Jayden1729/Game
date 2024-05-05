@@ -156,16 +156,17 @@ def main():
                 player.attack_cooldown -= 1
 
             # Draw timer
+
+            if level.time > 1500:
+                level.time = 1500
+
             if level.time >= 10:
-                time_surf = pygame.Surface((level.time / 6, 20))
+                time_surf = pygame.Surface((level.time / 3, 20))
                 timer = time_surf.get_rect(center=(400, 30))
                 pygame.draw.rect(screen, (0, 0, 100), timer)
             else:
                 gui.paused = True
                 gui.show_retry_menu()
-
-            if level.time > 3000:
-                level.time = 3000
 
             level.time -= 1
 

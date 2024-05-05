@@ -3,7 +3,7 @@ import pygame
 
 class Bullet(pygame.sprite.Sprite):
 
-    def __init__(self, x, y, vector, speed, colour):
+    def __init__(self, x, y, vector, speed, colour, damage=1):
         """Initialises instance of Bullet class.
 
         Args:
@@ -18,6 +18,7 @@ class Bullet(pygame.sprite.Sprite):
         self.y = y
         self.vector = vector.normalize()
         self.speed = speed
+        self.damage = damage
         self.colour = colour
 
         self.surf = pygame.Surface((10, 10))
