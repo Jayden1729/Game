@@ -150,7 +150,7 @@ def main():
             if show_hitboxes:
                 screen.blit(player.surf, player.rect)
             #screen.blit(player.sprite, (367, 358))
-            player.run_animation(screen, screen_width)
+            player.run_animation(screen, screen_width, screen_height)
 
             # Reduce player attack cooldown
             if player.attack_cooldown > 0:
