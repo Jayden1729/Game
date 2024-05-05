@@ -109,7 +109,7 @@ class Player(pygame.sprite.Sprite):
 
         bullet_vector = mouse_vector - gun_vector
 
-        player_bullets.add(Bullet.Bullet(gun_vector.x, gun_vector.y, bullet_vector, self.projectile_speed))
+        player_bullets.add(Bullet.Bullet(gun_vector.x, gun_vector.y, bullet_vector, self.projectile_speed, 'red'))
         self.attack_cooldown = 20
         self.is_shooting = True
         self.shooting_frame_break = 0

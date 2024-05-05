@@ -140,10 +140,10 @@ def main():
                     attack.kill()
 
             # Draw and move player bullets + check collisions
-            level.update_player_bullets(screen)
+            level.update_player_bullets(screen, images, show_hitboxes)
 
             # Draw and move enemy bullets + check collisions
-            level.update_enemy_bullets(screen, player)
+            level.update_enemy_bullets(screen, player, images, show_hitboxes)
 
             # Player movement and draw player
             player.move(level, pressed_keys)

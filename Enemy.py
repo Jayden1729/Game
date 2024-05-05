@@ -42,7 +42,7 @@ class Enemy(pygame.sprite.Sprite):
         self.dist_to_player = 1000
         self.attack_pattern = attack_pattern
 
-    def normal_attack(self, level, cooldown):
+    def normal_attack(self, level, cooldown, colour):
         """Creates an enemy bullet when the player is seen by the enemy.
 
         Creates a bullet when seen_player is True, moving in a straight line towards the player, with speed
@@ -56,13 +56,13 @@ class Enemy(pygame.sprite.Sprite):
         if self.seen_player and self.attack_cooldown == 0:
             level.enemy_bullets.add(
                 Bullet.Bullet(self.rect.x + self.rect_size / 2, self.rect.y + self.rect_size / 2,
-                              self.attack_direction, self.projectile_speed))
+                              self.attack_direction, self.projectile_speed, colour))
             self.attack_cooldown = cooldown
 
         if self.attack_cooldown > 0:
             self.attack_cooldown -= 1
 
-    def radial_attack(self, level, num_bullets, cooldown):
+    def radial_attack(self, level, num_bullets, cooldown, colour):
         """Radial attack pattern for enemy.
 
         Creates num_bullets number of bullets in a radial pattern around the enemy, at evenly spaced angles, with a
@@ -80,7 +80,7 @@ class Enemy(pygame.sprite.Sprite):
             for i in range(num_bullets):
                 level.enemy_bullets.add(
                     Bullet.Bullet(self.rect.x + self.rect_size / 2, self.rect.y + self.rect_size / 2,
-                                  pygame.math.Vector2(0, 1).rotate(degrees * i), self.projectile_speed))
+                                  pygame.math.Vector2(0, 1).rotate(degrees * i), self.projectile_speed, colour))
             self.attack_cooldown = cooldown
 
         if self.attack_cooldown > 0:
@@ -209,12 +209,12 @@ class Enemy(pygame.sprite.Sprite):
         Args:
             run_images (png): png file containing all animation poses.
             run_frames (List[pygame.Rect]): list of pygame.Rect objects containing the location of each frame in
-                                            run_images.
+                run_images.
             screen (pygame.display): The game screen.
             left_offset (List[int]): a list [x, y] containing the offset for the image to be displayed when the player
-                                     is to the left of the enemy.
+                is to the left of the enemy.
             right_offset (List[int]): a list [x, y] containing the offset for the image to be displayed when the player
-                                      is to the right of the enemy.
+                is to the right of the enemy.
         """
         if self.animation_frame >= len(run_frames):
             self.animation_frame = 0
@@ -253,6 +253,7 @@ class NormalEnemy(Enemy):
         self.cooldown = 40
         self.speed = 1.5
         self.hp = 2
+        self.bullet_colour = 'purple'
         super(NormalEnemy, self).__init__(position, self.hp, self.speed, 'normal')
 
     def animate(self, images, screen):
@@ -297,7 +298,7 @@ class NormalEnemy(Enemy):
 
     def attack(self, level):
         if self.hp > 0:
-            self.normal_attack(level, self.cooldown)
+            self.normal_attack(level, self.cooldown, self.bullet_colour)
 
 
 class RadialEnemy(Enemy):
@@ -311,6 +312,7 @@ class RadialEnemy(Enemy):
         self.cooldown = 40
         self.speed = 1.5
         self.hp = 2
+        self.bullet_colour = 'green'
         super(RadialEnemy, self).__init__(position, self.hp, self.speed, 'radial')
 
     def animate(self, images, screen):
@@ -355,7 +357,7 @@ class RadialEnemy(Enemy):
 
     def attack(self, level):
         if self.hp > 0:
-            self.radial_attack(level, 6, self.cooldown)
+            self.radial_attack(level, 6, self.cooldown, self.bullet_colour)
 
 
 class MeleeEnemy(Enemy):

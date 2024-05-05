@@ -17,6 +17,21 @@ class Images:
         self.tileset = pygame.transform.scale(tile_images, (square_size * 30, square_size * 17))
         self.tile_dict = self.generate_tile_dict(square_size)
 
+        # Bullets
+        bullet_sf = 1.6
+
+        self.red_bullet = pygame.transform.scale(
+            pygame.image.load("sprites/Bullets/red bullet.png").convert_alpha(), (48, 15))
+        self.red_bullet_list = extract_sprite_animations_horizontal(self.red_bullet, 3)
+
+        self.purple_bullet = pygame.transform.scale(
+            pygame.image.load("sprites/Bullets/purple bullet.png").convert_alpha(), (48 * bullet_sf, 15 * bullet_sf))
+        self.purple_bullet_list = extract_sprite_animations_horizontal(self.purple_bullet, 3)
+
+        self.green_bullet = pygame.transform.scale(
+            pygame.image.load("sprites/Bullets/green bullet.png").convert_alpha(), (48 * bullet_sf, 15 * bullet_sf))
+        self.green_bullet_list = extract_sprite_animations_horizontal(self.green_bullet, 3)
+
         # Normal enemy images
         self.normal_enemy_run = pygame.transform.scale2x(
             pygame.image.load("sprites/Bot Wheel/move with FX.png").convert_alpha())

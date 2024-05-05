@@ -122,7 +122,7 @@ class Level:
 
         return enemy_list
 
-    def update_player_bullets(self, screen):
+    def update_player_bullets(self, screen, images, show_hitboxes):
         """Moves and displays player bullets and checks collisions with walls and enemies.
 
         Moves player bullets by bullet.speed in direction bullet.vector. If a bullet collides with a wall it is killed.
@@ -131,7 +131,8 @@ class Level:
 
         Args:
             screen (pygame.display): the screen to draw bullets on.
-
+            images (Images): the image object holding the bullet images.
+            show_hitboxes (bool): True to show bullet hixboxes.
         """
         for bullet in self.player_bullets:
             bullet.rect.move_ip(bullet.vector.x * bullet.speed, bullet.vector.y * bullet.speed)
@@ -149,9 +150,12 @@ class Level:
                         enemy.set_death_conditions()
                         self.time += 60
 
-            screen.blit(bullet.surf, bullet.rect)
+            bullet.animate(screen, images)
 
-    def update_enemy_bullets(self, screen, player):
+            if show_hitboxes:
+                screen.blit(bullet.surf, bullet.rect)
+
+    def update_enemy_bullets(self, screen, player, images, show_hitboxes):
         """Moves and displays enemy bullets, checks collisions with walls and the player.
 
         Moves enemy bullets by bullet.speed in direction bullet.vector. If a bullet collides with a wall it is killed.
@@ -161,7 +165,8 @@ class Level:
         Args:
             screen (pygame.display): the screen to display bullets on.
             player (Player): the player character.
-
+            images (Images): the image object holding the bullet images.
+            show_hitboxes (bool): True to show bullet hixboxes.
         """
         for bullet in self.enemy_bullets:
             bullet.rect.move_ip(bullet.vector.x * bullet.speed, bullet.vector.y * bullet.speed)
@@ -172,7 +177,10 @@ class Level:
                 self.time -= 120
                 bullet.kill()
 
-            screen.blit(bullet.surf, bullet.rect)
+            bullet.animate(screen, images)
+
+            if show_hitboxes:
+                screen.blit(bullet.surf, bullet.rect)
 
 
 def is_adjacent_wall(grid, element, direction):
