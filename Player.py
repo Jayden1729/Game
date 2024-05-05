@@ -6,7 +6,7 @@ import Level
 import Bullet
 import Images
 import math
-
+import copy
 
 class Player(pygame.sprite.Sprite):
 
@@ -71,8 +71,8 @@ class Player(pygame.sprite.Sprite):
         self.player_legs_run_list = Images.extract_sprite_animations_horizontal(self.player_legs_run, 8)
 
 
-    def attack(self, player_bullets):
-        """Creates a bullet and adds to player_bullets group
+    def attack(self, player_bullets, screen_width, screen_height):
+        """Creates a bullet and adds to player_bullets group.
 
         Args:
             player_bullets (pygame.Group[Bullets]): a pygame.Group object of Bullet objects.
@@ -80,10 +80,37 @@ class Player(pygame.sprite.Sprite):
         mouse_x, mouse_y = pygame.mouse.get_pos()
         mouse_vector = pygame.math.Vector2(mouse_x, mouse_y)
 
-        bullet_vector = mouse_vector - self.vector2
+        try:
+            mouse_angle = math.degrees(math.atan((mouse_y-screen_height/2)/abs((mouse_x-screen_width/2))))
+        except ZeroDivisionError:
+            mouse_angle = 0
 
-        player_bullets.add(Bullet.Bullet(400 + 10, 400 - 10, bullet_vector, self.projectile_speed))
-        self.attack_cooldown = 30
+        gun_vector = copy.deepcopy(self.vector2)
+        flip = 1
+
+        if mouse_x < screen_width/2:
+            flip = -1
+
+        if mouse_angle <= -50:
+            gun_vector.x += 10 * flip
+            gun_vector.y += -38
+        elif mouse_angle <= -15:
+            gun_vector.x += 26 * flip
+            gun_vector.y += -28
+        elif mouse_angle >= 50:
+            gun_vector.x += 20 * flip
+            gun_vector.y += 25
+        elif mouse_angle >= 15:
+            gun_vector.x += 29 * flip
+            gun_vector.y += 7
+        else:
+            gun_vector.x += 30 * flip
+            gun_vector.y += -12
+
+        bullet_vector = mouse_vector - gun_vector
+
+        player_bullets.add(Bullet.Bullet(gun_vector.x, gun_vector.y, bullet_vector, self.projectile_speed))
+        self.attack_cooldown = 20
         self.is_shooting = True
         self.shooting_frame_break = 0
         self.shooting_frame = 0
@@ -157,12 +184,17 @@ class Player(pygame.sprite.Sprite):
         self.is_moving = moving
 
     def run_animation(self, screen, screen_width, screen_height):
-        offset = [25, 25]
-        shooting_offset = [44, 63]
-        frame_break = 7
+        """Plays the player animation.
 
-        torso_images = self.player_torso_idle
-        torso_list = self.player_torso_idle_list
+        Args:
+            screen (pygame.display): the game screen.
+            screen_width (int): the width of the screen.
+            screen_height (int): the height of the screen.
+        """
+        offset = [23, 25]
+        torso_offset = [42, 25]
+        shooting_offset = [42, 63]
+        frame_break = 7
 
         mouse_pos = pygame.mouse.get_pos()
 
@@ -176,20 +208,26 @@ class Player(pygame.sprite.Sprite):
         if mouse_angle <= -50:
             shooting_images = self.player_torso_shoot_up_60
             shooting_list = self.player_torso_shoot_up_60_list
+            torso_offset = shooting_offset
         elif mouse_angle <= -15:
             shooting_images = self.player_torso_shoot_up_30
             shooting_list = self.player_torso_shoot_up_30_list
+            torso_offset = shooting_offset
         elif mouse_angle >= 50:
             shooting_images = self.player_torso_shoot_down_60
             shooting_list = self.player_torso_shoot_down_60_list
+            torso_offset = shooting_offset
         elif mouse_angle >= 15:
             shooting_images = self.player_torso_shoot_down_30
             shooting_list = self.player_torso_shoot_down_30_list
-            shooting_offset = [44, 25]
+            shooting_offset = torso_offset
         else:
             shooting_images = self.player_torso_shoot
             shooting_list = self.player_torso_shoot_list
-            shooting_offset = [44, 25]
+            shooting_offset = torso_offset
+
+        torso_images = shooting_images
+        torso_list = shooting_list[0:1]
 
         if self.is_moving:
             legs_images = self.player_legs_run
@@ -211,7 +249,7 @@ class Player(pygame.sprite.Sprite):
         if mouse_pos[0] < screen_width/2:
             legs_images = pygame.transform.flip(legs_images, True, False)
             screen.blit(legs_images, (self.rect.x - offset[0], self.rect.y - offset[1]),
-                        legs_list[-self.legs_frame])
+                        legs_list[self.legs_frame])
 
             if self.is_shooting:
                 shooting_images = pygame.transform.flip(shooting_images, True, False)
@@ -219,8 +257,8 @@ class Player(pygame.sprite.Sprite):
                             shooting_list[-self.shooting_frame])
             else:
                 torso_images = pygame.transform.flip(torso_images, True, False)
-                screen.blit(torso_images, (self.rect.x - offset[0], self.rect.y - offset[1]),
-                            torso_list[-self.torso_frame])
+                screen.blit(torso_images, (self.rect.x - torso_offset[0], self.rect.y - torso_offset[1]),
+                            shooting_list[-1])
         else:
             screen.blit(legs_images, (self.rect.x - offset[0], self.rect.y - offset[1]),
                         legs_list[self.legs_frame])
@@ -229,7 +267,7 @@ class Player(pygame.sprite.Sprite):
                 screen.blit(shooting_images, (self.rect.x - shooting_offset[0], self.rect.y - shooting_offset[1]),
                             shooting_list[self.shooting_frame])
             else:
-                screen.blit(torso_images, (self.rect.x - offset[0], self.rect.y - offset[1]),
+                screen.blit(torso_images, (self.rect.x - torso_offset[0], self.rect.y - torso_offset[1]),
                             torso_list[self.torso_frame])
 
         if self.legs_frame_break == 0:

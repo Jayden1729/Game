@@ -95,7 +95,7 @@ def main():
                 running = False
             # Check if player is attacking
             elif (event.type == pygame.MOUSEBUTTONDOWN or pressed_keys[pygame.K_SPACE]) and player.attack_cooldown == 0:
-                player.attack(level.player_bullets)
+                player.attack(level.player_bullets, screen_width, screen_height)
 
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == gui.start_button:
@@ -149,7 +149,6 @@ def main():
             player.move(level, pressed_keys)
             if show_hitboxes:
                 screen.blit(player.surf, player.rect)
-            #screen.blit(player.sprite, (367, 358))
             player.run_animation(screen, screen_width, screen_height)
 
             # Reduce player attack cooldown
