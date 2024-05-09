@@ -70,6 +70,7 @@ def main():
 
         # Fill screen background
         screen.fill((0, 0, 0))
+        screen.blit(images.background, (0, 0))
         screen.blit(images.planet, (screen_width / 2 - 150, screen_height / 2 - 150))
 
         # Change Level if all enemies killed

@@ -8,9 +8,12 @@ class Images:
 
     def __init__(self, square_size):
 
-        # Background planet image
+        # Background images
         planet_image = pygame.image.load("sprites/planet03 downsized.png").convert_alpha()
         self.planet = pygame.transform.scale(planet_image, (500, 500))
+
+        background_image = pygame.image.load("sprites/space_Background_1024.png").convert_alpha()
+        self.background = background_image
 
         # Tileset for background
         tile_images = pygame.image.load("sprites/TileSet.png").convert_alpha()
