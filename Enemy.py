@@ -375,7 +375,7 @@ class MeleeEnemy(Enemy):
         """
         self.cooldown = 40
         self.speed = 2.5
-        self.hp = 2
+        self.hp = 5
         self.time_reward = 75
         self.damage = 500
         super(MeleeEnemy, self).__init__(position, self.hp, self.speed, self.damage, 'melee')
