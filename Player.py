@@ -254,7 +254,7 @@ class Player(pygame.sprite.Sprite):
             if self.is_shooting:
                 shooting_images = pygame.transform.flip(shooting_images, True, False)
                 screen.blit(shooting_images, (self.rect.x - shooting_offset[0], self.rect.y - shooting_offset[1]),
-                            shooting_list[-self.shooting_frame])
+                            shooting_list[-self.shooting_frame - 1])
             else:
                 torso_images = pygame.transform.flip(torso_images, True, False)
                 screen.blit(torso_images, (self.rect.x - torso_offset[0], self.rect.y - torso_offset[1]),
