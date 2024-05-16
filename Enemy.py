@@ -260,6 +260,8 @@ class NormalEnemy(Enemy):
         self.bullet_colour = 'purple'
         self.time_reward = 75
         self.damage = 200
+        self.left_offset = [170, 10]
+        self.right_offset = [28, 10]
         super(NormalEnemy, self).__init__(position, self.hp, self.speed, self.damage, 'normal')
 
     def animate(self, images, screen):
@@ -273,10 +275,7 @@ class NormalEnemy(Enemy):
             death_images = images.normal_enemy_death
             death_frames = images.nor_enemy_death_list
 
-            left_offset = [0, 10]
-            right_offset = [20, 10]
-
-            self.run_animation(death_images, death_frames, screen, left_offset, right_offset)
+            self.run_animation(death_images, death_frames, screen, self.left_offset, self.right_offset)
 
             if self.animation_frame >= len(death_frames):
                 self.kill()
@@ -285,10 +284,7 @@ class NormalEnemy(Enemy):
             hit_images = images.normal_enemy_hit
             hit_frames = images.nor_enemy_hit_list
 
-            left_offset = [6, 10]
-            right_offset = [-5, 10]
-
-            self.run_animation(hit_images, hit_frames, screen, left_offset, right_offset, frame_break=10)
+            self.run_animation(hit_images, hit_frames, screen, self.left_offset, self.right_offset, frame_break=10)
 
             if self.animation_frame >= len(hit_frames):
                 self.is_hit = False
@@ -297,10 +293,7 @@ class NormalEnemy(Enemy):
             run_images = images.normal_enemy_run
             run_frames = images.nor_enemy_run_list
 
-            left_offset = [150, 10]
-            right_offset = left_offset
-
-            self.run_animation(run_images, run_frames, screen, left_offset, right_offset)
+            self.run_animation(run_images, run_frames, screen, self.left_offset, self.right_offset)
 
     def attack(self, level):
         if self.hp > 0:
@@ -321,6 +314,8 @@ class RadialEnemy(Enemy):
         self.bullet_colour = 'green'
         self.time_reward = 100
         self.damage = 200
+        self.left_offset = [110, 205]
+        self.right_offset = [90, 205]
         super(RadialEnemy, self).__init__(position, self.hp, self.speed, self.damage, 'radial')
 
     def animate(self, images, screen):
@@ -334,10 +329,7 @@ class RadialEnemy(Enemy):
             death_images = images.radial_enemy_death
             death_frames = images.rad_enemy_death_list
 
-            left_offset = [5, 205]
-            right_offset = [10, 205]
-
-            self.run_animation(death_images, death_frames, screen, left_offset, right_offset)
+            self.run_animation(death_images, death_frames, screen, self.left_offset, self.right_offset)
 
             if self.animation_frame >= len(death_frames):
                 self.kill()
@@ -346,10 +338,7 @@ class RadialEnemy(Enemy):
             hit_images = images.radial_enemy_hit
             hit_frames = images.rad_enemy_hit_list
 
-            left_offset = [12, 205]
-            right_offset = [14, 205]
-
-            self.run_animation(hit_images, hit_frames, screen, left_offset, right_offset)
+            self.run_animation(hit_images, hit_frames, screen, self.left_offset, self.right_offset)
 
             if self.animation_frame >= len(hit_frames):
                 self.is_hit = False
@@ -358,10 +347,7 @@ class RadialEnemy(Enemy):
             run_images = images.radial_enemy_run
             run_frames = images.rad_enemy_run_list
 
-            left_offset = [5, 205]
-            right_offset = [0, 205]
-
-            self.run_animation(run_images, run_frames, screen, left_offset, right_offset)
+            self.run_animation(run_images, run_frames, screen, self.left_offset, self.right_offset)
 
     def attack(self, level):
         if self.hp > 0:
@@ -381,6 +367,8 @@ class MeleeEnemy(Enemy):
         self.hp = 5
         self.time_reward = 75
         self.damage = 500
+        self.left_offset = [165, 23]
+        self.right_offset = [42, 23]
         super(MeleeEnemy, self).__init__(position, self.hp, self.speed, self.damage, 'melee')
 
     def animate(self, images, screen):
@@ -394,10 +382,7 @@ class MeleeEnemy(Enemy):
             death_images = images.melee_enemy_death
             death_frames = images.mel_enemy_death_list[2:]
 
-            left_offset = [28, 23]
-            right_offset = [10, 23]
-
-            self.run_animation(death_images, death_frames, screen, left_offset, right_offset)
+            self.run_animation(death_images, death_frames, screen, self.left_offset, self.right_offset)
 
             if self.animation_frame >= len(death_frames):
                 self.kill()
@@ -406,10 +391,7 @@ class MeleeEnemy(Enemy):
             attack_images = images.mel_attack_images
             attack_frames = images.mel_attack_list
 
-            left_offset = [150, 23]
-            right_offset = [40, 23]
-
-            self.run_animation(attack_images, attack_frames, screen, left_offset, right_offset)
+            self.run_animation(attack_images, attack_frames, screen, self.left_offset, self.right_offset)
 
             if self.animation_frame >= len(attack_frames):
                 self.is_attacking = False
@@ -418,10 +400,7 @@ class MeleeEnemy(Enemy):
             hit_images = images.melee_enemy_death
             hit_frames = images.mel_enemy_death_list[0:3]
 
-            left_offset = [28, 23]
-            right_offset = [10, 23]
-
-            self.run_animation(hit_images, hit_frames, screen, left_offset, right_offset)
+            self.run_animation(hit_images, hit_frames, screen, self.left_offset, self.right_offset)
 
             if self.animation_frame >= len(hit_frames):
                 self.is_hit = False
@@ -430,10 +409,7 @@ class MeleeEnemy(Enemy):
             run_images = images.melee_enemy_run
             run_frames = images.mel_enemy_run_list
 
-            left_offset = [20, 23]
-            right_offset = [10, 23]
-
-            self.run_animation(run_images, run_frames, screen, left_offset, right_offset)
+            self.run_animation(run_images, run_frames, screen, self.left_offset, self.right_offset)
 
     def attack(self, level):
         if self.hp > 0:
@@ -452,6 +428,9 @@ class ExplosionEnemy(Enemy):
         self.hp = 2
         self.time_reward = 200
         self.damage = 700
+        self.left_offset = [66, 40]
+        self.right_offset = [8, 40]
+
         super(ExplosionEnemy, self).__init__(position, self.hp, self.speed, self.damage, 'explosion')
 
     def animate(self, images, screen):
@@ -490,10 +469,7 @@ class ExplosionEnemy(Enemy):
             hit_images = images.explosion_enemy_death
             hit_frames = images.ex_enemy_death_list[0:3]
 
-            left_offset = [60, 30]
-            right_offset = [5, 40]
-
-            self.run_animation(hit_images, hit_frames, screen, left_offset, right_offset)
+            self.run_animation(hit_images, hit_frames, screen, self.left_offset, self.right_offset)
 
             if self.animation_frame >= len(hit_frames):
                 self.is_hit = False
@@ -503,10 +479,7 @@ class ExplosionEnemy(Enemy):
             run_images = images.explosion_enemy_run
             run_frames = images.ex_enemy_run_list
 
-            left_offset = [-5, 40]
-            right_offset = [0, 40]
-
-            self.run_animation(run_images, run_frames, screen, left_offset, right_offset)
+            self.run_animation(run_images, run_frames, screen, self.left_offset, self.right_offset)
 
     def attack(self, level):
         if self.hp > 0:
