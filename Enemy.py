@@ -36,6 +36,7 @@ class Enemy(pygame.sprite.Sprite):
         self.seen_player = False
         self.has_exploded = False
         self.is_hit = False
+        self.is_attacking = False
 
         self.attack_direction = pygame.math.Vector2(0, 0)
         self.projectile_speed = 2.5
@@ -96,14 +97,16 @@ class Enemy(pygame.sprite.Sprite):
             level (Level): the game level.
             cooldown (int): number of frames between attacks.
         """
-
-        if self.seen_player and self.attack_cooldown == 0 and self.dist_to_player <= 100:
+        if self.is_attacking and self.animation_frame == 4 and self.frame_break == 5:
             attack_direction = self.attack_direction.normalize() * self.rect_size
             centre_vector = pygame.math.Vector2(self.rect.x + self.rect_size / 2, self.rect.y + self.rect_size / 2)
             attack_centre = centre_vector + attack_direction
             level.enemy_melee.add(
                 Bullet.Melee(attack_centre.x, attack_centre.y, 40, 40, self.damage))
+
+        elif self.seen_player and self.attack_cooldown == 0 and self.dist_to_player <= 100:
             self.attack_cooldown = cooldown
+            self.is_attacking = True
 
         if self.attack_cooldown > 0:
             self.attack_cooldown -= 1
@@ -294,8 +297,8 @@ class NormalEnemy(Enemy):
             run_images = images.normal_enemy_run
             run_frames = images.nor_enemy_run_list
 
-            left_offset = [10, 10]
-            right_offset = [10, 10]
+            left_offset = [150, 10]
+            right_offset = left_offset
 
             self.run_animation(run_images, run_frames, screen, left_offset, right_offset)
 
@@ -314,7 +317,7 @@ class RadialEnemy(Enemy):
         """
         self.cooldown = 40
         self.speed = 1.5
-        self.hp = 2
+        self.hp = 3
         self.bullet_colour = 'green'
         self.time_reward = 100
         self.damage = 200
@@ -399,6 +402,18 @@ class MeleeEnemy(Enemy):
             if self.animation_frame >= len(death_frames):
                 self.kill()
 
+        elif self.is_attacking:
+            attack_images = images.mel_attack_images
+            attack_frames = images.mel_attack_list
+
+            left_offset = [150, 23]
+            right_offset = [40, 23]
+
+            self.run_animation(attack_images, attack_frames, screen, left_offset, right_offset)
+
+            if self.animation_frame >= len(attack_frames):
+                self.is_attacking = False
+
         elif self.is_hit:
             hit_images = images.melee_enemy_death
             hit_frames = images.mel_enemy_death_list[0:3]
@@ -415,7 +430,7 @@ class MeleeEnemy(Enemy):
             run_images = images.melee_enemy_run
             run_frames = images.mel_enemy_run_list
 
-            left_offset = [0, 23]
+            left_offset = [20, 23]
             right_offset = [10, 23]
 
             self.run_animation(run_images, run_frames, screen, left_offset, right_offset)
@@ -433,8 +448,8 @@ class ExplosionEnemy(Enemy):
         Args:
             position (List[int]): the position [x, y] to spawn the enemy.
         """
-        self.speed = 3.5
-        self.hp = 3
+        self.speed = 4.5
+        self.hp = 2
         self.time_reward = 200
         self.damage = 700
         super(ExplosionEnemy, self).__init__(position, self.hp, self.speed, self.damage, 'explosion')
@@ -496,3 +511,12 @@ class ExplosionEnemy(Enemy):
     def attack(self, level):
         if self.hp > 0:
             self.explosion_attack(level)
+
+class BossEnemy(Enemy):
+
+    def __init__(self, position):
+        self.speed = 3.5
+        self.hp = 50
+        self.time_reward = 200
+        self.damage = 700
+        super(BossEnemy, self).__init__(position, self.hp, self.speed, self.damage, 'boss')

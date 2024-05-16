@@ -64,6 +64,9 @@ class Images:
         self.melee_enemy_death = pygame.transform.scale(
             pygame.image.load("sprites/Mud Guard/damaged and death.png").convert_alpha(), (45 * 3, 183 * 3))
         self.mel_enemy_death_list = extract_sprite_animations_vertical(self.melee_enemy_death, 8)
+        self.mel_attack_images = pygame.transform.scale(
+            pygame.image.load("sprites/Mud Guard/attack 1.png").convert_alpha(), (82 * 3, 161 * 3))
+        self.mel_attack_list = extract_sprite_animations_vertical(self.mel_attack_images, 7)
 
         # Explosion enemy images
         self.explosion_enemy_run = pygame.transform.scale2x(
