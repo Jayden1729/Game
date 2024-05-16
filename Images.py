@@ -58,14 +58,15 @@ class Images:
         self.rad_enemy_hit_list = extract_sprite_animations_vertical(self.radial_enemy_hit, 2)
 
         # Melee enemy images
+        mel_sf = 3
         self.melee_enemy_run = pygame.transform.scale(
-            pygame.image.load("sprites/Mud Guard/Run.png").convert_alpha(), (78, 414))
+            pygame.image.load("sprites/Mud Guard/Run.png").convert_alpha(), (82 * mel_sf, 138 * mel_sf))
         self.mel_enemy_run_list = extract_sprite_animations_vertical(self.melee_enemy_run, 6)
         self.melee_enemy_death = pygame.transform.scale(
-            pygame.image.load("sprites/Mud Guard/damaged and death.png").convert_alpha(), (45 * 3, 183 * 3))
+            pygame.image.load("sprites/Mud Guard/damaged and death.png").convert_alpha(), (82 * mel_sf, 184 * mel_sf))
         self.mel_enemy_death_list = extract_sprite_animations_vertical(self.melee_enemy_death, 8)
         self.mel_attack_images = pygame.transform.scale(
-            pygame.image.load("sprites/Mud Guard/attack 1.png").convert_alpha(), (82 * 3, 161 * 3))
+            pygame.image.load("sprites/Mud Guard/attack 1.png").convert_alpha(), (82 * mel_sf, 161 * mel_sf))
         self.mel_attack_list = extract_sprite_animations_vertical(self.mel_attack_images, 7)
 
         # Explosion enemy images
