@@ -203,8 +203,6 @@ class Player(pygame.sprite.Sprite):
         except ZeroDivisionError:
             mouse_angle = 0
 
-        print(mouse_angle)
-
         if mouse_angle <= -50:
             shooting_images = self.player_torso_shoot_up_60
             shooting_list = self.player_torso_shoot_up_60_list
