@@ -70,7 +70,7 @@ class Enemy(pygame.sprite.Sprite):
         self.attack_cooldown = 0
         self.dist_to_player = 1000
 
-    def normal_attack(self, level, cooldown, colour):
+    def normal_attack(self, level, cooldown):
         """Creates an enemy bullet when the player is seen by the enemy.
 
         Creates a bullet when seen_player is True, moving in a straight line towards the player, with speed
@@ -84,13 +84,13 @@ class Enemy(pygame.sprite.Sprite):
         if self.seen_player and self.attack_cooldown == 0:
             level.enemy_bullets.add(
                 Bullet.Bullet(self.rect.x + self.rect_size / 2, self.rect.y + self.rect_size / 2,
-                              self.attack_direction, self.projectile_speed, colour, self.damage))
+                              self.attack_direction, self.projectile_speed, self.bullet_colour, self.damage))
             self.attack_cooldown = cooldown
 
         if self.attack_cooldown > 0:
             self.attack_cooldown -= 1
 
-    def radial_attack(self, level, num_bullets, cooldown, colour):
+    def radial_attack(self, level, num_bullets, cooldown):
         """Radial attack pattern for enemy.
 
         Creates num_bullets number of bullets in a radial pattern around the enemy, at evenly spaced angles, with a
@@ -108,7 +108,8 @@ class Enemy(pygame.sprite.Sprite):
             for i in range(num_bullets):
                 level.enemy_bullets.add(
                     Bullet.Bullet(self.rect.x + self.rect_size / 2, self.rect.y + self.rect_size / 2,
-                                  pygame.math.Vector2(0, 1).rotate(degrees * i), self.projectile_speed, colour, self.damage))
+                                  pygame.math.Vector2(0, 1).rotate(degrees * i), self.projectile_speed,
+                                  self.bullet_colour, self.damage))
             self.attack_cooldown = cooldown
 
         if self.attack_cooldown > 0:
@@ -354,7 +355,7 @@ class NormalEnemy(Enemy):
 
     def attack(self, level):
         if self.hp > 0:
-            self.normal_attack(level, self.cooldown, self.bullet_colour)
+            self.normal_attack(level, self.cooldown)
 
 
 class RadialEnemy(Enemy):
@@ -408,7 +409,7 @@ class RadialEnemy(Enemy):
 
     def attack(self, level):
         if self.hp > 0:
-            self.radial_attack(level, 6, self.cooldown, self.bullet_colour)
+            self.radial_attack(level, 6, self.cooldown)
 
 
 class MeleeEnemy(Enemy):
