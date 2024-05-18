@@ -15,17 +15,29 @@ enemy_config.read('enemy_config.ini')
 
 class Enemy(pygame.sprite.Sprite):
 
-    def __init__(self, position, hp, speed, damage, enemy_type):
+    def __init__(self, position, enemy_type, images):
         """Initialises an instance of the Enemy class.
 
         Args:
             position (List[int]): gives initial position of enemy.
         """
-
         super(Enemy, self).__init__()
 
-        config = dict(enemy_config.items(enemy_type))
+        # Define images
+        self.explosion_images = images.explosion_images
+        self.explosion_frames = images.explosion_list[2:]
 
+        self.death_images = getattr(images, enemy_type + '_death')
+        self.death_frames = getattr(images, enemy_type + '_death_list')
+
+        self.run_images = getattr(images, enemy_type + '_run')
+        self.run_frames = getattr(images, enemy_type + '_run_list')
+
+        self.hit_images = getattr(images, enemy_type + '_hit')
+        self.hit_frames = getattr(images, enemy_type + '_hit_list')
+
+        # Config parameters
+        config = dict(enemy_config.items(enemy_type))
         self.cooldown = json.loads(config['cooldown'])
         self.speed = json.loads(config['speed'])
         self.hp = json.loads(config['hp'])
@@ -36,19 +48,23 @@ class Enemy(pygame.sprite.Sprite):
         self.right_offset = json.loads(config['right_offset'])
         self.attack_pattern = enemy_type
 
+        # Define hit box
         self.rect_size = 40
         self.surf = pygame.Surface((self.rect_size, self.rect_size))
         self.surf.fill((255, 0, 0))
         self.rect = self.surf.get_rect(center=position)
 
+        # Track animations
         self.animation_frame = 0
         self.frame_break = 0
 
+        # Track enemy states
         self.seen_player = False
         self.has_exploded = False
         self.is_hit = False
         self.is_attacking = False
 
+        # Track attack variables
         self.attack_direction = pygame.math.Vector2(0, 0)
         self.projectile_speed = 2.5
         self.attack_cooldown = 0
@@ -247,6 +263,38 @@ class Enemy(pygame.sprite.Sprite):
         else:
             self.frame_break -= 1
 
+    def animate(self, images, screen):
+        """Animates the explosion enemy.
+
+        Args:
+            images (Images): Images class, contains the images to display.
+            screen (pygame.display): the game screen.
+        """
+        # Explosion animation
+        if self.has_exploded:
+            offset = [40, 70]
+            self.run_animation(self.explosion_images, self.explosion_frames, screen, offset, offset, 7, xbool=False)
+
+            if self.animation_frame >= len(self.explosion_frames):
+                self.kill()
+
+        # Death animation
+        elif self.hp == 0:
+            self.run_animation(self.death_images, self.death_frames, screen, self.left_offset, self.right_offset)
+
+            if self.animation_frame >= len(self.death_frames):
+                self.kill()
+
+        elif self.is_hit:
+            self.run_animation(self.hit_images, self.hit_frames, screen, self.left_offset, self.right_offset)
+
+            if self.animation_frame >= len(self.hit_frames):
+                self.is_hit = False
+
+        # Running animation
+        elif self.seen_player:
+            self.run_animation(self.run_images, self.run_frames, screen, self.left_offset, self.right_offset)
+
     def set_death_conditions(self):
         """Changes the conditions of the enemy when it dies, so that player attacks don't collide, and it cannot move.
         """
@@ -258,7 +306,7 @@ class Enemy(pygame.sprite.Sprite):
 
 class NormalEnemy(Enemy):
 
-    def __init__(self, position):
+    def __init__(self, position, images):
         """Creates a normal enemy.
 
         Args:
@@ -272,9 +320,9 @@ class NormalEnemy(Enemy):
         self.damage = 200
         self.left_offset = [170, 10]
         self.right_offset = [28, 10]
-        super(NormalEnemy, self).__init__(position, self.hp, self.speed, self.damage, 'normal')
+        super(NormalEnemy, self).__init__(position, 'normal', images)
 
-    def animate(self, images, screen):
+    def animate1(self, images, screen):
         """Animates the normal enemy.
 
         Args:
@@ -312,7 +360,7 @@ class NormalEnemy(Enemy):
 
 class RadialEnemy(Enemy):
 
-    def __init__(self, position):
+    def __init__(self, position, images):
         """Creates a radial enemy.
 
         Args:
@@ -326,9 +374,9 @@ class RadialEnemy(Enemy):
         self.damage = 200
         self.left_offset = [110, 205]
         self.right_offset = [90, 205]
-        super(RadialEnemy, self).__init__(position, self.hp, self.speed, self.damage, 'radial')
+        super(RadialEnemy, self).__init__(position, 'radial', images)
 
-    def animate(self, images, screen):
+    def animate1(self, images, screen):
         """Animates the radial enemy.
 
         Args:
@@ -366,7 +414,7 @@ class RadialEnemy(Enemy):
 
 class MeleeEnemy(Enemy):
 
-    def __init__(self, position, ):
+    def __init__(self, position, images):
         """Creates a melee enemy.
 
         Args:
@@ -379,9 +427,9 @@ class MeleeEnemy(Enemy):
         self.damage = 500
         self.left_offset = [165, 23]
         self.right_offset = [42, 23]
-        super(MeleeEnemy, self).__init__(position, self.hp, self.speed, self.damage, 'melee')
+        super(MeleeEnemy, self).__init__(position, 'melee', images)
 
-    def animate(self, images, screen):
+    def animate1(self, images, screen):
         """Animates the melee enemy.
 
         Args:
@@ -390,7 +438,7 @@ class MeleeEnemy(Enemy):
         """
         if self.hp == 0:
             death_images = images.melee_death
-            death_frames = images.melee_death_list[2:]
+            death_frames = images.melee_death_list
 
             self.run_animation(death_images, death_frames, screen, self.left_offset, self.right_offset)
 
@@ -407,8 +455,8 @@ class MeleeEnemy(Enemy):
                 self.is_attacking = False
 
         elif self.is_hit:
-            hit_images = images.melee_death
-            hit_frames = images.melee_death_list[0:3]
+            hit_images = images.melee_hit
+            hit_frames = images.melee_hit_list
 
             self.run_animation(hit_images, hit_frames, screen, self.left_offset, self.right_offset)
 
@@ -428,7 +476,7 @@ class MeleeEnemy(Enemy):
 
 class ExplosionEnemy(Enemy):
 
-    def __init__(self, position):
+    def __init__(self, position, images):
         """Creates an explosion enemy.
 
         Args:
@@ -441,9 +489,9 @@ class ExplosionEnemy(Enemy):
         self.left_offset = [66, 40]
         self.right_offset = [8, 40]
 
-        super(ExplosionEnemy, self).__init__(position, self.hp, self.speed, self.damage, 'explosion')
+        super(ExplosionEnemy, self).__init__(position, 'explosion', images)
 
-    def animate(self, images, screen):
+    def animate1(self, images, screen):
         """Animates the explosion enemy.
 
         Args:
@@ -465,7 +513,7 @@ class ExplosionEnemy(Enemy):
         # Death animation
         elif self.hp == 0:
             death_images = images.explosion_death
-            death_frames = images.explosion_death_list[2:]
+            death_frames = images.explosion_death_list
 
             self.run_animation(death_images, death_frames, screen, self.left_offset, self.right_offset)
 
@@ -473,8 +521,8 @@ class ExplosionEnemy(Enemy):
                 self.kill()
 
         elif self.is_hit:
-            hit_images = images.explosion_death
-            hit_frames = images.explosion_death_list[0:3]
+            hit_images = images.explosion_hit
+            hit_frames = images.explosion_hit_list
 
             self.run_animation(hit_images, hit_frames, screen, self.left_offset, self.right_offset)
 
@@ -491,12 +539,3 @@ class ExplosionEnemy(Enemy):
     def attack(self, level):
         if self.hp > 0:
             self.explosion_attack(level)
-
-class BossEnemy(Enemy):
-
-    def __init__(self, position):
-        self.speed = 3.5
-        self.hp = 50
-        self.time_reward = 200
-        self.damage = 700
-        super(BossEnemy, self).__init__(position, self.hp, self.speed, self.damage, 'boss')
