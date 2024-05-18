@@ -263,11 +263,10 @@ class Enemy(pygame.sprite.Sprite):
         else:
             self.frame_break -= 1
 
-    def animate(self, images, screen):
-        """Animates the explosion enemy.
+    def animate(self, screen):
+        """Animates the enemy.
 
         Args:
-            images (Images): Images class, contains the images to display.
             screen (pygame.display): the game screen.
         """
         # Explosion animation
