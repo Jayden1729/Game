@@ -282,8 +282,8 @@ class NormalEnemy(Enemy):
             screen (pygame.display): the game screen.
         """
         if self.hp == 0:
-            death_images = images.normal_enemy_death
-            death_frames = images.nor_enemy_death_list
+            death_images = images.normal_death
+            death_frames = images.normal_death_list
 
             self.run_animation(death_images, death_frames, screen, self.left_offset, self.right_offset)
 
@@ -291,8 +291,8 @@ class NormalEnemy(Enemy):
                 self.kill()
 
         elif self.is_hit:
-            hit_images = images.normal_enemy_hit
-            hit_frames = images.nor_enemy_hit_list
+            hit_images = images.normal_hit
+            hit_frames = images.normal_hit_list
 
             self.run_animation(hit_images, hit_frames, screen, self.left_offset, self.right_offset, frame_break=10)
 
@@ -300,8 +300,8 @@ class NormalEnemy(Enemy):
                 self.is_hit = False
 
         elif self.seen_player:
-            run_images = images.normal_enemy_run
-            run_frames = images.nor_enemy_run_list
+            run_images = images.normal_run
+            run_frames = images.normal_run_list
 
             self.run_animation(run_images, run_frames, screen, self.left_offset, self.right_offset)
 
@@ -336,8 +336,8 @@ class RadialEnemy(Enemy):
             screen (pygame.display): the game screen.
         """
         if self.hp == 0:
-            death_images = images.radial_enemy_death
-            death_frames = images.rad_enemy_death_list
+            death_images = images.radial_death
+            death_frames = images.radial_death_list
 
             self.run_animation(death_images, death_frames, screen, self.left_offset, self.right_offset)
 
@@ -345,8 +345,8 @@ class RadialEnemy(Enemy):
                 self.kill()
 
         elif self.is_hit:
-            hit_images = images.radial_enemy_hit
-            hit_frames = images.rad_enemy_hit_list
+            hit_images = images.radial_hit
+            hit_frames = images.radial_hit_list
 
             self.run_animation(hit_images, hit_frames, screen, self.left_offset, self.right_offset)
 
@@ -354,8 +354,8 @@ class RadialEnemy(Enemy):
                 self.is_hit = False
 
         elif self.seen_player:
-            run_images = images.radial_enemy_run
-            run_frames = images.rad_enemy_run_list
+            run_images = images.radial_run
+            run_frames = images.radial_run_list
 
             self.run_animation(run_images, run_frames, screen, self.left_offset, self.right_offset)
 
@@ -389,8 +389,8 @@ class MeleeEnemy(Enemy):
             screen (pygame.display): the game screen.
         """
         if self.hp == 0:
-            death_images = images.melee_enemy_death
-            death_frames = images.mel_enemy_death_list[2:]
+            death_images = images.melee_death
+            death_frames = images.melee_death_list[2:]
 
             self.run_animation(death_images, death_frames, screen, self.left_offset, self.right_offset)
 
@@ -398,8 +398,8 @@ class MeleeEnemy(Enemy):
                 self.kill()
 
         elif self.is_attacking:
-            attack_images = images.mel_attack_images
-            attack_frames = images.mel_attack_list
+            attack_images = images.melee_attack
+            attack_frames = images.melee_attack_list
 
             self.run_animation(attack_images, attack_frames, screen, self.left_offset, self.right_offset)
 
@@ -407,8 +407,8 @@ class MeleeEnemy(Enemy):
                 self.is_attacking = False
 
         elif self.is_hit:
-            hit_images = images.melee_enemy_death
-            hit_frames = images.mel_enemy_death_list[0:3]
+            hit_images = images.melee_death
+            hit_frames = images.melee_death_list[0:3]
 
             self.run_animation(hit_images, hit_frames, screen, self.left_offset, self.right_offset)
 
@@ -416,8 +416,8 @@ class MeleeEnemy(Enemy):
                 self.is_hit = False
 
         elif self.seen_player:
-            run_images = images.melee_enemy_run
-            run_frames = images.mel_enemy_run_list
+            run_images = images.melee_run
+            run_frames = images.melee_run_list
 
             self.run_animation(run_images, run_frames, screen, self.left_offset, self.right_offset)
 
@@ -464,20 +464,17 @@ class ExplosionEnemy(Enemy):
 
         # Death animation
         elif self.hp == 0:
-            death_images = images.explosion_enemy_death
-            death_frames = images.ex_enemy_death_list[2:]
+            death_images = images.explosion_death
+            death_frames = images.explosion_death_list[2:]
 
-            left_offset = [60, 30]
-            right_offset = [5, 40]
-
-            self.run_animation(death_images, death_frames, screen, left_offset, right_offset)
+            self.run_animation(death_images, death_frames, screen, self.left_offset, self.right_offset)
 
             if self.animation_frame >= len(death_frames):
                 self.kill()
 
         elif self.is_hit:
-            hit_images = images.explosion_enemy_death
-            hit_frames = images.ex_enemy_death_list[0:3]
+            hit_images = images.explosion_death
+            hit_frames = images.explosion_death_list[0:3]
 
             self.run_animation(hit_images, hit_frames, screen, self.left_offset, self.right_offset)
 
@@ -486,8 +483,8 @@ class ExplosionEnemy(Enemy):
 
         # Running animation
         elif self.seen_player:
-            run_images = images.explosion_enemy_run
-            run_frames = images.ex_enemy_run_list
+            run_images = images.explosion_run
+            run_frames = images.explosion_run_list
 
             self.run_animation(run_images, run_frames, screen, self.left_offset, self.right_offset)
 
