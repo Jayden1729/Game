@@ -55,7 +55,7 @@ def main():
                 for j in range(len(game_grid[0])):
                     if game_grid[i][j] == '1':
                         game_grid[i][j] = 1
-            levels.append(Level.Level(game_grid, square_size))
+            levels.append(Level.Level(game_grid, square_size, images))
 
     level = copy.deepcopy(levels[0])
     current_level = 1
@@ -126,7 +126,7 @@ def main():
                 if show_hitboxes:
                     screen.blit(enemy.surf, enemy.rect)
 
-                enemy.animate(images, screen)
+                enemy.animate(screen)
 
                 enemy.attack(level)
 
@@ -158,7 +158,7 @@ def main():
 
             # Draw timer
 
-            if level.time > 1500:
+            if level.time > 15000:
                 level.time = 1500
 
             if level.time >= 10:
