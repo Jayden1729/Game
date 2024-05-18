@@ -302,6 +302,29 @@ class Enemy(pygame.sprite.Sprite):
         self.speed = 0
         self.rect = pygame.Rect(self.rect.x, self.rect.y, 0, 0)
 
+    def attack(self, level):
+        '''Handles the enemy attack type.
+
+            Determines which attack pattern to execute for the enemy. Accepted attack patterns are: 'normal', 'radial',
+            'melee', and 'explosion'
+
+        Args:
+            level (Level): the game level.
+
+        Raises:
+            'Enemy attack pattern is not specified correctly': if enemy attack pattern is not an accepted enemy type.
+        '''
+        if self.hp > 0:
+            if self.attack_pattern == 'normal':
+                self.normal_attack(level)
+            elif self.attack_pattern == 'radial':
+                self.radial_attack(level, 6)
+            elif self.attack_pattern == 'melee':
+                self.melee_attack(level)
+            elif self.attack_pattern == 'explosion':
+                self.explosion_attack(level)
+            else:
+                raise('Enemy attack pattern is not specified correctly')
 
 class NormalEnemy(Enemy):
 
@@ -352,7 +375,7 @@ class NormalEnemy(Enemy):
 
             self.run_animation(run_images, run_frames, screen, self.left_offset, self.right_offset)
 
-    def attack(self, level):
+    def attack1(self, level):
         if self.hp > 0:
             self.normal_attack(level)
 
@@ -406,7 +429,7 @@ class RadialEnemy(Enemy):
 
             self.run_animation(run_images, run_frames, screen, self.left_offset, self.right_offset)
 
-    def attack(self, level):
+    def attack1(self, level):
         if self.hp > 0:
             self.radial_attack(level, 6)
 
@@ -468,7 +491,7 @@ class MeleeEnemy(Enemy):
 
             self.run_animation(run_images, run_frames, screen, self.left_offset, self.right_offset)
 
-    def attack(self, level):
+    def attack1(self, level):
         if self.hp > 0:
             self.melee_attack(level)
 
@@ -535,6 +558,6 @@ class ExplosionEnemy(Enemy):
 
             self.run_animation(run_images, run_frames, screen, self.left_offset, self.right_offset)
 
-    def attack(self, level):
+    def attack1(self, level):
         if self.hp > 0:
             self.explosion_attack(level)
