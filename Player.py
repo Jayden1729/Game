@@ -76,6 +76,8 @@ class Player(pygame.sprite.Sprite):
 
         Args:
             player_bullets (pygame.Group[Bullets]): a pygame.Group object of Bullet objects.
+            screen_width (int): the screen width.
+            screen_height (int): the screen height.
         """
         mouse_x, mouse_y = pygame.mouse.get_pos()
         mouse_vector = pygame.math.Vector2(mouse_x, mouse_y)
@@ -118,13 +120,13 @@ class Player(pygame.sprite.Sprite):
     def move(self, level: Level, pressed_keys):
         """Moves level around player on key press and handles wall collisions.
 
-                Moves level around player to give illusion of player movement, and handles wall collisions.
-                Movement speed is equal to self.speed.
+        Moves level around player to give illusion of player movement, and handles wall collisions.
+        Movement speed is equal to self.speed.
 
-                Args:
-                    level (Level): the level
-                    pressed_keys (bools): sequence of bools indicating which keys are pressed
-                """
+        Args:
+            level (Level): the level
+            pressed_keys (bools): sequence of bools indicating which keys are pressed
+        """
         moving = False
         wall_list = level.wall_list
         player_x = self.rect.x
