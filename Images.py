@@ -64,7 +64,9 @@ class Images:
         self.melee_run_list = extract_sprite_animations_vertical(self.melee_run, 6)
         self.melee_death = pygame.transform.scale(
             pygame.image.load("sprites/Mud Guard/damaged and death.png").convert_alpha(), (82 * mel_sf, 184 * mel_sf))
-        self.melee_death_list = extract_sprite_animations_vertical(self.melee_death, 8)
+        self.melee_death_list = extract_sprite_animations_vertical(self.melee_death, 8)[2:]
+        self.melee_hit = self.melee_death
+        self.melee_hit_list = extract_sprite_animations_vertical(self.melee_death, 8)[0:3]
         self.melee_attack = pygame.transform.scale(
             pygame.image.load("sprites/Mud Guard/attack 1.png").convert_alpha(), (82 * mel_sf, 161 * mel_sf))
         self.melee_attack_list = extract_sprite_animations_vertical(self.melee_attack, 7)
@@ -75,7 +77,9 @@ class Images:
         self.explosion_run_list = extract_sprite_animations_vertical(self.explosion_run, 6)
         self.explosion_death = pygame.transform.scale2x(
             pygame.image.load("sprites/Droid Zapper/damaged and death.png").convert_alpha())
-        self.explosion_death_list = extract_sprite_animations_vertical(self.explosion_death, 8)
+        self.explosion_death_list = extract_sprite_animations_vertical(self.explosion_death, 8)[2:]
+        self.explosion_hit = self.explosion_death
+        self.explosion_hit_list = extract_sprite_animations_vertical(self.explosion_death, 8)[0:3]
 
         # Explosion images
         self.explosion_images = pygame.image.load("sprites/explosion-4.png").convert_alpha()
