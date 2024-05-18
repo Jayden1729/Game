@@ -70,7 +70,7 @@ class Enemy(pygame.sprite.Sprite):
         self.attack_cooldown = 0
         self.dist_to_player = 1000
 
-    def normal_attack(self, level, cooldown):
+    def normal_attack(self, level):
         """Creates an enemy bullet when the player is seen by the enemy.
 
         Creates a bullet when seen_player is True, moving in a straight line towards the player, with speed
@@ -85,12 +85,12 @@ class Enemy(pygame.sprite.Sprite):
             level.enemy_bullets.add(
                 Bullet.Bullet(self.rect.x + self.rect_size / 2, self.rect.y + self.rect_size / 2,
                               self.attack_direction, self.projectile_speed, self.bullet_colour, self.damage))
-            self.attack_cooldown = cooldown
+            self.attack_cooldown = self.cooldown
 
         if self.attack_cooldown > 0:
             self.attack_cooldown -= 1
 
-    def radial_attack(self, level, num_bullets, cooldown):
+    def radial_attack(self, level, num_bullets):
         """Radial attack pattern for enemy.
 
         Creates num_bullets number of bullets in a radial pattern around the enemy, at evenly spaced angles, with a
@@ -110,19 +110,18 @@ class Enemy(pygame.sprite.Sprite):
                     Bullet.Bullet(self.rect.x + self.rect_size / 2, self.rect.y + self.rect_size / 2,
                                   pygame.math.Vector2(0, 1).rotate(degrees * i), self.projectile_speed,
                                   self.bullet_colour, self.damage))
-            self.attack_cooldown = cooldown
+            self.attack_cooldown = self.cooldown
 
         if self.attack_cooldown > 0:
             self.attack_cooldown -= 1
 
-    def melee_attack(self, level, cooldown):
+    def melee_attack(self, level):
         """Melee attack for enemy.
 
         Attacks the player if it is withing a specified radius of the enemy.
 
         Args:
             level (Level): the game level.
-            cooldown (int): number of frames between attacks.
         """
         if self.is_attacking and self.animation_frame == 4 and self.frame_break == 5:
             attack_direction = self.attack_direction.normalize() * self.rect_size
@@ -132,7 +131,7 @@ class Enemy(pygame.sprite.Sprite):
                 Bullet.Melee(attack_centre.x, attack_centre.y, 40, 40, self.damage))
 
         elif self.seen_player and self.attack_cooldown == 0 and self.dist_to_player <= 100:
-            self.attack_cooldown = cooldown
+            self.attack_cooldown = self.cooldown
             self.is_attacking = True
 
         if self.attack_cooldown > 0:
@@ -355,7 +354,7 @@ class NormalEnemy(Enemy):
 
     def attack(self, level):
         if self.hp > 0:
-            self.normal_attack(level, self.cooldown)
+            self.normal_attack(level)
 
 
 class RadialEnemy(Enemy):
@@ -409,7 +408,7 @@ class RadialEnemy(Enemy):
 
     def attack(self, level):
         if self.hp > 0:
-            self.radial_attack(level, 6, self.cooldown)
+            self.radial_attack(level, 6)
 
 
 class MeleeEnemy(Enemy):
@@ -471,7 +470,7 @@ class MeleeEnemy(Enemy):
 
     def attack(self, level):
         if self.hp > 0:
-            self.melee_attack(level, self.cooldown)
+            self.melee_attack(level)
 
 
 class ExplosionEnemy(Enemy):
