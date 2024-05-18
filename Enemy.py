@@ -2,18 +2,20 @@ import copy
 import sys
 
 import pygame
-import numpy as np
-import random
-import copy
+import configparser
+import json
 
 import Bullet
 import Level
 import Player
 
 
+enemy_config = configparser.SafeConfigParser()
+enemy_config.read('enemy_config.ini')
+
 class Enemy(pygame.sprite.Sprite):
 
-    def __init__(self, position, hp, speed, damage, attack_pattern):
+    def __init__(self, position, hp, speed, damage, enemy_type):
         """Initialises an instance of the Enemy class.
 
         Args:
@@ -21,17 +23,26 @@ class Enemy(pygame.sprite.Sprite):
         """
 
         super(Enemy, self).__init__()
+
+        config = dict(enemy_config.items(enemy_type))
+
+        self.cooldown = json.loads(config['cooldown'])
+        self.speed = json.loads(config['speed'])
+        self.hp = json.loads(config['hp'])
+        self.bullet_colour = config['bullet_colour']
+        self.time_reward = json.loads(config['time_reward'])
+        self.damage = json.loads(config['damage'])
+        self.left_offset = json.loads(config['left_offset'])
+        self.right_offset = json.loads(config['right_offset'])
+        self.attack_pattern = enemy_type
+
         self.rect_size = 40
         self.surf = pygame.Surface((self.rect_size, self.rect_size))
         self.surf.fill((255, 0, 0))
+        self.rect = self.surf.get_rect(center=position)
 
         self.animation_frame = 0
         self.frame_break = 0
-
-        self.rect = self.surf.get_rect(center=position)
-        self.speed = speed
-        self.hp = hp
-        self.damage = damage
 
         self.seen_player = False
         self.has_exploded = False
@@ -42,7 +53,6 @@ class Enemy(pygame.sprite.Sprite):
         self.projectile_speed = 2.5
         self.attack_cooldown = 0
         self.dist_to_player = 1000
-        self.attack_pattern = attack_pattern
 
     def normal_attack(self, level, cooldown, colour):
         """Creates an enemy bullet when the player is seen by the enemy.
