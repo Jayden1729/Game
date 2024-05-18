@@ -14,7 +14,7 @@ import Enemy
 
 class Level:
 
-    def __init__(self, grid, square_size):
+    def __init__(self, grid, square_size, images):
         """Initialises an instance of the Level class.
 
         Args:
@@ -26,7 +26,7 @@ class Level:
         self.floor_image_grid = randomise_floor_grid(copy.deepcopy(grid))
         self.square_size = square_size
         self.wall_list = self.generate_walls()
-        self.enemy_list = self.generate_enemies()
+        self.enemy_list = self.generate_enemies(images)
         self.player_bullets = pygame.sprite.Group()
         self.enemy_bullets = pygame.sprite.Group()
         self.enemy_melee = pygame.sprite.Group()
@@ -38,7 +38,7 @@ class Level:
         Generates walls from new_grid contained in Level object. 0's represent empty space, and 1's represent walls.
 
         Returns:
-            List[pygame.Rect]: A list of pygame.Rect objects, matching with the position of walls inputted into new_grid.
+            List[pygame.Rect]: a list of pygame.Rect objects, matching with the position of walls inputted into new_grid.
 
         """
         new_grid = copy.deepcopy(self.grid)
@@ -89,7 +89,7 @@ class Level:
 
         return wall_list
 
-    def generate_enemies(self):
+    def generate_enemies(self, images):
         """Generates enemies at specified starting location on grid.
 
         'e' on the grid indicates places for normal enemies to be generated.
@@ -112,13 +112,13 @@ class Level:
                 enemy_x = (j + 0.5) * square_size + self.origin_coords[0]
                 enemy_y = (i + 0.5) * square_size + self.origin_coords[1]
                 if grid[i][j] == 'e':
-                    enemy_list.add(Enemy.NormalEnemy((enemy_x, enemy_y)))
+                    enemy_list.add(Enemy.Enemy((enemy_x, enemy_y), 'normal', images))
                 elif grid[i][j] == 'r':
-                    enemy_list.add(Enemy.RadialEnemy((enemy_x, enemy_y)))
+                    enemy_list.add(Enemy.Enemy((enemy_x, enemy_y), 'radial', images))
                 elif grid[i][j] == 'm':
-                    enemy_list.add(Enemy.MeleeEnemy((enemy_x, enemy_y)))
+                    enemy_list.add(Enemy.Enemy((enemy_x, enemy_y), 'melee', images))
                 elif grid[i][j] == 'x':
-                    enemy_list.add(Enemy.ExplosionEnemy((enemy_x, enemy_y)))
+                    enemy_list.add(Enemy.Enemy((enemy_x, enemy_y), 'explosion', images))
 
         return enemy_list
 
