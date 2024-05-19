@@ -28,8 +28,8 @@ def main():
     pygame.init()
 
     # Variables
-    screen_width = 800
-    screen_height = 800
+    screen_width = 1000
+    screen_height = 1000
     square_size = 50
     fps = 90
     show_hitboxes = False
@@ -42,7 +42,7 @@ def main():
     clock = pygame.time.Clock()
     player = Player.Player()
     images = Images.Images(square_size)
-    gui = GUI.GUI()
+    gui = GUI.GUI(screen_width, screen_height)
 
     levels = []
 
