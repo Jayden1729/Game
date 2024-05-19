@@ -298,9 +298,9 @@ class Enemy(pygame.sprite.Sprite):
         elif self.is_attacking:
             self.run_animation(self.attack_images, self.attack_frames, screen, self.left_offset, self.right_offset)
 
-            if self.animation_frame >= len(self.hit_frames):
-                self.is_hit = False
-        
+            if self.animation_frame >= len(self.attack_frames):
+                self.is_attacking = False
+
         # Running animation
         elif self.seen_player:
             self.run_animation(self.run_images, self.run_frames, screen, self.left_offset, self.right_offset)
