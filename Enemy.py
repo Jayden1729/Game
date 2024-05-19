@@ -36,6 +36,9 @@ class Enemy(pygame.sprite.Sprite):
         self.hit_images = getattr(images, enemy_type + '_hit')
         self.hit_frames = getattr(images, enemy_type + '_hit_list')
 
+        self.attack_images = getattr(images, 'melee_attack')
+        self.attack_frames = getattr(images, 'melee_attack_list')
+
         # Config parameters
         config = dict(enemy_config.items(enemy_type))
         self.cooldown = json.loads(config['cooldown'])
@@ -284,12 +287,20 @@ class Enemy(pygame.sprite.Sprite):
             if self.animation_frame >= len(self.death_frames):
                 self.kill()
 
+        # Hit animation
         elif self.is_hit:
             self.run_animation(self.hit_images, self.hit_frames, screen, self.left_offset, self.right_offset)
 
             if self.animation_frame >= len(self.hit_frames):
                 self.is_hit = False
 
+        # Attack animation
+        elif self.is_attacking:
+            self.run_animation(self.attack_images, self.attack_frames, screen, self.left_offset, self.right_offset)
+
+            if self.animation_frame >= len(self.hit_frames):
+                self.is_hit = False
+        
         # Running animation
         elif self.seen_player:
             self.run_animation(self.run_images, self.run_frames, screen, self.left_offset, self.right_offset)
