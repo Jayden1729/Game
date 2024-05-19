@@ -34,17 +34,25 @@ class GUI:
         self.retry_button.hide()
 
     def show_main_menu(self):
+        '''Shows the main menu.
+        '''
         self.start_button.show()
         self.exit_button.show()
 
     def hide_main_menu(self):
+        '''Hides the main menu.
+        '''
         self.start_button.hide()
         self.exit_button.hide()
 
     def show_retry_menu(self):
+        '''Shows the retry menu.
+        '''
         self.retry_button.show()
         self.exit_button.show()
 
     def hide_retry_menu(self):
+        '''Hides the retry menu.
+        '''
         self.retry_button.hide()
         self.exit_button.hide()
