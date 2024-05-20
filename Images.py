@@ -310,6 +310,17 @@ def extract_sprite_animations_horizontal(image_set, num_frames):
     return frame_list
 
 def get_enemy_images(min_dimension):
+    '''Generates a dictionary of all images in the sprites/enemy folder.
+
+    Args:
+        min_dimension (int): the minimum screen dimension.
+
+    Returns:
+        {str, {str, [pygame.image, [pygame.Rect]]}}: a dictionary of each enemy type, linked to another dictionary. The
+            second dictionary contains a key holding lists for each image set belonging to that enemy type. The list
+            contains the image as element [0], and a list of pygame.Rect objects specifying the location of each
+            animation frame on the image as element [1].
+    '''
     enemy_images = configparser.SafeConfigParser()
     enemy_images.read('sprites/enemy/enemy_images.ini')
 
