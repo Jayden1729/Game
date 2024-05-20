@@ -23,14 +23,15 @@ import GUI
 
 
 
-def main():
+def main(screen_width=None):
     # initialise pygame
     pygame.init()
 
     # Variables
-    screen_width = 1000
-    screen_height = 1000
-    square_size = 50
+    screen_width = 1024
+    screen_height = 768
+    min_dimension = min(screen_width, screen_height)
+    square_size = min_dimension / 16
     fps = 90
     show_hitboxes = False
 
@@ -162,8 +163,8 @@ def main():
                 level.time = 1500
 
             if level.time >= 10:
-                time_surf = pygame.Surface((level.time / 3, 20))
-                timer = time_surf.get_rect(center=(400, 30))
+                time_surf = pygame.Surface(((level.time / 3), 20))
+                timer = time_surf.get_rect(center=(screen_width/2, screen_height/20))
                 pygame.draw.rect(screen, (0, 0, 100), timer)
             else:
                 gui.paused = True
