@@ -42,7 +42,7 @@ def main(screen_width=None):
     screen = pygame.display.set_mode((screen_width, screen_height))
     clock = pygame.time.Clock()
     player = Player.Player()
-    images = Images.Images(square_size)
+    images = Images.Images(min_dimension)
     gui = GUI.GUI(screen_width, screen_height)
 
     levels = []
@@ -178,7 +178,7 @@ def main(screen_width=None):
 
         pygame.display.flip()
         clock.tick(fps)
-        print(current_fps)
+        #print(current_fps)
 
     pygame.quit()
 

@@ -1,12 +1,15 @@
 import pygame
-import copy
 import Level
-import random
+import os
+import configparser
+import json
 
 
 class Images:
 
-    def __init__(self, square_size):
+    def __init__(self, min_dimension):
+
+        square_size = min_dimension / 16
 
         # Background images
         planet_image = pygame.image.load("sprites/planet03 downsized.png").convert_alpha()
@@ -21,7 +24,7 @@ class Images:
         self.tile_dict = self.generate_tile_dict(square_size)
 
         # Bullets
-        bullet_sf = 1.6
+        bullet_sf = 1.6 * min_dimension / 800
 
         self.red_bullet = pygame.transform.scale(
             pygame.image.load("sprites/Bullets/red bullet.png").convert_alpha(), (48, 15))
@@ -37,46 +40,46 @@ class Images:
 
         # Normal enemy images
         self.normal_run = pygame.transform.scale2x(
-            pygame.image.load("sprites/Bot Wheel/move with FX.png").convert_alpha())
+            pygame.image.load("sprites/enemy/normal/run.png").convert_alpha())
         self.normal_run_list = extract_sprite_animations_vertical(self.normal_run, 8)
         self.normal_death = pygame.transform.scale2x(
-            pygame.image.load("sprites/Bot Wheel/death.png").convert_alpha())
+            pygame.image.load("sprites/enemy/normal/death.png").convert_alpha())
         self.normal_death_list = extract_sprite_animations_vertical(self.normal_death, 6)
         self.normal_hit = pygame.transform.scale2x(
-            pygame.image.load("sprites/Bot Wheel/damaged.png").convert_alpha())
+            pygame.image.load("sprites/enemy/normal/hit.png").convert_alpha())
         self.normal_hit_list = extract_sprite_animations_vertical(self.normal_hit, 2)
 
         # Radial enemy images
         self.radial_run = pygame.transform.scale2x(
-            pygame.image.load("sprites/stormhead/run.png").convert_alpha())
+            pygame.image.load("sprites/enemy/radial/run.png").convert_alpha())
         self.radial_run_list = extract_sprite_animations_vertical(self.radial_run, 10)
         self.radial_death = pygame.transform.scale2x(
-            pygame.image.load("sprites/stormhead/death.png").convert_alpha())
+            pygame.image.load("sprites/enemy/radial/death.png").convert_alpha())
         self.radial_death_list = extract_sprite_animations_vertical(self.radial_death, 9)
         self.radial_hit = pygame.transform.scale2x(
-            pygame.image.load("sprites/stormhead/damaged.png").convert_alpha())
+            pygame.image.load("sprites/enemy/radial/hit.png").convert_alpha())
         self.radial_hit_list = extract_sprite_animations_vertical(self.radial_hit, 2)
 
         # Melee enemy images
         mel_sf = 3
         self.melee_run = pygame.transform.scale(
-            pygame.image.load("sprites/Mud Guard/Run.png").convert_alpha(), (44 * mel_sf, 138 * mel_sf))
+            pygame.image.load("sprites/enemy/melee/run.png").convert_alpha(), (44 * mel_sf, 138 * mel_sf))
         self.melee_run_list = extract_sprite_animations_vertical(self.melee_run, 6)
         self.melee_death = pygame.transform.scale(
-            pygame.image.load("sprites/Mud Guard/damaged and death.png").convert_alpha(), (44 * mel_sf, 184 * mel_sf))
+            pygame.image.load("sprites/enemy/melee/damaged and death.png").convert_alpha(), (44 * mel_sf, 184 * mel_sf))
         self.melee_death_list = extract_sprite_animations_vertical(self.melee_death, 8)[2:]
         self.melee_hit = self.melee_death
         self.melee_hit_list = extract_sprite_animations_vertical(self.melee_death, 8)[0:3]
         self.melee_attack = pygame.transform.scale(
-            pygame.image.load("sprites/Mud Guard/attack 1.png").convert_alpha(), (44 * mel_sf, 161 * mel_sf))
+            pygame.image.load("sprites/enemy/melee/attack.png").convert_alpha(), (44 * mel_sf, 161 * mel_sf))
         self.melee_attack_list = extract_sprite_animations_vertical(self.melee_attack, 7)
 
         # Explosion enemy images
         self.explosion_run = pygame.transform.scale2x(
-            pygame.image.load("sprites/Droid Zapper/run.png").convert_alpha())
+            pygame.image.load("sprites/enemy/explosion/run.png").convert_alpha())
         self.explosion_run_list = extract_sprite_animations_vertical(self.explosion_run, 6)
         self.explosion_death = pygame.transform.scale2x(
-            pygame.image.load("sprites/Droid Zapper/damaged and death.png").convert_alpha())
+            pygame.image.load("sprites/enemy/explosion/damaged and death.png").convert_alpha())
         self.explosion_death_list = extract_sprite_animations_vertical(self.explosion_death, 8)[2:]
         self.explosion_hit = self.explosion_death
         self.explosion_hit_list = extract_sprite_animations_vertical(self.explosion_death, 8)[0:3]
@@ -85,6 +88,8 @@ class Images:
         self.explosion_images = pygame.image.load("sprites/explosion-4.png").convert_alpha()
         self.explosion_list = extract_sprite_animations_horizontal(self.explosion_images, 12)
 
+        enemy_dict = get_enemy_images(min_dimension)
+        print(enemy_dict)
 
     def generate_tile_dict(self, square_size):
         """Generates a dictionary with the locations of each type of tile.
@@ -178,6 +183,9 @@ class Images:
                     if value != ('n'):
                         floor_rect = self.tile_dict[str('floor_' + str(value))]
                         screen.blit(self.tileset, (floor_x, floor_y), floor_rect)
+
+
+
 
 def get_wall_type(wall, grid):
     """Determines the type of wall connector to display.
@@ -277,6 +285,7 @@ def extract_sprite_animations_vertical(image_set, num_frames):
 
     return frame_list
 
+
 def extract_sprite_animations_horizontal(image_set, num_frames):
     """Extracts individual animation frames from png containing animation frames arranged horizontally.
 
@@ -299,3 +308,44 @@ def extract_sprite_animations_horizontal(image_set, num_frames):
         frame_list.append(pygame.Rect((frame_width * (i), 0), (frame_width, image_height)))
 
     return frame_list
+
+def get_enemy_images(min_dimension):
+    enemy_images = configparser.SafeConfigParser()
+    enemy_images.read('sprites/enemy/enemy_images.ini')
+
+    enemy_dict = {}
+
+    for folder in os.scandir('sprites/enemy'):
+        folder_name = os.path.splitext(os.path.basename(folder))[0]
+        if folder_name == 'enemy_images':
+            continue
+
+        new_dict = {}
+        config = dict(enemy_images.items(folder_name))
+
+        try:
+            scale_factor = json.loads(config['scale_factor']) * min_dimension / 800
+        except:
+            print(f'Scale factor is not specified for {folder_name}')
+            scale_factor = 1
+
+        for image_set in os.scandir(f'sprites/enemy/{folder_name}'):
+            image_name = os.path.splitext(os.path.basename(image_set))[0]
+            try:
+                num_frames = json.loads(config[image_name])
+            except:
+                print(f'Number of image frames not specified for {image_name} in {folder_name}')
+                continue
+
+            images = pygame.transform.scale_by(
+                pygame.image.load(f'sprites/enemy/{folder_name}/{image_name}.png').convert_alpha(),
+                scale_factor)
+            image_frames = extract_sprite_animations_vertical(images, num_frames)
+
+            new_dict.update({image_name: [images, image_frames]})
+
+        enemy_dict.update({folder_name: new_dict})
+
+    return enemy_dict
+
+
