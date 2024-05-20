@@ -35,39 +35,39 @@ class Player(pygame.sprite.Sprite):
 
         scale_factor = 1.3
         self.player_torso_idle = pygame.transform.scale(
-            pygame.image.load("sprites/Player/Torso/torso idle.png").convert_alpha(), (200 * scale_factor, 50 * scale_factor))
+            pygame.image.load("sprites/player/torso/idle.png").convert_alpha(), (200 * scale_factor, 50 * scale_factor))
         self.player_torso_idle_list = Images.extract_sprite_animations_horizontal(self.player_torso_idle, 4)
 
         self.player_torso_shoot = pygame.transform.scale(
-            pygame.image.load("sprites/Player/Torso/Shoot.png").convert_alpha(), (320 * scale_factor, 50 * scale_factor))
+            pygame.image.load("sprites/player/torso/shoot_forward.png").convert_alpha(), (320 * scale_factor, 50 * scale_factor))
         self.player_torso_shoot_list = Images.extract_sprite_animations_horizontal(self.player_torso_shoot, 4)
 
         self.player_torso_shoot_down_30 = pygame.transform.scale(
-            pygame.image.load("sprites/Player/Torso/Shoot down.png").convert_alpha(),
+            pygame.image.load("sprites/player/torso/shoot_down_30.png").convert_alpha(),
             (320 * scale_factor, 50 * scale_factor))
         self.player_torso_shoot_down_30_list = Images.extract_sprite_animations_horizontal(self.player_torso_shoot_down_30, 4)
 
         self.player_torso_shoot_down_60 = pygame.transform.scale(
-            pygame.image.load("sprites/Player/Torso/shoot down 60.png").convert_alpha(),
+            pygame.image.load("sprites/player/torso/shoot_down_60.png").convert_alpha(),
             (320 * scale_factor, 100 * scale_factor))
         self.player_torso_shoot_down_60_list = Images.extract_sprite_animations_horizontal(self.player_torso_shoot_down_60, 4)
 
         self.player_torso_shoot_up_30 = pygame.transform.scale(
-            pygame.image.load("sprites/Player/Torso/shoot up 30.png").convert_alpha(),
+            pygame.image.load("sprites/player/torso/shoot_up_30.png").convert_alpha(),
             (320 * scale_factor, 100 * scale_factor))
         self.player_torso_shoot_up_30_list = Images.extract_sprite_animations_horizontal(self.player_torso_shoot_up_30, 4)
 
         self.player_torso_shoot_up_60 = pygame.transform.scale(
-            pygame.image.load("sprites/Player/Torso/shoot up 60.png").convert_alpha(),
+            pygame.image.load("sprites/player/torso/shoot_up_60.png").convert_alpha(),
             (320 * scale_factor, 100 * scale_factor))
         self.player_torso_shoot_up_60_list = Images.extract_sprite_animations_horizontal(self.player_torso_shoot_up_60, 4)
 
         self.player_legs_idle = pygame.transform.scale(
-            pygame.image.load("sprites/Player/Legs/leg_idle.png").convert_alpha(), (50 * scale_factor, 50 * scale_factor))
+            pygame.image.load("sprites/player/legs/idle.png").convert_alpha(), (50 * scale_factor, 50 * scale_factor))
         self.player_legs_idle_list = Images.extract_sprite_animations_horizontal(self.player_legs_idle, 1)
 
         self.player_legs_run = pygame.transform.scale(
-            pygame.image.load("sprites/Player/Legs/Leg run.png").convert_alpha(), (400 * scale_factor, 50 * scale_factor))
+            pygame.image.load("sprites/player/legs/run.png").convert_alpha(), (400 * scale_factor, 50 * scale_factor))
         self.player_legs_run_list = Images.extract_sprite_animations_horizontal(self.player_legs_run, 8)
 
 

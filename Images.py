@@ -12,14 +12,14 @@ class Images:
         square_size = min_dimension / 16
 
         # Background images
-        planet_image = pygame.image.load("sprites/planet03 downsized.png").convert_alpha()
+        planet_image = pygame.image.load("sprites/other/background/planet_downsized.png").convert_alpha()
         self.planet = pygame.transform.scale(planet_image, (500, 500))
 
-        background_image = pygame.image.load("sprites/space_Background_1024.png").convert_alpha()
+        background_image = pygame.image.load("sprites/other/background/background_1024.png").convert_alpha()
         self.background = background_image
 
         # Tileset for background
-        tile_images = pygame.image.load("sprites/TileSet.png").convert_alpha()
+        tile_images = pygame.image.load("sprites/other/level/tileset.png").convert_alpha()
         self.tileset = pygame.transform.scale(tile_images, (square_size * 30, square_size * 17))
         self.tile_dict = self.generate_tile_dict(square_size)
 
@@ -27,15 +27,15 @@ class Images:
         bullet_sf = 1.6 * min_dimension / 800
 
         self.red_bullet = pygame.transform.scale(
-            pygame.image.load("sprites/Bullets/red bullet.png").convert_alpha(), (48, 15))
+            pygame.image.load("sprites/other/bullet/red.png").convert_alpha(), (48, 15))
         self.red_bullet_list = extract_sprite_animations_horizontal(self.red_bullet, 3)
 
         self.purple_bullet = pygame.transform.scale(
-            pygame.image.load("sprites/Bullets/purple bullet.png").convert_alpha(), (48 * bullet_sf, 15 * bullet_sf))
+            pygame.image.load("sprites/other/bullet/purple.png").convert_alpha(), (48 * bullet_sf, 15 * bullet_sf))
         self.purple_bullet_list = extract_sprite_animations_horizontal(self.purple_bullet, 3)
 
         self.green_bullet = pygame.transform.scale(
-            pygame.image.load("sprites/Bullets/green bullet.png").convert_alpha(), (48 * bullet_sf, 15 * bullet_sf))
+            pygame.image.load("sprites/other/bullet/green.png").convert_alpha(), (48 * bullet_sf, 15 * bullet_sf))
         self.green_bullet_list = extract_sprite_animations_horizontal(self.green_bullet, 3)
 
         # Normal enemy images
@@ -85,7 +85,7 @@ class Images:
         self.explosion_hit_list = extract_sprite_animations_vertical(self.explosion_death, 8)[0:3]
 
         # Explosion images
-        self.explosion_images = pygame.image.load("sprites/explosion-4.png").convert_alpha()
+        self.explosion_images = pygame.image.load("sprites/enemy/explosion/explosion.png").convert_alpha()
         self.explosion_list = extract_sprite_animations_horizontal(self.explosion_images, 12)
 
         enemy_dict = get_enemy_images(min_dimension)
@@ -183,8 +183,6 @@ class Images:
                     if value != ('n'):
                         floor_rect = self.tile_dict[str('floor_' + str(value))]
                         screen.blit(self.tileset, (floor_x, floor_y), floor_rect)
-
-
 
 
 def get_wall_type(wall, grid):
@@ -309,8 +307,9 @@ def extract_sprite_animations_horizontal(image_set, num_frames):
 
     return frame_list
 
+
 def get_enemy_images(min_dimension):
-    '''Generates a dictionary of all images in the sprites/enemy folder.
+    """Generates a dictionary of all images in the sprites/enemy folder.
 
     Args:
         min_dimension (int): the minimum screen dimension.
@@ -320,7 +319,7 @@ def get_enemy_images(min_dimension):
             second dictionary contains a key holding lists for each image set belonging to that enemy type. The list
             contains the image as element [0], and a list of pygame.Rect objects specifying the location of each
             animation frame on the image as element [1].
-    '''
+    """
     enemy_images = configparser.SafeConfigParser()
     enemy_images.read('sprites/enemy/enemy_images.ini')
 
@@ -358,5 +357,3 @@ def get_enemy_images(min_dimension):
         enemy_dict.update({folder_name: new_dict})
 
     return enemy_dict
-
-
