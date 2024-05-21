@@ -300,7 +300,7 @@ def get_images(min_dimension):
                 folder_scale_factor = 1
 
             try:
-                folder_axis = json.loads(config['axis'])
+                folder_axis = config['axis']
             except:
                 print(f'Axis is not specified for {child_folder_name}')
                 folder_axis = 'vertical'
