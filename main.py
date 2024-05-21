@@ -29,7 +29,7 @@ def main(screen_width=None):
 
     # Variables
     screen_width = 1024
-    screen_height = 768
+    screen_height = 800
     min_dimension = min(screen_width, screen_height)
     square_size = min_dimension / 16
     fps = 90
@@ -41,8 +41,8 @@ def main(screen_width=None):
     # Setup initial objects
     screen = pygame.display.set_mode((screen_width, screen_height))
     clock = pygame.time.Clock()
-    player = Player.Player()
     images = Images.Images(min_dimension)
+    player = Player.Player(images.player_dict)
     gui = GUI.GUI(screen_width, screen_height)
 
     levels = []
