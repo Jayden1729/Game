@@ -23,22 +23,10 @@ class Enemy(pygame.sprite.Sprite):
         """
         super(Enemy, self).__init__()
 
-        # Define images
-        self.explosion_images = images.explosion_images
-        self.explosion_frames = images.explosion_list[2:]
+        enemy_dict = images.enemy_dict
 
-        self.death_images = getattr(images, enemy_type + '_death')
-        self.death_frames = getattr(images, enemy_type + '_death_list')
-
-        self.run_images = getattr(images, enemy_type + '_run')
-        self.run_frames = getattr(images, enemy_type + '_run_list')
-
-        self.hit_images = getattr(images, enemy_type + '_hit')
-        self.hit_frames = getattr(images, enemy_type + '_hit_list')
-
-        self.attack_images = getattr(images, 'melee_attack')
-        self.attack_frames = getattr(images, 'melee_attack_list')
-
+        self.images = enemy_dict[enemy_type]
+        
         # Config parameters
         config = dict(enemy_config.items(enemy_type))
         self.cooldown = json.loads(config['cooldown'])
@@ -275,35 +263,40 @@ class Enemy(pygame.sprite.Sprite):
         # Explosion animation
         if self.has_exploded:
             offset = [40, 70]
-            self.run_animation(self.explosion_images, self.explosion_frames, screen, offset, offset, 7, xbool=False)
+            explosion_list = self.images['explosion']
+            self.run_animation(explosion_list[0], explosion_list[1], screen, offset, offset, 7, xbool=False)
 
-            if self.animation_frame >= len(self.explosion_frames):
+            if self.animation_frame >= len(explosion_list[1]):
                 self.kill()
 
         # Death animation
         elif self.hp == 0:
-            self.run_animation(self.death_images, self.death_frames, screen, self.left_offset, self.right_offset)
+            death_list = self.images['death']
+            self.run_animation(death_list[0], death_list[1], screen, self.left_offset, self.right_offset)
 
-            if self.animation_frame >= len(self.death_frames):
+            if self.animation_frame >= len(death_list[1]):
                 self.kill()
 
         # Hit animation
         elif self.is_hit:
-            self.run_animation(self.hit_images, self.hit_frames, screen, self.left_offset, self.right_offset)
+            hit_list = self.images['hit']
+            self.run_animation(hit_list[0], hit_list[1], screen, self.left_offset, self.right_offset)
 
-            if self.animation_frame >= len(self.hit_frames):
+            if self.animation_frame >= len(hit_list[1]):
                 self.is_hit = False
 
         # Attack animation
         elif self.is_attacking:
-            self.run_animation(self.attack_images, self.attack_frames, screen, self.left_offset, self.right_offset)
+            attack_list = self.images['attack']
+            self.run_animation(attack_list[0], attack_list[1], screen, self.left_offset, self.right_offset)
 
-            if self.animation_frame >= len(self.attack_frames):
+            if self.animation_frame >= len(attack_list[1]):
                 self.is_attacking = False
 
         # Running animation
         elif self.seen_player:
-            self.run_animation(self.run_images, self.run_frames, screen, self.left_offset, self.right_offset)
+            run_list = self.images['run']
+            self.run_animation(run_list[0], run_list[1], screen, self.left_offset, self.right_offset)
 
     def set_death_conditions(self):
         """Changes the conditions of the enemy when it dies, so that player attacks don't collide, and it cannot move.

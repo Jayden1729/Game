@@ -38,56 +38,6 @@ class Images:
             pygame.image.load("sprites/other/bullet/green.png").convert_alpha(), (48 * bullet_sf, 15 * bullet_sf))
         self.green_bullet_list = extract_sprite_animations_horizontal(self.green_bullet, 3)
 
-        # Normal enemy images
-        self.normal_run = pygame.transform.scale2x(
-            pygame.image.load("sprites/enemy/normal/run.png").convert_alpha())
-        self.normal_run_list = extract_sprite_animations_vertical(self.normal_run, 8)
-        self.normal_death = pygame.transform.scale2x(
-            pygame.image.load("sprites/enemy/normal/death.png").convert_alpha())
-        self.normal_death_list = extract_sprite_animations_vertical(self.normal_death, 6)
-        self.normal_hit = pygame.transform.scale2x(
-            pygame.image.load("sprites/enemy/normal/hit.png").convert_alpha())
-        self.normal_hit_list = extract_sprite_animations_vertical(self.normal_hit, 2)
-
-        # Radial enemy images
-        self.radial_run = pygame.transform.scale2x(
-            pygame.image.load("sprites/enemy/radial/run.png").convert_alpha())
-        self.radial_run_list = extract_sprite_animations_vertical(self.radial_run, 10)
-        self.radial_death = pygame.transform.scale2x(
-            pygame.image.load("sprites/enemy/radial/death.png").convert_alpha())
-        self.radial_death_list = extract_sprite_animations_vertical(self.radial_death, 9)
-        self.radial_hit = pygame.transform.scale2x(
-            pygame.image.load("sprites/enemy/radial/hit.png").convert_alpha())
-        self.radial_hit_list = extract_sprite_animations_vertical(self.radial_hit, 2)
-
-        # Melee enemy images
-        mel_sf = 3
-        self.melee_run = pygame.transform.scale(
-            pygame.image.load("sprites/enemy/melee/run.png").convert_alpha(), (44 * mel_sf, 138 * mel_sf))
-        self.melee_run_list = extract_sprite_animations_vertical(self.melee_run, 6)
-        self.melee_death = pygame.transform.scale(
-            pygame.image.load("sprites/enemy/melee/damaged and death.png").convert_alpha(), (44 * mel_sf, 184 * mel_sf))
-        self.melee_death_list = extract_sprite_animations_vertical(self.melee_death, 8)[2:]
-        self.melee_hit = self.melee_death
-        self.melee_hit_list = extract_sprite_animations_vertical(self.melee_death, 8)[0:3]
-        self.melee_attack = pygame.transform.scale(
-            pygame.image.load("sprites/enemy/melee/attack.png").convert_alpha(), (44 * mel_sf, 161 * mel_sf))
-        self.melee_attack_list = extract_sprite_animations_vertical(self.melee_attack, 7)
-
-        # Explosion enemy images
-        self.explosion_run = pygame.transform.scale2x(
-            pygame.image.load("sprites/enemy/explosion/run.png").convert_alpha())
-        self.explosion_run_list = extract_sprite_animations_vertical(self.explosion_run, 6)
-        self.explosion_death = pygame.transform.scale2x(
-            pygame.image.load("sprites/enemy/explosion/damaged and death.png").convert_alpha())
-        self.explosion_death_list = extract_sprite_animations_vertical(self.explosion_death, 8)[2:]
-        self.explosion_hit = self.explosion_death
-        self.explosion_hit_list = extract_sprite_animations_vertical(self.explosion_death, 8)[0:3]
-
-        # Explosion images
-        self.explosion_images = pygame.image.load("sprites/enemy/explosion/explosion.png").convert_alpha()
-        self.explosion_list = extract_sprite_animations_horizontal(self.explosion_images, 12)
-
         self.image_dict = get_images(min_dimension)
         self.enemy_dict = self.image_dict['enemy']
         self.player_dict = self.image_dict['player']
