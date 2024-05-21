@@ -88,8 +88,12 @@ class Images:
         self.explosion_images = pygame.image.load("sprites/enemy/explosion/explosion.png").convert_alpha()
         self.explosion_list = extract_sprite_animations_horizontal(self.explosion_images, 12)
 
-        enemy_dict = get_enemy_images(min_dimension)
-        print(enemy_dict)
+        self.image_dict = get_images(min_dimension)
+        self.enemy_dict = self.image_dict['enemy']
+        self.player_dict = self.image_dict['player']
+        self.other_dict = self.image_dict['other']
+        self.bullet_dict = self.other_dict['bullet']
+
 
     def generate_tile_dict(self, square_size):
         """Generates a dictionary with the locations of each type of tile.
@@ -308,52 +312,87 @@ def extract_sprite_animations_horizontal(image_set, num_frames):
     return frame_list
 
 
-def get_enemy_images(min_dimension):
-    """Generates a dictionary of all images in the sprites/enemy folder.
+def get_images(min_dimension):
+    """Generates a dictionary of all images in the sprites folder.
 
     Args:
         min_dimension (int): the minimum screen dimension.
 
     Returns:
-        {str, {str, [pygame.image, [pygame.Rect]]}}: a dictionary of each enemy type, linked to another dictionary. The
-            second dictionary contains a key holding lists for each image set belonging to that enemy type. The list
-            contains the image as element [0], and a list of pygame.Rect objects specifying the location of each
-            animation frame on the image as element [1].
+        {str, {str, {str, [pygame.image, [pygame.Rect]]}}}: a 3-layer dictionary representing the sprites folder
+            structure. The final level contains a key with a list for each image. The list contains the image as element
+            [0], and a list of pygame.Rect objects specifying the location of each animation frame on the image as
+            element [1].
     """
-    enemy_images = configparser.SafeConfigParser()
-    enemy_images.read('sprites/enemy/enemy_images.ini')
+    image_dict = {}
 
-    enemy_dict = {}
-
-    for folder in os.scandir('sprites/enemy'):
+    for folder in os.scandir('sprites'):
         folder_name = os.path.splitext(os.path.basename(folder))[0]
-        if folder_name == 'enemy_images':
-            continue
 
-        new_dict = {}
-        config = dict(enemy_images.items(folder_name))
+        images = configparser.SafeConfigParser()
+        images.read(f'sprites/{folder_name}/{folder_name}_images.ini')
 
-        try:
-            scale_factor = json.loads(config['scale_factor']) * min_dimension / 800
-        except:
-            print(f'Scale factor is not specified for {folder_name}')
-            scale_factor = 1
+        folder_dict = {}
 
-        for image_set in os.scandir(f'sprites/enemy/{folder_name}'):
-            image_name = os.path.splitext(os.path.basename(image_set))[0]
-            try:
-                num_frames = json.loads(config[image_name])
-            except:
-                print(f'Number of image frames not specified for {image_name} in {folder_name}')
+        for child_folder in os.scandir(f'sprites/{folder_name}'):
+            child_folder_name = os.path.splitext(os.path.basename(child_folder))[0]
+
+            if child_folder_name == f'{folder_name}_images':
                 continue
 
-            images = pygame.transform.scale_by(
-                pygame.image.load(f'sprites/enemy/{folder_name}/{image_name}.png').convert_alpha(),
-                scale_factor)
-            image_frames = extract_sprite_animations_vertical(images, num_frames)
+            new_dict = {}
+            config = dict(images.items(child_folder_name))
 
-            new_dict.update({image_name: [images, image_frames]})
+            try:
+                folder_scale_factor = json.loads(config['scale_factor']) * min_dimension / 800
+            except:
+                print(f'Scale factor is not specified for {child_folder_name}')
+                folder_scale_factor = 1
 
-        enemy_dict.update({folder_name: new_dict})
+            try:
+                folder_axis = json.loads(config['axis'])
+            except:
+                print(f'Axis is not specified for {child_folder_name}')
+                folder_axis = 'vertical'
 
-    return enemy_dict
+            for image_set in os.scandir(f'sprites/{folder_name}/{child_folder_name}'):
+                image_name = os.path.splitext(os.path.basename(image_set))[0]
+                image_extension = os.path.splitext(os.path.basename(image_set))[1]
+
+                axis = folder_axis
+                scale_factor = folder_scale_factor
+
+                if image_extension != '.png':
+                    continue
+
+                try:
+                    override = configparser.SafeConfigParser()
+                    override.read(f'sprites/{folder_name}/{child_folder_name}/{image_name}_override.ini')
+                    override_config = dict(override.items(f'{image_name}'))
+                    axis = override_config['axis']
+                    scale_factor = json.loads(override_config['scale_factor'])
+                except:
+                    pass
+
+                try:
+                    num_frames = json.loads(config[image_name])
+                except:
+                    print(f'Number of image frames not specified for {image_name} in {child_folder_name}')
+                    continue
+
+                load_images = pygame.transform.scale_by(
+                    pygame.image.load(f'sprites/{folder_name}/{child_folder_name}/{image_name}.png').convert_alpha(),
+                    scale_factor)
+
+                if axis == 'horizontal':
+                    image_frames = extract_sprite_animations_horizontal(load_images, num_frames)
+                else:
+                    image_frames = extract_sprite_animations_vertical(load_images, num_frames)
+
+                new_dict.update({image_name: [load_images, image_frames]})
+
+            folder_dict.update({child_folder_name: new_dict})
+
+        image_dict.update({folder_name: folder_dict})
+
+    return image_dict
