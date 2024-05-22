@@ -26,24 +26,11 @@ class Images:
         # Bullets
         bullet_sf = 1.6 * min_dimension / 800
 
-        self.red_bullet = pygame.transform.scale(
-            pygame.image.load("sprites/other/bullet/red.png").convert_alpha(), (48, 15))
-        self.red_bullet_list = extract_sprite_animations_horizontal(self.red_bullet, 3)
-
-        self.purple_bullet = pygame.transform.scale(
-            pygame.image.load("sprites/other/bullet/purple.png").convert_alpha(), (48 * bullet_sf, 15 * bullet_sf))
-        self.purple_bullet_list = extract_sprite_animations_horizontal(self.purple_bullet, 3)
-
-        self.green_bullet = pygame.transform.scale(
-            pygame.image.load("sprites/other/bullet/green.png").convert_alpha(), (48 * bullet_sf, 15 * bullet_sf))
-        self.green_bullet_list = extract_sprite_animations_horizontal(self.green_bullet, 3)
-
         self.image_dict = get_images(min_dimension)
         self.enemy_dict = self.image_dict['enemy']
         self.player_dict = self.image_dict['player']
         self.other_dict = self.image_dict['other']
         self.bullet_dict = self.other_dict['bullet']
-
 
     def generate_tile_dict(self, square_size):
         """Generates a dictionary with the locations of each type of tile.
@@ -271,8 +258,9 @@ def get_images(min_dimension):
     Returns:
         {str, {str, {str, [pygame.image, [pygame.Rect]]}}}: a 3-layer dictionary representing the sprites folder
             structure. The final level contains a key with a list for each image. The list contains the image as element
-            [0], and a list of pygame.Rect objects specifying the location of each animation frame on the image as
-            element [1].
+            [0], a list of pygame.Rect objects specifying the location of each animation frame on the image as
+            element [1], a list [x,y] containing the left_offset of the image as element [2], and a list [x,y]
+            containing the right_offset of the image as element [3].
     """
     image_dict = {}
 
@@ -305,12 +293,17 @@ def get_images(min_dimension):
                 print(f'Axis is not specified for {child_folder_name}')
                 folder_axis = 'vertical'
 
+            try:
+                folder_left_offset = json.loads(config['left_offset'])
+                folder_right_offset = json.loads(config['right_offset'])
+            except:
+                print(f'Scale factor is not specified for {child_folder_name}')
+                folder_left_offset = [0, 0]
+                folder_right_offset = [0, 0]
+
             for image_set in os.scandir(f'sprites/{folder_name}/{child_folder_name}'):
                 image_name = os.path.splitext(os.path.basename(image_set))[0]
                 image_extension = os.path.splitext(os.path.basename(image_set))[1]
-
-                axis = folder_axis
-                scale_factor = folder_scale_factor
 
                 if image_extension != '.png':
                     continue
@@ -320,9 +313,14 @@ def get_images(min_dimension):
                     override.read(f'sprites/{folder_name}/{child_folder_name}/{image_name}_override.ini')
                     override_config = dict(override.items(f'{image_name}'))
                     axis = override_config['axis']
-                    scale_factor = json.loads(override_config['scale_factor'])
+                    scale_factor = json.loads(override_config['scale_factor']) * min_dimension / 800
+                    left_offset = json.loads(override_config['left_offset'])
+                    right_offset = json.loads(override_config['right_offset'])
                 except:
-                    pass
+                    axis = folder_axis
+                    scale_factor = folder_scale_factor * min_dimension / 800
+                    left_offset = folder_left_offset
+                    right_offset = folder_right_offset
 
                 try:
                     num_frames = json.loads(config[image_name])
@@ -339,10 +337,30 @@ def get_images(min_dimension):
                 else:
                     image_frames = extract_sprite_animations_vertical(load_images, num_frames)
 
-                new_dict.update({image_name: [load_images, image_frames]})
+                left_offset = scale_list(left_offset, min_dimension)
+                right_offset = scale_list(right_offset, min_dimension)
+                print(left_offset, right_offset)
+
+                new_dict.update({image_name: [load_images, image_frames, left_offset, right_offset]})
 
             folder_dict.update({child_folder_name: new_dict})
 
         image_dict.update({folder_name: folder_dict})
 
     return image_dict
+
+def scale_list(list, min_dimension):
+    '''Scales a list by the min_dimension.
+
+    Args:
+        list (List[ints]): a list of ints.
+        min_dimension (int): the minimum screen dimension.
+
+    Returns:
+        List[ints]: a list of ints scaled by the min_dimension.
+    '''
+
+    for i in range(len(list)):
+        list[i] = round(list[i] / 800 * min_dimension)
+
+    return list
