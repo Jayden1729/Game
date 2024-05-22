@@ -21,10 +21,12 @@ class Player(pygame.sprite.Sprite):
         self.legs_images = player_dict['legs']
 
         rect_size = 20
+        self.x = round(screen_dimensions[0] / 2)
+        self.y = round(screen_dimensions[1] / 2)
         self.surf = pygame.Surface((rect_size, rect_size))
         self.surf.fill((0, 0, 255))
-        self.rect = self.surf.get_rect(center=(round(screen_dimensions[0] / 2), round(screen_dimensions[1] / 2)))
-        self.vector2 = pygame.math.Vector2(round(screen_dimensions[0] / 2), round(screen_dimensions[1] / 2))
+        self.rect = self.surf.get_rect(center=(self.x, self.y))
+        self.vector2 = pygame.math.Vector2(self.x, self.y)
         self.speed = 5
         self.projectile_speed = 10
         self.attack_cooldown = 0
@@ -150,13 +152,11 @@ class Player(pygame.sprite.Sprite):
         # Update if player is moving
         self.is_moving = moving
 
-    def run_animation(self, screen, screen_width, screen_height):
+    def run_animation(self, screen):
         """Plays the player animation.
 
         Args:
             screen (pygame.display): the game screen.
-            screen_width (int): the width of the screen.
-            screen_height (int): the height of the screen.
         """
         direction = 1
         offset = [23, 25]
@@ -167,7 +167,7 @@ class Player(pygame.sprite.Sprite):
 
         try:
             mouse_angle = math.degrees(
-                math.atan((mouse_pos[1] - screen_height / 2) / abs((mouse_pos[0] - screen_width / 2))))
+                math.atan((mouse_pos[1] - self.y) / abs((mouse_pos[0] - self.x))))
         except ZeroDivisionError:
             mouse_angle = 0
 
@@ -208,7 +208,7 @@ class Player(pygame.sprite.Sprite):
             self.is_shooting = False
 
         # Flip images if mouse is left of the player
-        if mouse_pos[0] < screen_width / 2:
+        if mouse_pos[0] < self.x:
             legs_sprites = pygame.transform.flip(legs_sprites, True, False)
             torso_sprites = pygame.transform.flip(torso_sprites, True, False)
             direction = -1
