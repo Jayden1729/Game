@@ -152,7 +152,7 @@ class Player(pygame.sprite.Sprite):
         # Update if player is moving
         self.is_moving = moving
 
-    def run_animation(self, screen):
+    def animate(self, screen):
         """Plays the player animation.
 
         Args:
