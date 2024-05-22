@@ -34,7 +34,7 @@ def main(screen_width=None):
     min_dimension = min(screen_width, screen_height)
     square_size = min_dimension / 16
     fps = 90
-    show_hitboxes = False
+    show_hitboxes = True
 
     fps_total = 0
     frame_counter = 0
@@ -98,7 +98,7 @@ def main(screen_width=None):
                 running = False
             # Check if player is attacking
             elif (event.type == pygame.MOUSEBUTTONDOWN or pressed_keys[pygame.K_SPACE]) and player.attack_cooldown == 0:
-                player.attack(level.player_bullets, screen_width, screen_height)
+                player.attack(level.player_bullets, screen_width, screen_height, images.bullet_dict)
 
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == gui.start_button:
@@ -143,10 +143,10 @@ def main(screen_width=None):
                     attack.kill()
 
             # Draw and move player bullets + check collisions
-            level.update_player_bullets(screen, images, show_hitboxes)
+            level.update_player_bullets(screen, show_hitboxes)
 
             # Draw and move enemy bullets + check collisions
-            level.update_enemy_bullets(screen, player, images, show_hitboxes)
+            level.update_enemy_bullets(screen, player, show_hitboxes)
 
             # Player movement and draw player
             player.move(level, pressed_keys)

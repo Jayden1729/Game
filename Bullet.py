@@ -3,7 +3,7 @@ import pygame
 
 class Bullet(pygame.sprite.Sprite):
 
-    def __init__(self, x, y, vector, speed, colour, damage=1):
+    def __init__(self, x, y, vector, speed, images, damage=1):
         """Initialises instance of Bullet class.
 
         Args:
@@ -19,7 +19,7 @@ class Bullet(pygame.sprite.Sprite):
         self.vector = vector.normalize()
         self.speed = speed
         self.damage = damage
-        self.colour = colour
+        self.images = images
 
         self.surf = pygame.Surface((10, 10))
         self.rect = self.surf.get_rect(center=(x, y))
@@ -27,30 +27,16 @@ class Bullet(pygame.sprite.Sprite):
         self.animation_frame = 0
         self.frame_break = 0
 
-    def animate(self, screen, images):
+    def animate(self, screen):
         """Animates the bullet.
 
         Args:
             screen (pygame.display): the game screen.
-            images (Images): an image object holding the bullet images.
         """
-        offset = [3, 3]
-        large_offset = [7, 7]
         frame_break = 7
-
-        if self.colour == "red":
-            bullet_images = images.red_bullet
-            bullet_list = images.red_bullet_list[1:]
-
-        elif self.colour == 'purple':
-            bullet_images = images.purple_bullet
-            bullet_list = images.purple_bullet_list[1:]
-            offset = large_offset
-
-        elif self.colour == 'green':
-            bullet_images = images.green_bullet
-            bullet_list = images.green_bullet_list[1:]
-            offset = large_offset
+        bullet_images = self.images[0]
+        bullet_list = self.images[1][1:]
+        offset = self.images[2]
 
         if self.animation_frame >= len(bullet_list):
             self.animation_frame = 0
