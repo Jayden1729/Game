@@ -11,7 +11,7 @@ import copy
 
 class Player(pygame.sprite.Sprite):
 
-    def __init__(self, player_dict):
+    def __init__(self, player_dict, screen_dimensions):
         """
         Initialises the Player class.
         """
@@ -23,8 +23,8 @@ class Player(pygame.sprite.Sprite):
         rect_size = 20
         self.surf = pygame.Surface((rect_size, rect_size))
         self.surf.fill((0, 0, 255))
-        self.rect = self.surf.get_rect(center=(400, 400))
-        self.vector2 = pygame.math.Vector2(400, 400)
+        self.rect = self.surf.get_rect(center=(round(screen_dimensions[0] / 2), round(screen_dimensions[1] / 2)))
+        self.vector2 = pygame.math.Vector2(round(screen_dimensions[0] / 2), round(screen_dimensions[1] / 2))
         self.speed = 5
         self.projectile_speed = 10
         self.attack_cooldown = 0
