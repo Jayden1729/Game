@@ -38,7 +38,7 @@ class Player(pygame.sprite.Sprite):
         self.torso_frame = 0
         self.torso_frame_break = 0
 
-    def attack(self, player_bullets, screen_width, screen_height):
+    def attack(self, player_bullets, screen_width, screen_height, bullet_dict):
         """Creates a bullet and adds to player_bullets group.
 
         Args:
@@ -78,7 +78,7 @@ class Player(pygame.sprite.Sprite):
 
         bullet_vector = mouse_vector - gun_vector
 
-        player_bullets.add(Bullet.Bullet(gun_vector.x, gun_vector.y, bullet_vector, self.projectile_speed, 'red'))
+        player_bullets.add(Bullet.Bullet(gun_vector.x, gun_vector.y, bullet_vector, self.projectile_speed, bullet_dict['red']))
         self.attack_cooldown = 20
         self.is_shooting = True
         self.torso_frame_break = 0
@@ -159,8 +159,6 @@ class Player(pygame.sprite.Sprite):
             screen (pygame.display): the game screen.
         """
         direction = 1
-        offset = [23, 25]
-        torso_offset = [42, 63]
         frame_break = 7
 
         mouse_pos = pygame.mouse.get_pos()
@@ -189,6 +187,7 @@ class Player(pygame.sprite.Sprite):
 
         torso_sprites = torso_list[0]
         torso_frames = torso_list[1]
+        torso_offset = torso_list[2]
 
         # Get legs sprites
         if self.is_moving:
@@ -198,6 +197,7 @@ class Player(pygame.sprite.Sprite):
 
         legs_sprites = legs_list[0]
         legs_frames = legs_list[1]
+        legs_offset = legs_list[2]
 
         # Check if animation has reached the end
         if self.legs_frame >= len(legs_frames):
@@ -219,7 +219,7 @@ class Player(pygame.sprite.Sprite):
             torso_animation_frame = - int((1 - direction) / 2)
 
         # Blit images to screen
-        screen.blit(legs_sprites, (self.rect.x - offset[0], self.rect.y - offset[1]),
+        screen.blit(legs_sprites, (self.rect.x - legs_offset[0], self.rect.y - legs_offset[1]),
                     legs_frames[direction * self.legs_frame])
 
         screen.blit(torso_sprites, (self.rect.x - torso_offset[0], self.rect.y - torso_offset[1]),
