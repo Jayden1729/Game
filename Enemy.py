@@ -26,7 +26,7 @@ class Enemy(pygame.sprite.Sprite):
         enemy_dict = images.enemy_dict
 
         self.images = enemy_dict[enemy_type]
-        
+
         # Config parameters
         config = dict(enemy_config.items(enemy_type))
         self.cooldown = json.loads(config['cooldown'])
@@ -35,9 +35,9 @@ class Enemy(pygame.sprite.Sprite):
         self.bullet_colour = config['bullet_colour']
         self.time_reward = json.loads(config['time_reward'])
         self.damage = json.loads(config['damage'])
-        self.left_offset = json.loads(config['left_offset'])
-        self.right_offset = json.loads(config['right_offset'])
         self.attack_pattern = enemy_type
+
+        self.bullet_dict = images.bullet_dict
 
         # Define hit box
         self.rect_size = 40
@@ -75,7 +75,7 @@ class Enemy(pygame.sprite.Sprite):
         if self.seen_player and self.attack_cooldown == 0:
             level.enemy_bullets.add(
                 Bullet.Bullet(self.rect.x + self.rect_size / 2, self.rect.y + self.rect_size / 2,
-                              self.attack_direction, self.projectile_speed, self.bullet_colour, self.damage))
+                              self.attack_direction, self.projectile_speed, self.bullet_dict[self.bullet_colour], self.damage))
             self.attack_cooldown = self.cooldown
 
         if self.attack_cooldown > 0:
@@ -100,7 +100,7 @@ class Enemy(pygame.sprite.Sprite):
                 level.enemy_bullets.add(
                     Bullet.Bullet(self.rect.x + self.rect_size / 2, self.rect.y + self.rect_size / 2,
                                   pygame.math.Vector2(0, 1).rotate(degrees * i), self.projectile_speed,
-                                  self.bullet_colour, self.damage))
+                                  self.bullet_dict[self.bullet_colour], self.damage))
             self.attack_cooldown = self.cooldown
 
         if self.attack_cooldown > 0:
@@ -262,9 +262,9 @@ class Enemy(pygame.sprite.Sprite):
         """
         # Explosion animation
         if self.has_exploded:
-            offset = [40, 70]
             explosion_list = self.images['explosion']
-            self.run_animation(explosion_list[0], explosion_list[1], screen, offset, offset, 7, xbool=False)
+            self.run_animation(explosion_list[0], explosion_list[1], screen,
+                               explosion_list[2], explosion_list[3], 7, xbool=False)
 
             if self.animation_frame >= len(explosion_list[1]):
                 self.kill()
@@ -272,7 +272,7 @@ class Enemy(pygame.sprite.Sprite):
         # Death animation
         elif self.hp == 0:
             death_list = self.images['death']
-            self.run_animation(death_list[0], death_list[1], screen, self.left_offset, self.right_offset)
+            self.run_animation(death_list[0], death_list[1], screen, death_list[2], death_list[3])
 
             if self.animation_frame >= len(death_list[1]):
                 self.kill()
@@ -280,7 +280,7 @@ class Enemy(pygame.sprite.Sprite):
         # Hit animation
         elif self.is_hit:
             hit_list = self.images['hit']
-            self.run_animation(hit_list[0], hit_list[1], screen, self.left_offset, self.right_offset)
+            self.run_animation(hit_list[0], hit_list[1], screen, hit_list[2], hit_list[3])
 
             if self.animation_frame >= len(hit_list[1]):
                 self.is_hit = False
@@ -288,7 +288,7 @@ class Enemy(pygame.sprite.Sprite):
         # Attack animation
         elif self.is_attacking:
             attack_list = self.images['attack']
-            self.run_animation(attack_list[0], attack_list[1], screen, self.left_offset, self.right_offset)
+            self.run_animation(attack_list[0], attack_list[1], screen, attack_list[2], attack_list[3])
 
             if self.animation_frame >= len(attack_list[1]):
                 self.is_attacking = False
@@ -296,7 +296,7 @@ class Enemy(pygame.sprite.Sprite):
         # Running animation
         elif self.seen_player:
             run_list = self.images['run']
-            self.run_animation(run_list[0], run_list[1], screen, self.left_offset, self.right_offset)
+            self.run_animation(run_list[0], run_list[1], screen, run_list[2], run_list[3])
 
     def set_death_conditions(self):
         """Changes the conditions of the enemy when it dies, so that player attacks don't collide, and it cannot move.
