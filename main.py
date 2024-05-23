@@ -23,13 +23,13 @@ import GUI
 
 
 
-def main(screen_width=None):
+def main():
     # initialise pygame
     pygame.init()
 
     # Variables
     screen_width = 1024
-    screen_height = 800
+    screen_height = 900
     screen_dimensions = [screen_width, screen_height]
     min_dimension = min(screen_width, screen_height)
     square_size = min_dimension / 16
@@ -57,7 +57,7 @@ def main(screen_width=None):
                 for j in range(len(game_grid[0])):
                     if game_grid[i][j] == '1':
                         game_grid[i][j] = 1
-            levels.append(Level.Level(game_grid, square_size, images))
+            levels.append(Level.Level(game_grid, square_size, images, screen_dimensions))
 
     level = copy.deepcopy(levels[0])
     current_level = 1

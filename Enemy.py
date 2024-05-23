@@ -15,7 +15,7 @@ enemy_config.read('enemy_config.ini')
 
 class Enemy(pygame.sprite.Sprite):
 
-    def __init__(self, position, enemy_type, images):
+    def __init__(self, position, enemy_type, enemy_dict, bullet_dict, screen_dimensions):
         """Initialises an instance of the Enemy class.
 
         Args:
@@ -23,9 +23,8 @@ class Enemy(pygame.sprite.Sprite):
         """
         super(Enemy, self).__init__()
 
-        enemy_dict = images.enemy_dict
-
         self.images = enemy_dict[enemy_type]
+        self.bullet_dict = bullet_dict
 
         # Config parameters
         config = dict(enemy_config.items(enemy_type))
@@ -37,13 +36,13 @@ class Enemy(pygame.sprite.Sprite):
         self.damage = json.loads(config['damage'])
         self.attack_pattern = enemy_type
 
-        self.bullet_dict = images.bullet_dict
-
         # Define hit box
-        self.rect_size = 40
+        min_dimension = min(screen_dimensions)
+        self.rect_size = min_dimension / 20
         self.surf = pygame.Surface((self.rect_size, self.rect_size))
         self.surf.fill((255, 0, 0))
         self.rect = self.surf.get_rect(center=position)
+        print(position, self.images['run'][2])
 
         # Track animations
         self.animation_frame = 0
